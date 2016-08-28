@@ -43,4 +43,4 @@ captures/
 .DS_Store
 
 #Secret
-/secrets.properties
+secrets.properties

@@ -4,15 +4,14 @@ import android.app.Application;
 
 import com.akarbowy.tagop.dicomponent.ApplicationComponent;
 import com.akarbowy.tagop.dicomponent.DaggerApplicationComponent;
+import com.akarbowy.tagop.flux.Flux;
 
 import timber.log.Timber;
 
-/**
- * Created by akarbowy on 07.08.16.
- */
 public class TagopApplication extends Application {
 
     private ApplicationComponent component;
+    private Flux flux;
 
     @Override
     public void onCreate() {
@@ -22,10 +21,11 @@ public class TagopApplication extends Application {
             Timber.plant(new Timber.DebugTree());
         }
 
-       component = DaggerApplicationComponent.Initializer.init();
+        flux = Flux.init(this);
+        component = DaggerApplicationComponent.Initializer.init(flux, this);
     }
 
-    public ApplicationComponent component(){
+    public ApplicationComponent component() {
         return component;
     }
 
