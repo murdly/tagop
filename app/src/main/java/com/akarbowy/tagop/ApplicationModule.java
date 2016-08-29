@@ -2,9 +2,8 @@ package com.akarbowy.tagop;
 
 import android.app.Application;
 
+import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Flux;
-import com.akarbowy.tagop.testflux.TestActionCreator;
-import com.akarbowy.tagop.testflux.TestStore;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,12 +20,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    TestStore testStore(){
-        return new TestStore(flux.getDispatcher());
+    Dispatcher dispatcher(){
+        return flux.getDispatcher();
     }
 
-    @Provides
-    TestActionCreator testActionCreator(){
-        return new TestActionCreator(flux.getDispatcher());
-    }
 }

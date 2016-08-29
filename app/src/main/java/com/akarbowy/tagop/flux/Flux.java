@@ -35,7 +35,7 @@ public class Flux implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityResumed(Activity activity) {
         if (activity instanceof ViewDispatch) {
-            Timber.i("onActivityResumed");
+            Timber.i("registered stores for %s", activity.getLocalClassName());
             dispatcher.register(activity);
             List<? extends Store> storeList = ((ViewDispatch) activity).getStoresToRegister();
             for (Store store : storeList) {
@@ -48,7 +48,7 @@ public class Flux implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityPaused(Activity activity) {
         if (activity instanceof ViewDispatch) {
-            Timber.i("onActivityPaused");
+            Timber.i("unregistered stores for %s", activity.getLocalClassName());
             dispatcher.unregister(activity);
             List<? extends Store> storeList = ((ViewDispatch) activity).getStoresToRegister();
             for (Store store : storeList) {

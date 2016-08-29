@@ -13,5 +13,5 @@ public interface WykopService {
     String BASE_URL = "https://a.wykop.pl/";
 
     @GET("tag/entries/{tagValue}/page/{pageValue}")
-    Call<QueryResult> getTag(@Path("tagValue") String tag, @Path("pageValue") int page);
+    Call<QueryResult> search(@Path("tagValue") String tag, @Path("pageValue") int page);
 }

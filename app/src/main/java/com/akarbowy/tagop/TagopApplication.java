@@ -18,7 +18,7 @@ public class TagopApplication extends Application {
         super.onCreate();
 
         if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
+            Timber.plant(new TagopDebugTree());
         }
 
         flux = Flux.init(this);
@@ -27,6 +27,15 @@ public class TagopApplication extends Application {
 
     public ApplicationComponent component() {
         return component;
+    }
+
+
+    private class TagopDebugTree extends Timber.DebugTree {
+        @Override
+        protected String createStackElementTag(StackTraceElement element) {
+            return String.format("%s-%s", super.createStackElementTag(element),
+                    element.getMethodName());
+        }
     }
 
 }
