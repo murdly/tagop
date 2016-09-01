@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/margin_vertical_medium"
+    android:paddingRight="@dimen/margin_vertical_medium">
+
+    <TextView
+        android:layout_width="@dimen/icon_viewport_size"
+        android:layout_height="@dimen/icon_viewport_size"
+        android:gravity="center"
+        android:text="@string/symbol_hashtag"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text_tag_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingRight="@dimen/spacing_normal"
+        android:paddingStart="@dimen/spacing_normal"
+        android:text="@string/lorem_2words" />
+
+</LinearLayout>
+
+

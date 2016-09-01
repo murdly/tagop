@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.testflux;
+package com.akarbowy.tagop.presentation.search;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.Keys;

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.testflux;
+package com.akarbowy.tagop.presentation.search;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.Keys;
@@ -6,22 +6,20 @@ import com.akarbowy.tagop.flux.Action;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Store;
-import com.akarbowy.tagop.model.QueryResult;
-import com.akarbowy.tagop.model.TagEntry;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-public class EntryStore extends Store {
-    public static final String ID = "EntryStore";
-    public ArrayList<TagEntry> entries;
+public class HistoryStore extends Store {
+    public static final String ID = "HistoryStore";
+    public ArrayList<String> queries;
 
     @Inject
-    public EntryStore(Dispatcher dispatcher) {
+    public HistoryStore(Dispatcher dispatcher) {
         super(dispatcher);
-        entries = new ArrayList<>();
+        queries = new ArrayList<>();
     }
 
     @Subscribe
@@ -29,8 +27,8 @@ public class EntryStore extends Store {
     protected void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
-                QueryResult result = action.get(Keys.QUERY_RESULT);
-                entries.addAll(result.entries);
+                String query = action.get(Keys.QUERY);
+                queries.add(query);
                 break;
             default:
                 return;
@@ -40,7 +38,7 @@ public class EntryStore extends Store {
 
     }
 
-    public ArrayList<TagEntry> getEntries() {
-        return entries;
+    public ArrayList<String> getTagNames() {
+        return queries;
     }
 }
