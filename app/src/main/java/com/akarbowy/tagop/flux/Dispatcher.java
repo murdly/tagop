@@ -26,4 +26,6 @@ public class Dispatcher {
         bus.post(event);
     }
 
+    public void error(ActionError error) {bus.post(error); }
+
 }

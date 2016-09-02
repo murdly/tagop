@@ -32,4 +32,8 @@ public abstract class ActionCreator {
     public void postAction(@NonNull Action action) {
         dispatcher.dispatch(action);
     }
+
+    public void postError(@NonNull ActionError e) {
+        dispatcher.error(e);
+    }
 }

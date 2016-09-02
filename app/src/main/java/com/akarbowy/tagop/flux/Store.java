@@ -21,4 +21,5 @@ public abstract class Store {
     }
 
     protected abstract void onAction(Action action);
+
 }

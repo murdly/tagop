@@ -16,15 +16,12 @@ public class HistoryStore extends Store {
     public static final String ID = "HistoryStore";
     public ArrayList<String> queries;
 
-    @Inject
-    public HistoryStore(Dispatcher dispatcher) {
+    @Inject public HistoryStore(Dispatcher dispatcher) {
         super(dispatcher);
         queries = new ArrayList<>();
     }
 
-    @Subscribe
-    @Override
-    protected void onAction(Action action) {
+    @Subscribe @Override protected void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 String query = action.get(Keys.QUERY);

@@ -18,15 +18,12 @@ public class PostStore extends Store {
     public static final String ID = "PostStore";
     public ArrayList<TagEntry> entries;
 
-    @Inject
-    public PostStore(Dispatcher dispatcher) {
+    @Inject public PostStore(Dispatcher dispatcher) {
         super(dispatcher);
         entries = new ArrayList<>();
     }
 
-    @Subscribe
-    @Override
-    protected void onAction(Action action) {
+    @Subscribe @Override protected void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 QueryResult result = action.get(Keys.QUERY_RESULT);
