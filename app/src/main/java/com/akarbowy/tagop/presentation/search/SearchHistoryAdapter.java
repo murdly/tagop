@@ -18,8 +18,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     private List<String> tagNames;
 
-    public SearchHistoryAdapter(List<String> tagNames) {
-        this.tagNames = tagNames;
+    public SearchHistoryAdapter() {
+        this.tagNames = new ArrayList<>();
     }
 
     @Override
@@ -43,6 +43,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public void refresh(ArrayList<String> tags) {
         tagNames = tags;
         notifyDataSetChanged();
+    }
+
+    public String getItem(int position){
+        return tagNames.get(position);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

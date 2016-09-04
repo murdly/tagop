@@ -9,7 +9,7 @@
     app:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
     <FrameLayout
-        android:id="@+id/toolbar_layout_descriptive"
+        android:id="@+id/toolbar_layout_action"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,6 +43,7 @@
             android:layout_height="match_parent"
             android:background="@null"
             android:hint="@string/toolbar_search_for_tags"
+            android:imeOptions="actionSearch"
             android:inputType="textFilter"
             android:maxLines="1"
             android:textColorHint="@color/textColorPrimary"

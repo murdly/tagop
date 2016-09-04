@@ -49,4 +49,8 @@ public class TagopActionCreator extends ActionCreator implements Actions {
                     }
                 });
     }
+
+    public void filterHistory(String query) {
+        postAction(newAction(FILTER_HISTORY_TAG, Keys.QUERY, query));
+    }
 }

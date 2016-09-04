@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 public class HistoryStore extends Store {
     public static final String ID = "HistoryStore";
-    public ArrayList<String> queries;
+    private ArrayList<String> queries;
 
     @Inject public HistoryStore(Dispatcher dispatcher) {
         super(dispatcher);

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.presentation.search;
+package com.akarbowy.tagop.presentation.posts;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.Keys;

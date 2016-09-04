@@ -8,11 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.R;
@@ -21,38 +23,38 @@ import com.akarbowy.tagop.flux.ActionError;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Store;
 import com.akarbowy.tagop.flux.ViewDispatch;
+import com.akarbowy.tagop.helpers.RecyclerSupport;
+import com.akarbowy.tagop.presentation.posts.PostsActivity;
 import com.akarbowy.tagop.utils.KeyboardUtil;
+import com.akarbowy.tagop.utils.TextUtil;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MainSearchActivity extends AppCompatActivity implements ViewDispatch {
+public class MainSearchActivity extends AppCompatActivity implements ViewDispatch, RecyclerSupport.OnItemClickListener {
 
-    private static final long REQUEST_QUERY_DELAY_MS = 600;
+    private static ButterKnife.Setter<View, Boolean> SET_QUERY_CANCEL_VIEW_VISIBILITY;
 
     @Inject HistoryStore historyStore;
     @Inject TagopActionCreator creator;
 
     @BindView(R.id.toolbar_search) Toolbar toolbarView;
-    @BindView(R.id.toolbar_layout_descriptive) FrameLayout toolbarDescriptiveLayout;
+    @BindView(R.id.toolbar_layout_action) FrameLayout toolbarActionLayout;
     @BindView(R.id.toolbar_layout_searchable) FrameLayout toolbarSearchableLayout;
     @BindView(R.id.field_query) EditText queryView;
     @BindView(R.id.button_field_cancel) ImageView queryCancelView;
     @BindView(R.id.recycler_history) RecyclerView historyRecycler;
+    @BindView(R.id.empty_state_history) View emptyHistoryView;
 
     private SearchHistoryAdapter adapter;
-    private Timer typingTimer;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +67,27 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);
-        adapter = new SearchHistoryAdapter(new ArrayList<String>());
+        historyRecycler.setHasFixedSize(true);
+        adapter = new SearchHistoryAdapter();
         historyRecycler.setAdapter(adapter);
+
+        RecyclerSupport.addTo(historyRecycler)
+                .setOnItemClickListener(this)
+                .setEmptyStateView(emptyHistoryView);
+
+        refreshHistoryList();
     }
 
-    private void configureToolbarBehaviour(){
+    @Override protected void onResume() {
+        super.onResume();
+        refreshHistoryList();
+    }
+
+    private void configureToolbarBehaviour() {
         toolbarView.inflateMenu(R.menu.menu_search);
-        toolbarDescriptiveLayout.setOnClickListener(new View.OnClickListener() {
+        toolbarActionLayout.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                toolbarDescriptiveLayout.setVisibility(View.GONE);
+                toolbarActionLayout.setVisibility(View.GONE);
                 toolbarSearchableLayout.setVisibility(View.VISIBLE);
                 queryView.requestFocus();
                 KeyboardUtil.show(queryView);
@@ -85,7 +99,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
                         toolbarView.getMenu().clear();
                         toolbarView.inflateMenu(R.menu.menu_search);
                         queryView.getText().clear();
-                        toolbarDescriptiveLayout.setVisibility(View.VISIBLE);
+                        toolbarActionLayout.setVisibility(View.VISIBLE);
                         toolbarSearchableLayout.setVisibility(View.GONE);
                         KeyboardUtil.hide(queryView);
                     }
@@ -104,53 +118,58 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
             }
         });
 
-        queryView.addTextChangedListener(queryWatcher);
-    }
-
-    private static ButterKnife.Setter<View, Boolean> SET_QUERY_CANCEL_VIEW_VISIBILITY = new ButterKnife.Setter<View,Boolean>() {
-        @Override public void set(@NonNull View view, Boolean visible, int index) {
-            view.setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
-    };
-
-    @OnClick(R.id.button_field_cancel)
-    public void onCancelTypedQuery(){
-        queryView.getText().clear();
-        ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, false);
-    }
-
-    private TextWatcher queryWatcher = new TextWatcher() {
-        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override public void onTextChanged(CharSequence text, int i, int i1, int i2) {
-            ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, !text.toString().isEmpty());
-
-            if (typingTimer != null) {
-                typingTimer.cancel();
+        SET_QUERY_CANCEL_VIEW_VISIBILITY = new ButterKnife.Setter<View, Boolean>() {
+            @Override public void set(@NonNull View view, Boolean visible, int index) {
+                view.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
-        }
+        };
 
-        @Override public void afterTextChanged(final Editable query) {
-            Timber.i("query:%s", getQueryViewText());
-            if(query.toString().isEmpty()){
-                return;
+        queryCancelView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                queryView.getText().clear();
+                ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, false);
+
+            }
+        });
+
+        queryView.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
-            typingTimer = new Timer();
-            typingTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    String query = queryView.getText().toString().trim();
-                    Timber.i("Query searching fired %s", query);
-                    creator.searchTag(query);
+            @Override public void onTextChanged(CharSequence text, int i, int i1, int i2) {
+                ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, !text.toString().isEmpty());
+
+            }
+
+            @Override public void afterTextChanged(final Editable query) {
+                if (!query.toString().isEmpty()) {
+                    creator.filterHistory(query.toString());
                 }
-            }, REQUEST_QUERY_DELAY_MS);
-        }
-    };
 
-    private String getQueryViewText(){
-     return queryView.getText().toString().trim();
+            }
+        });
+
+        queryView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (!TextUtil.empty(textView)) {
+                    String query = queryView.getText().toString().trim();
+                    Timber.i("Query searching %s", query);
+                    searchForPostsWithTag(query);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+        Timber.i("Item clicked: %s", position);
+        searchForPostsWithTag(adapter.getItem(position));
+    }
+
+    private void searchForPostsWithTag(String tag) {
+        startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, tag));
     }
 
     private void refreshHistoryList() {
@@ -170,7 +189,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         }
     }
 
-    @Subscribe public void onError(ActionError error){
+    @Subscribe public void onError(ActionError error) {
         Timber.e(error.getThrowable(), "hola hola mamy problem z akcja: %s", error.getActionType());
     }
 
