@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
+import com.akarbowy.tagop.database.TagHistory;
 import com.akarbowy.tagop.flux.ActionError;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Store;
@@ -29,7 +30,6 @@ import com.akarbowy.tagop.utils.KeyboardUtil;
 import com.akarbowy.tagop.utils.TextUtil;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,12 +58,11 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((TagopApplication) getApplication()).component().inject(this);
+
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         configureToolbarBehaviour();
-        setSupportActionBar(toolbarView);
-
-        ((TagopApplication) getApplication()).component().inject(this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);
@@ -74,10 +73,10 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         RecyclerSupport.addTo(historyRecycler)
                 .setOnItemClickListener(this)
                 .setEmptyStateView(emptyHistoryView);
-
-        refreshHistoryList();
     }
 
+    // history store gets unregistered onPause.
+    // onStoreChange wont be call when returning from PostActivity
     @Override protected void onResume() {
         super.onResume();
         refreshHistoryList();
@@ -89,6 +88,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
             @Override public void onClick(View view) {
                 toolbarActionLayout.setVisibility(View.GONE);
                 toolbarSearchableLayout.setVisibility(View.VISIBLE);
+                queryView.getText().clear();
                 queryView.requestFocus();
                 KeyboardUtil.show(queryView);
                 toolbarView.getMenu().clear();
@@ -111,6 +111,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
             @Override public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_clear_history:
+                        creator.clearHistory();
                         return true;
                 }
 
@@ -165,7 +166,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
     @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
         Timber.i("Item clicked: %s", position);
-        searchForPostsWithTag(adapter.getItem(position));
+        searchForPostsWithTag(adapter.getItem(position).getName());
     }
 
     private void searchForPostsWithTag(String tag) {
@@ -173,7 +174,8 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     }
 
     private void refreshHistoryList() {
-        ArrayList<String> tags = historyStore.getTagNames();
+        List<TagHistory> tags = historyStore.getTagNames();
+        Timber.i("refreshing with: %s", tags.toString());
         adapter.refresh(tags);
     }
 
@@ -181,7 +183,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         switch (change.getStoreId()) {
             case HistoryStore.ID:
                 switch (change.getAction().getType()) {
-                    case Actions.SEARCH_TAG:
+                    case Actions.CLEAR_TAG_HISTORY:
                         refreshHistoryList();
                         break;
                 }

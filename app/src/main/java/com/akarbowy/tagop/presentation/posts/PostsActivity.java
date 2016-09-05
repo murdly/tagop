@@ -47,7 +47,6 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
 
         ((TagopApplication) getApplication()).component().inject(this);
 

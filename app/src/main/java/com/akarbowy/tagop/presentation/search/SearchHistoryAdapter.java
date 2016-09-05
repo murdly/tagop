@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
+import com.akarbowy.tagop.database.TagHistory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.ItemViewHolder> {
 
-    private List<String> tagNames;
+    private List<TagHistory> tagNames;
 
     public SearchHistoryAdapter() {
         this.tagNames = new ArrayList<>();
@@ -31,8 +32,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        String tagName = tagNames.get(position);
-        holder.tagNameText.setText(tagName);
+        TagHistory tagHistory = tagNames.get(position);
+        holder.tagNameText.setText(tagHistory.getName());
     }
 
     @Override
@@ -40,12 +41,12 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return tagNames.size();
     }
 
-    public void refresh(ArrayList<String> tags) {
+    public void refresh(List<TagHistory> tags) {
         tagNames = tags;
         notifyDataSetChanged();
     }
 
-    public String getItem(int position){
+    public TagHistory getItem(int position){
         return tagNames.get(position);
     }
 

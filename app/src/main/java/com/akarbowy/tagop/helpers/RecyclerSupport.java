@@ -59,10 +59,6 @@ public class RecyclerSupport {
             if (onItemLongClickListener != null) {
                 view.setOnLongClickListener(mOnLongClickListener);
             }
-
-            if (emptyStateView != null) {
-                recyclerView.getAdapter().registerAdapterDataObserver(emptyStateObserver);
-            }
         }
 
         @Override
@@ -105,7 +101,7 @@ public class RecyclerSupport {
 
     public RecyclerSupport setEmptyStateView(View view) {
         emptyStateView = view;
-        emptyStateObserver.onChanged();
+        recyclerView.getAdapter().registerAdapterDataObserver(emptyStateObserver);
         return this;
     }
 
