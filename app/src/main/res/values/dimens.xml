@@ -1,7 +1,13 @@
 <resources>
     <dimen name="spacing_normal">8dp</dimen>
+    <dimen name="padding_very_small">2dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_normal">8dp</dimen>
     <dimen name="margin_vertical_normal">16dp</dimen>
     <dimen name="margin_vertical_medium">24dp</dimen>
-    <dimen name="list_item_height">56dp</dimen>
+    <dimen name="item_history_height">56dp</dimen>
     <dimen name="icon_viewport_size">40dp</dimen>
+
+    //PostAdapter
+    <dimen name="header_content_height">60dp</dimen>
 </resources>

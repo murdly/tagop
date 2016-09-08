@@ -3,7 +3,7 @@
 
     //Activities
     <string name="title_activity_posts">Posty</string>
-        //MainSearchActivity
+    //MainSearchActivity
     <string name="toolbar_search_title">Szukaj</string>
     <string name="toolbar_search_for_tags">Szukaj znaczników #</string>
     <string name="toolbar_action_close">Anuluj</string>
@@ -13,4 +13,6 @@
 
     //layout placeholders
     <string name="lorem_2words">lorem ipsum</string>
+    <string name="lorem_2lines">lorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem </string>
+    <string name="lorem_2sentences">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos</string>
 </resources>

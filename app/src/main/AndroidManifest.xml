@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".presentation.search.MainSearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -24,6 +25,7 @@
             android:name=".presentation.posts.PostsActivity"
             android:label="@string/title_activity_posts"
             android:parentActivityName=".presentation.search.MainSearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

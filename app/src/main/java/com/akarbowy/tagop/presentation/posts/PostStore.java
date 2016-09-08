@@ -27,6 +27,7 @@ public class PostStore extends Store {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 QueryResult result = action.get(Keys.QUERY_RESULT);
+                entries.clear();
                 entries.addAll(result.entries);
                 break;
             default:
