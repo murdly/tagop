@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context=".presentation.search.MainSearchActivity">
+              tools:context=".ui.search.MainSearchActivity">
 
     <include
         layout="@layout/toolbar_search"/>

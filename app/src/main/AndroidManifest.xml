@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".presentation.search.MainSearchActivity"
+            android:name=".ui.search.MainSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -22,14 +22,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.posts.PostsActivity"
+            android:name=".ui.posts.PostsActivity"
             android:label="@string/title_activity_posts"
-            android:parentActivityName=".presentation.search.MainSearchActivity"
+            android:parentActivityName=".ui.search.MainSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.akarbowy.tagop.presentation.search.MainSearchActivity"/>
+                android:value="com.akarbowy.tagop.ui.search.MainSearchActivity"/>
         </activity>
     </application>
 

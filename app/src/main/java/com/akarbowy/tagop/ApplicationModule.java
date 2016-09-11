@@ -5,7 +5,7 @@ import android.app.Application;
 import com.akarbowy.tagop.database.DatabaseHelper;
 import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Flux;
-import com.akarbowy.tagop.presentation.search.HistoryStore;
+import com.akarbowy.tagop.ui.search.HistoryStore;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import javax.inject.Singleton;

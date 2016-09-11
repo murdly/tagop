@@ -7,4 +7,9 @@
     <color name="gray">#ff888888</color>
     <color name="textColorPrimary">#BDBDBD</color>
 
+    <color name="wykop_green">#339933</color>
+
+    <color name="item_post_separator">#BDBDBD</color>
+    <color name="item_post_embed_bg">#212121</color>
+    <color name="item_post_header_avatar_placeholder">#9E9E9E</color>
 </resources>

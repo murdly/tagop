@@ -10,6 +10,9 @@
     <string name="toolbar_action_clear_history">Czyść historię</string>
     <string name="symbol_hashtag">#</string>
     <string name="empty_state_history">Historia wyszukiwania jest pusta.</string>
+    //PostActivity
+    <string name="post_counters_votes_param">&#160;%1$d</string>
+    <string name="post_counters_comments_param">Komentarze: %1$d</string>
 
     //layout placeholders
     <string name="lorem_2words">lorem ipsum</string>
