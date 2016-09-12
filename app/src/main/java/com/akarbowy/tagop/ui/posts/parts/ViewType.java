@@ -6,4 +6,6 @@ public interface ViewType {
     int TEXT_SECTION = 2;
     int COUNTERS = 3;
     int EMBED = 4;
+
+    int COMMENT = 11;
 }

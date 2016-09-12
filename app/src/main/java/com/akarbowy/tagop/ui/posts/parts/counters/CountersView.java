@@ -29,4 +29,8 @@ public class CountersView extends LinearLayout {
     public void setCommentsCount(String count) {
         commentsView.setText(count);
     }
+
+    public void setOnCommentsClickListener(OnClickListener commentsListener) {
+        commentsView.setOnClickListener(commentsListener);
+    }
 }

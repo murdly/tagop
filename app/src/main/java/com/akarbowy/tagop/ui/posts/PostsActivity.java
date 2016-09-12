@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.R;
@@ -14,6 +15,7 @@ import com.akarbowy.tagop.TagopApplication;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Store;
 import com.akarbowy.tagop.flux.ViewDispatch;
+import com.akarbowy.tagop.network.model.TagEntry;
 import com.akarbowy.tagop.ui.search.HistoryStore;
 import com.akarbowy.tagop.ui.search.TagopActionCreator;
 import com.squareup.otto.Subscribe;
@@ -25,6 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class PostsActivity extends AppCompatActivity implements ViewDispatch {
 
@@ -75,8 +78,21 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch {
         }
     }
 
+    public class BinderCallback {
+        String action;
+    }
+
+    @Subscribe public void onBinderAction(BinderCallback callback){
+        Timber.i(callback.action);
+    }
+
     private void showPosts() {
-        adapter.setItems(postStore.getEntries());
+        ArrayList<TagEntry> entries = postStore.getEntries();
+        if(!entries.isEmpty()){
+            adapter.setItems(entries);
+        }else{
+            Toast.makeText(PostsActivity.this, "Brak wyników", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override public List<? extends Store> getStoresToRegister() {

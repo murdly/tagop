@@ -8,6 +8,8 @@ import com.akarbowy.tagop.parto.Binder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import timber.log.Timber;
+
 public class HeaderBinder implements Binder<HeaderView> {
     private TagEntry tagEntry;
 
@@ -29,7 +31,7 @@ public class HeaderBinder implements Binder<HeaderView> {
             String relativeDate = DateUtils.getRelativeTimeSpanString(dateInMillis).toString();
             view.setDate(relativeDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            Timber.e(e, "Error when parsing date.");
         }
     }
 }

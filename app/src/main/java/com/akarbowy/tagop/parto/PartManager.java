@@ -33,6 +33,7 @@ public class PartManager<M> {
 
     public void onBindViewHolder(PartHolder holder, int position) {
         Binder binder = binders.get(position).second;
+        binder.prepare(holder.partView);
         binder.bind(holder.partView);
     }
 
