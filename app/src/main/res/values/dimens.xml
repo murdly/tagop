@@ -8,7 +8,25 @@
     <dimen name="item_history_height">56dp</dimen>
     <dimen name="icon_viewport_size">40dp</dimen>
 
-    //PostAdapter
+
+    <dimen name="item_history_symbol">24sp</dimen>
+    <dimen name="item_history_tag">14sp</dimen>
+
+    <!--search results screen-->
+    <!--list of posts-->
     <dimen name="header_content_height">50dp</dimen>
     <dimen name="separator_height">10dp</dimen>
+    <dimen name="post_header_author">15sp</dimen>
+    <dimen name="post_header_date">12sp</dimen>
+    <dimen name="post_text_section">13sp</dimen>
+    <dimen name="post_counters">12sp</dimen>
+    <!--comments-->
+    <dimen name="comment_title">19sp</dimen>
+    <dimen name="comment_author">14sp</dimen>
+    <dimen name="comment_content">13sp</dimen>
+    <dimen name="comment_info">12sp</dimen>
+    <!--more-->
+    <dimen name="bottom_sheet_post_more">56dp</dimen>
+    <dimen name="bottom_sheet_item_text_size">16sp</dimen>
+
 </resources>

@@ -15,7 +15,8 @@
         android:paddingBottom="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_normal"
         android:text="@string/post_comments_title"
-        android:textSize="20sp"
+        android:textColor="@color/item_comment_title"
+        android:textSize="@dimen/comment_title"
         android:textStyle="bold"/>
 
     <View

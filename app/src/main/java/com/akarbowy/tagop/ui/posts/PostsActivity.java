@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class PostsActivity extends AppCompatActivity implements ViewDispatch {
 
@@ -76,14 +75,6 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch {
                 }
                 break;
         }
-    }
-
-    public class BinderCallback {
-        String action;
-    }
-
-    @Subscribe public void onBinderAction(BinderCallback callback){
-        Timber.i(callback.action);
     }
 
     private void showPosts() {

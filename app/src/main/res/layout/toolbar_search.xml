@@ -22,7 +22,7 @@
             android:drawableStart="@drawable/ic_search_black_24dp"
             android:gravity="center_vertical"
             android:text="@string/toolbar_search_title"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp" />
     </FrameLayout>
 
@@ -46,7 +46,7 @@
             android:imeActionLabel="sdsd"
             android:inputType="textFilter"
             android:maxLines="1"
-            android:textColorHint="@color/textColorPrimary"
+            android:textColorHint="@color/colorPrimaryDark"
             android:textCursorDrawable="@drawable/shape_text_cursor" />
 
         <ImageView

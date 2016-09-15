@@ -31,7 +31,6 @@ public class HistoryStore extends Store {
         } catch (SQLException e) {
             Timber.i(e.getMessage(), "Error when quering for history tags.");
         }
-
     }
 
     @Subscribe @Override protected void onAction(Action action) {

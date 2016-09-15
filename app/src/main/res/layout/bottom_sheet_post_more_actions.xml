@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_open_in_browser"
+        style="@style/post_item_bottom_sheet"
+        android:text="@string/post_more_open_in_browser"
+        android:drawableLeft="@drawable/ic_open_in_browser_gray_24dp"/>
+
+    <TextView
+        android:id="@+id/text_copy_link"
+        style="@style/post_item_bottom_sheet"
+        android:text="@string/post_more_copy_link"
+        android:drawableLeft="@drawable/ic_link_gray_24dp"/>
+
+</LinearLayout>

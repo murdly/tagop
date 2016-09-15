@@ -58,11 +58,10 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((TagopApplication) getApplication()).component().inject(this);
-
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         configureToolbarBehaviour();
+        ((TagopApplication) getApplication()).component().inject(this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);

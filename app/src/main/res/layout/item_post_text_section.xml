@@ -11,6 +11,8 @@
         android:paddingLeft="@dimen/padding_normal"
         android:paddingRight="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_small"
+        android:textColor="@color/item_post_text_section"
+        android:textSize="@dimen/post_text_section"
         android:text="@string/lorem_2sentences"/>
 
 </merge>

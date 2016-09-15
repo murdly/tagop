@@ -2,14 +2,27 @@
 <resources>
     <color name="colorPrimary">#F5F5F5</color>
     <color name="colorPrimaryDark">#9E9E9E</color>
-    <color name="colorAccent">#212121</color>
+    <color name="colorAccent">#81C784</color>
+    <color name="textColorPrimary">#212121</color>
 
     <color name="gray">#ff888888</color>
-    <color name="textColorPrimary">#BDBDBD</color>
 
-    <color name="wykop_green">#339933</color>
+    <color name="item_history_symbol">#888888</color>
+    <color name="item_history_tag">#000000</color>
 
-    <color name="item_post_separator">#BDBDBD</color>
+    <color name="item_post_separator">#EEEEEE</color>
+    <color name="item_post_header_avatar_placeholder">#F5F5F5</color>
+    <color name="item_post_header_author">#212121</color>
+    <color name="item_post_header_date">#9E9E9E</color>
+    <color name="item_post_header_more">#BDBDBE</color>
+    <color name="item_post_text_section">#0F0F0F</color>
+    <color name="item_post_counters">#9E9E9E</color>
     <color name="item_post_embed_bg">#212121</color>
-    <color name="item_post_header_avatar_placeholder">#9E9E9E</color>
+    <color name="item_post_bottom_sheet_more">#0F0F0F</color>
+
+    <color name="item_comment_title">#212121</color>
+    <color name="item_comment_title_separator">#EEEEEE</color>
+    <color name="item_comment_author">#212121</color>
+    <color name="item_comment_content">#0F0F0F</color>
+    <color name="item_comment_date">#9E9E9E</color>
 </resources>

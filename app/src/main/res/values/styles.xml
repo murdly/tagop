@@ -6,11 +6,24 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="post_item_bottom_sheet">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/bottom_sheet_post_more</item>
+        <item name="android:drawablePadding">@dimen/margin_vertical_normal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:paddingLeft">@dimen/margin_vertical_normal</item>
+        <item name="android:paddingRight">@dimen/margin_vertical_normal</item>
+        <item name="android:textColor">@color/item_post_bottom_sheet_more</item>
+        <item name="android:textSize">@dimen/bottom_sheet_item_text_size</item>
+    </style>
 
 </resources>

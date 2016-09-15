@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_history_height"
     android:gravity="center_vertical"
@@ -12,7 +13,8 @@
         android:layout_height="@dimen/icon_viewport_size"
         android:gravity="center"
         android:text="@string/symbol_hashtag"
-        android:textSize="24sp" />
+        android:textColor="@color/item_history_symbol"
+        android:textSize="@dimen/item_history_symbol"/>
 
     <TextView
         android:id="@+id/text_tag_name"
@@ -21,7 +23,10 @@
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
-        android:text="@string/lorem_2words" />
+        android:text="@string/lorem_2words"
+        android:textStyle="bold"
+        android:textColor="@color/item_history_tag"
+        android:textSize="@dimen/item_history_tag"/>
 
 </LinearLayout>
 
