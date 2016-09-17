@@ -7,9 +7,19 @@
 
     <color name="gray">#ff888888</color>
 
+    <color name="palette_1">#0c0c0c</color>
+    <color name="palette_2">#141414</color>
+    <color name="palette_3">#3f3f3f</color>
+    <color name="palette_4">#848484</color>
+    <color name="palette_5">#969696</color>
+
+
+
     <color name="item_history_symbol">#888888</color>
     <color name="item_history_tag">#000000</color>
 
+    <color name="post_bg">#EEEEEE</color>
+    <color name="item_post_bg">#F5F5F5</color>
     <color name="item_post_separator">#EEEEEE</color>
     <color name="item_post_header_avatar_placeholder">#F5F5F5</color>
     <color name="item_post_header_author">#212121</color>

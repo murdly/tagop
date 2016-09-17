@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/empty_state_history"
+    android:id="@+id/error_state_general"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,10 +14,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_search_history_palette_3_100dp"
             android:drawablePadding="@dimen/padding_normal"
+            android:drawableTop="@drawable/ic_error_outline_palette_3_100dp"
             android:gravity="center"
-            android:text="@string/empty_state_history_title"
+            android:text="@string/error_state_general_title"
             android:textColor="@color/palette_1"
             android:textSize="22sp">
         </TextView>
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="@dimen/padding_normal"
-            android:text="@string/empty_state_history_instruction"
+            android:text="@string/error_state_general_instruction"
             android:textColor="@color/palette_4"/>
     </LinearLayout>
 </FrameLayout>

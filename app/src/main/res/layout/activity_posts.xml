@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/post_bg"
     tools:context="com.akarbowy.tagop.ui.posts.PostsActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -26,4 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <include layout="@layout/empty_state_results"/>
+
 </android.support.design.widget.CoordinatorLayout>

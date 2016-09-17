@@ -33,7 +33,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder
     }
 
     @Override public void onBindViewHolder(PartManager.PartHolder holder, int position) {
-        partManager.onBindViewHolder(holder, position);
+        partManager.onBindPartHolder(holder, position);
     }
 
     @Override

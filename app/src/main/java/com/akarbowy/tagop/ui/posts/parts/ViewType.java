@@ -1,11 +1,11 @@
 package com.akarbowy.tagop.ui.posts.parts;
 
 public interface ViewType {
-    int SEPARATOR = 0;
-    int HEADER = 1;
-    int TEXT_SECTION = 2;
-    int COUNTERS = 3;
-    int EMBED = 4;
+    int SEPARATOR = 10;
+    int HEADER = 11;
+    int TEXT_SECTION = 12;
+    int COUNTERS = 13;
+    int EMBED = 14;
 
-    int COMMENT = 11;
+    int COMMENT = 111;
 }

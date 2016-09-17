@@ -16,4 +16,5 @@
         tools:listitem="@layout/item_history"/>
 
     <include layout="@layout/empty_state_history"/>
+
 </LinearLayout>

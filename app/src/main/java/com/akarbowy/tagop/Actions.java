@@ -5,7 +5,7 @@ public interface Actions {
     String FILTER_HISTORY_TAG = "filter_history_tag";
     String CLEAR_TAG_HISTORY = "clear_tag_history";
 
-    void searchTag(String query);
+    void searchTag(String query, int page);
 
     void filterHistory(String query);
 

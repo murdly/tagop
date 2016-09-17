@@ -164,7 +164,6 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     }
 
     @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-        Timber.i("Item clicked: %s", position);
         searchForPostsWithTag(adapter.getItem(position).getName());
     }
 

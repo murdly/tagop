@@ -14,6 +14,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="AppTheme.PaletteAccent" parent="AppTheme">
+        <item name="colorAccent">@color/palette_3</item>
+    </style>
+
     <style name="post_item_bottom_sheet">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/bottom_sheet_post_more</item>

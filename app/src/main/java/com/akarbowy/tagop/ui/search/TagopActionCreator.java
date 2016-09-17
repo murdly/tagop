@@ -27,10 +27,10 @@ public class TagopActionCreator extends ActionCreator implements Actions {
     }
 
     @Override
-    public void searchTag(final String query) {
+    public void searchTag(final String query, int page) {
         final Action action = newAction(SEARCH_TAG, Keys.QUERY, query);
 
-        service.search(query, 1)
+        service.search(query, page)
                 .enqueue(new Callback<QueryResult>() {
                     @Override
                     public void onResponse(Call<QueryResult> call, Response<QueryResult> response) {
