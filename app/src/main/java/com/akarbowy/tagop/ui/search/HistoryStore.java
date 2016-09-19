@@ -12,6 +12,8 @@ import com.j256.ormlite.dao.Dao;
 import com.squareup.otto.Subscribe;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,7 +22,15 @@ import timber.log.Timber;
 
 public class HistoryStore extends Store {
     public static final String ID = "HistoryStore";
+    public static final Comparator<TagHistory> ALPHABETICAL_COMPARATOR = new Comparator<TagHistory>() {
+        @Override
+        public int compare(TagHistory a, TagHistory b) {
+            return a.getName().compareTo(b.getName());
+        }
+    };
+
     private List<TagHistory> queries;
+    private List<TagHistory> filteredEntries;
     private Dao<TagHistory, Long> dao;
 
     @Inject public HistoryStore(Dispatcher dispatcher, DatabaseHelper helper) {
@@ -39,7 +49,7 @@ public class HistoryStore extends Store {
                 String query = action.get(Keys.QUERY);
                 TagHistory entry = new TagHistory(query);
                 try {
-                    if(!queries.contains(entry)){
+                    if (!queries.contains(entry)) {
                         queries.add(entry);
                         dao.create(entry);
                         postStoreChange(new Change(ID, action));
@@ -56,10 +66,33 @@ public class HistoryStore extends Store {
                 } catch (SQLException e) {
                     Timber.i(e.getMessage(), "Error when deleting history tags.");
                 }
+                break;
+            case Actions.FILTER_HISTORY_TAG:
+                String q = action.get(Keys.QUERY);
+                filteredEntries = filter(q);
+                postStoreChange(new Change(ID, action));
+                break;
         }
+    }
+
+    private List<TagHistory> filter(String query) {
+        final String lowerCaseQuery = query.toLowerCase();
+
+        List<TagHistory> filteredList = new ArrayList<>();
+        for (TagHistory model : queries) {
+            final String text = model.getName().toLowerCase();
+            if (text.contains(lowerCaseQuery)) {
+                filteredList.add(model);
+            }
+        }
+        return filteredList;
     }
 
     public List<TagHistory> getTagNames() {
         return queries;
+    }
+
+    public List<TagHistory> getFilteredEntries() {
+        return filteredEntries;
     }
 }

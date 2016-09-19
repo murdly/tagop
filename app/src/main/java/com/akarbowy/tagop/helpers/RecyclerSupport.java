@@ -122,14 +122,12 @@ public class RecyclerSupport {
     }
 
     public interface OnNextPageRequestListener {
-        void onLoadPage(int requestedPage);
+        void onLoadNextPage();
     }
 
     private class OnLoadMoreScrollListener extends RecyclerView.OnScrollListener {
         private final int bufferThreshold;
-        private final int startingPageIndex = 1;
         private final int loaderOffset;
-        private int currentPageOffset = startingPageIndex;
         private int previousTotalItemCount = 0;
         private boolean isWaitingForDataToLoad = true;
 
@@ -155,7 +153,6 @@ public class RecyclerSupport {
 
             int totalItemCount = layoutManager.getItemCount();
             if (totalItemCount < previousTotalItemCount) {
-                this.currentPageOffset = this.startingPageIndex;
                 this.previousTotalItemCount = totalItemCount;
                 if (totalItemCount == 0) {
                     this.isWaitingForDataToLoad = true;
@@ -168,8 +165,7 @@ public class RecyclerSupport {
             }
 
             if (!isWaitingForDataToLoad && (lastVisibleItemPosition + bufferThreshold) > totalItemCount) {
-                currentPageOffset++;
-                onNextPageRequestListener.onLoadPage(currentPageOffset);
+                onNextPageRequestListener.onLoadNextPage();
                 isWaitingForDataToLoad = true;
             }
 

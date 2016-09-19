@@ -14,21 +14,30 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class PostStore extends Store {
     public static final String ID = "PostStore";
-    public ArrayList<TagEntry> entries;
+    private final int firstPageIndex = 1;
+    private ArrayList<TagEntry> pageResults;
+
+    private int nextPageIndex = firstPageIndex;
 
     @Inject public PostStore(Dispatcher dispatcher) {
         super(dispatcher);
-        entries = new ArrayList<>();
+        pageResults = new ArrayList<>();
     }
 
     @Subscribe @Override protected void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 QueryResult result = action.get(Keys.QUERY_RESULT);
-                entries.clear();
-                entries.addAll(result.entries);
+                pageResults.clear();
+                pageResults.addAll(result.entries);
+
+                boolean refreshed = action.get(Keys.FIRST_PAGE);
+                nextPageIndex = refreshed ? firstPageIndex + 1 : nextPageIndex + 1;
+
                 break;
             default:
                 return;
@@ -38,7 +47,16 @@ public class PostStore extends Store {
 
     }
 
-    public ArrayList<TagEntry> getEntries() {
-        return entries;
+    public ArrayList<TagEntry> getResults() {
+        Timber.i("Page results size %s", pageResults.size());
+        return pageResults;
+    }
+
+    public int getNextPageIndex() {
+        return nextPageIndex;
+    }
+
+    public int getFirstPageIndex() {
+        return firstPageIndex;
     }
 }

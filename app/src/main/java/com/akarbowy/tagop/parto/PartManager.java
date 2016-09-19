@@ -37,7 +37,12 @@ public class PartManager<M> {
         binder.bind(holder.partView);
     }
 
+    public void appendBinders(ArrayList<M> items) {
+        binders.addAll(generator.generateBinders(absoluteParts, items));
+    }
+
     public void setBinders(ArrayList<M> items) {
+        binders.clear();
         binders.addAll(generator.generateBinders(absoluteParts, items));
     }
 

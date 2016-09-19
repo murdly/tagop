@@ -44,31 +44,38 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return partManager.getPartsCount();
     }
 
-    public void setItems(ArrayList<TagEntry> entries) {
+    public void setItems(ArrayList<TagEntry> entries, boolean firstPage) {
         if (!entries.isEmpty()) {
-            partManager.setBinders(entries);
+            if (firstPage) {
+                partManager.setBinders(entries);
+            } else {
+                partManager.appendBinders(entries);
+            }
         }
+
         notifyDataSetChanged();
     }
 
-    public void insertLoader() {
+    public void insertPageLoader() {
         loaderInserted = true;
-        Handler handler = new Handler();
-        handler.post(new Runnable() {
+        Handler h = new Handler();
+        h.post(new Runnable() {
             @Override public void run() {
                 notifyItemInserted(partManager.getItemCount());
             }
         });
     }
 
-    public void removeLoader() {
-        loaderInserted = false;
-        Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override public void run() {
-                notifyItemRemoved(partManager.getItemCount());
-            }
-        });
+    public void removePageLoader() {
+        if (loaderInserted) {
+            loaderInserted = false;
+            Handler h = new Handler();
+            h.post(new Runnable() {
+                @Override public void run() {
+                    notifyItemRemoved(partManager.getItemCount());
+                }
+            });
+        }
     }
 
     @Override public int getItemViewType(int position) {

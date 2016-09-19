@@ -55,6 +55,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     @BindView(R.id.empty_state_history) View emptyHistoryView;
 
     private SearchHistoryAdapter adapter;
+    private ToolbarMode mode;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);
         historyRecycler.setHasFixedSize(true);
-        adapter = new SearchHistoryAdapter();
+        adapter = new SearchHistoryAdapter(HistoryStore.ALPHABETICAL_COMPARATOR);
         historyRecycler.setAdapter(adapter);
 
         RecyclerSupport.addTo(historyRecycler)
@@ -78,31 +79,26 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     // onStoreChange wont be call when returning from PostActivity
     @Override protected void onResume() {
         super.onResume();
-        refreshHistoryList();
+        if (mode == ToolbarMode.Action) {
+            refreshHistoryList();
+        } else {
+            KeyboardUtil.show(queryView);
+            creator.filterHistory(TextUtil.getTrimmed(queryView));
+        }
     }
 
     private void configureToolbarBehaviour() {
+        mode = ToolbarMode.Action;
         toolbarView.inflateMenu(R.menu.menu_search);
         toolbarActionLayout.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                toolbarActionLayout.setVisibility(View.GONE);
-                toolbarSearchableLayout.setVisibility(View.VISIBLE);
-                queryView.getText().clear();
-                queryView.requestFocus();
-                KeyboardUtil.show(queryView);
-                toolbarView.getMenu().clear();
-                toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-                toolbarView.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        toolbarView.setNavigationIcon(null);
-                        toolbarView.getMenu().clear();
-                        toolbarView.inflateMenu(R.menu.menu_search);
-                        queryView.getText().clear();
-                        toolbarActionLayout.setVisibility(View.VISIBLE);
-                        toolbarSearchableLayout.setVisibility(View.GONE);
-                        KeyboardUtil.hide(queryView);
-                    }
-                });
+                switchToolbarMode(ToolbarMode.Searchable);
+            }
+        });
+
+        toolbarView.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                switchToolbarMode(ToolbarMode.Action);
             }
         });
 
@@ -138,23 +134,19 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
             @Override public void onTextChanged(CharSequence text, int i, int i1, int i2) {
                 ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, !text.toString().isEmpty());
-
             }
 
             @Override public void afterTextChanged(final Editable query) {
-                if (!query.toString().isEmpty()) {
-                    creator.filterHistory(query.toString());
-                }
-
+                creator.filterHistory(query.toString());
             }
         });
 
         queryView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (!TextUtil.empty(textView)) {
-                    String query = queryView.getText().toString().trim();
+                    String query = TextUtil.getTrimmed(textView);
                     Timber.i("Query searching %s", query);
-                    searchForPostsWithTag(query);
+                    searchForPostsWithTag(query, false);
                     return true;
                 }
 
@@ -163,18 +155,40 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         });
     }
 
-    @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-        searchForPostsWithTag(adapter.getItem(position).getName());
+    private void switchToolbarMode(ToolbarMode mode) {
+        this.mode = mode;
+        
+        if (mode == ToolbarMode.Searchable) {
+            toolbarActionLayout.setVisibility(View.GONE);
+            toolbarSearchableLayout.setVisibility(View.VISIBLE);
+            queryView.getText().clear();
+            queryView.requestFocus();
+            KeyboardUtil.show(queryView);
+            toolbarView.getMenu().clear();
+            toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        } else if (mode == ToolbarMode.Action) {
+            toolbarView.setNavigationIcon(null);
+            toolbarView.getMenu().clear();
+            toolbarView.inflateMenu(R.menu.menu_search);
+            queryView.getText().clear();
+            toolbarActionLayout.setVisibility(View.VISIBLE);
+            toolbarSearchableLayout.setVisibility(View.GONE);
+            KeyboardUtil.hide(queryView);
+        }
     }
 
-    private void searchForPostsWithTag(String tag) {
-        startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, tag));
+    @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+        searchForPostsWithTag(adapter.getItem(position).getName(), true);
+    }
+
+    private void searchForPostsWithTag(String tag, boolean isHistorySearch) {
+        startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, tag, isHistorySearch));
     }
 
     private void refreshHistoryList() {
         List<TagHistory> tags = historyStore.getTagNames();
         Timber.i("refreshing with: %s", tags.toString());
-        adapter.refresh(tags);
+        adapter.add(tags);
     }
 
     @Subscribe public void onStoreChange(Change change) {
@@ -183,6 +197,10 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
                 switch (change.getAction().getType()) {
                     case Actions.CLEAR_TAG_HISTORY:
                         refreshHistoryList();
+                        break;
+                    case Actions.FILTER_HISTORY_TAG:
+                        adapter.replaceAll(historyStore.getFilteredEntries());
+                        historyRecycler.scrollToPosition(0);
                         break;
                 }
                 break;
@@ -195,5 +213,17 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
     @Override public List<? extends Store> getStoresToRegister() {
         return Collections.singletonList(historyStore);
+    }
+
+    @Override public void onBackPressed() {
+        if (mode == ToolbarMode.Searchable) {
+            switchToolbarMode(ToolbarMode.Action);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public enum ToolbarMode {
+        Searchable, Action
     }
 }
