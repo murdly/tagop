@@ -29,15 +29,16 @@ public class HistoryStore extends Store {
         }
     };
 
-    private List<TagHistory> queries;
-    private List<TagHistory> filteredEntries;
+    private List<TagHistory> cached;
+    private List<TagHistory> workingCopies;
     private Dao<TagHistory, Long> dao;
 
     @Inject public HistoryStore(Dispatcher dispatcher, DatabaseHelper helper) {
         super(dispatcher);
         try {
             dao = helper.getHistoryDao();
-            queries = dao.queryForAll();
+            cached = dao.queryForAll();
+            workingCopies = new ArrayList<>(cached);
         } catch (SQLException e) {
             Timber.i(e.getMessage(), "Error when quering for history tags.");
         }
@@ -49,8 +50,9 @@ public class HistoryStore extends Store {
                 String query = action.get(Keys.QUERY);
                 TagHistory entry = new TagHistory(query);
                 try {
-                    if (!queries.contains(entry)) {
-                        queries.add(entry);
+                    if (!cached.contains(entry)) {
+                        workingCopies.add(entry);
+                        cached.add(entry);
                         dao.create(entry);
                         postStoreChange(new Change(ID, action));
                     }
@@ -59,7 +61,8 @@ public class HistoryStore extends Store {
                 }
                 break;
             case Actions.CLEAR_TAG_HISTORY:
-                queries.clear();
+                cached.clear();
+                workingCopies.clear();
                 try {
                     dao.deleteBuilder().delete();
                     postStoreChange(new Change(ID, action));
@@ -69,7 +72,7 @@ public class HistoryStore extends Store {
                 break;
             case Actions.FILTER_HISTORY_TAG:
                 String q = action.get(Keys.QUERY);
-                filteredEntries = filter(q);
+                workingCopies = filter(q);
                 postStoreChange(new Change(ID, action));
                 break;
         }
@@ -79,7 +82,7 @@ public class HistoryStore extends Store {
         final String lowerCaseQuery = query.toLowerCase();
 
         List<TagHistory> filteredList = new ArrayList<>();
-        for (TagHistory model : queries) {
+        for (TagHistory model : cached) {
             final String text = model.getName().toLowerCase();
             if (text.contains(lowerCaseQuery)) {
                 filteredList.add(model);
@@ -88,11 +91,11 @@ public class HistoryStore extends Store {
         return filteredList;
     }
 
-    public List<TagHistory> getTagNames() {
-        return queries;
+    public List<TagHistory> getFilteredEntries() {
+        return workingCopies;
     }
 
-    public List<TagHistory> getFilteredEntries() {
-        return filteredEntries;
+    public boolean hasEntries() {
+        return !cached.isEmpty();
     }
 }

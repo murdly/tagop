@@ -1,20 +1,10 @@
 package com.akarbowy.tagop.ui.search;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.R;
@@ -27,9 +17,9 @@ import com.akarbowy.tagop.flux.ViewDispatch;
 import com.akarbowy.tagop.helpers.RecyclerSupport;
 import com.akarbowy.tagop.ui.posts.PostsActivity;
 import com.akarbowy.tagop.utils.KeyboardUtil;
-import com.akarbowy.tagop.utils.TextUtil;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,29 +29,46 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class MainSearchActivity extends AppCompatActivity implements ViewDispatch, RecyclerSupport.OnItemClickListener {
+import static com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode.Normal;
 
-    private static ButterKnife.Setter<View, Boolean> SET_QUERY_CANCEL_VIEW_VISIBILITY;
+public class MainSearchActivity extends AppCompatActivity implements ViewDispatch, RecyclerSupport.OnItemClickListener {
 
     @Inject HistoryStore historyStore;
     @Inject TagopActionCreator creator;
 
-    @BindView(R.id.toolbar_search) Toolbar toolbarView;
-    @BindView(R.id.toolbar_layout_action) FrameLayout toolbarActionLayout;
-    @BindView(R.id.toolbar_layout_searchable) FrameLayout toolbarSearchableLayout;
-    @BindView(R.id.field_query) EditText queryView;
-    @BindView(R.id.button_field_cancel) ImageView queryCancelView;
+    @BindView(R.id.toolbar_action_view) SearchableToolbarView toolbar;
     @BindView(R.id.recycler_history) RecyclerView historyRecycler;
     @BindView(R.id.empty_state_history) View emptyHistoryView;
 
     private SearchHistoryAdapter adapter;
-    private ToolbarMode mode;
+
+    private SearchableToolbarView.Callback toolbarActionsCallback = new SearchableToolbarView.Callback() {
+        @Override public void onSearchPerform(String query) {
+            Timber.i("Query searching %s", query);
+            searchForPostsWithTag(query, false);
+        }
+
+        @Override public void onQueryTextChange(String queryText) {
+            creator.filterHistory(queryText);
+        }
+
+        @Override public void onMenuClearHistoryClick() {
+            creator.clearHistory();
+        }
+
+        @Override public void onModeChanged(SearchableToolbarView.Mode newMode) {
+            Timber.i("Mode %s", newMode);
+            if (newMode == Normal) {
+//                setEmptyStateIfNoHistory();
+            }
+        }
+    };
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-        configureToolbarBehaviour();
+        toolbar.setCallback(toolbarActionsCallback);
         ((TagopApplication) getApplication()).component().inject(this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -72,108 +79,18 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
         RecyclerSupport.addTo(historyRecycler)
                 .setOnItemClickListener(this)
-                .setEmptyStateView(emptyHistoryView);
+//                .setEmptyStateView(emptyHistoryView)
+        ;
     }
 
     // history store gets unregistered onPause.
     // onStoreChange wont be call when returning from PostActivity
     @Override protected void onResume() {
         super.onResume();
-        if (mode == ToolbarMode.Action) {
-            refreshHistoryList();
-        } else {
-            KeyboardUtil.show(queryView);
-            creator.filterHistory(TextUtil.getTrimmed(queryView));
-        }
-    }
+        updateList(historyStore.getFilteredEntries());
 
-    private void configureToolbarBehaviour() {
-        mode = ToolbarMode.Action;
-        toolbarView.inflateMenu(R.menu.menu_search);
-        toolbarActionLayout.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                switchToolbarMode(ToolbarMode.Searchable);
-            }
-        });
-
-        toolbarView.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                switchToolbarMode(ToolbarMode.Action);
-            }
-        });
-
-        toolbarView.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_clear_history:
-                        creator.clearHistory();
-                        return true;
-                }
-
-                return false;
-            }
-        });
-
-        SET_QUERY_CANCEL_VIEW_VISIBILITY = new ButterKnife.Setter<View, Boolean>() {
-            @Override public void set(@NonNull View view, Boolean visible, int index) {
-                view.setVisibility(visible ? View.VISIBLE : View.GONE);
-            }
-        };
-
-        queryCancelView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                queryView.getText().clear();
-                ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, false);
-
-            }
-        });
-
-        queryView.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override public void onTextChanged(CharSequence text, int i, int i1, int i2) {
-                ButterKnife.apply(queryCancelView, SET_QUERY_CANCEL_VIEW_VISIBILITY, !text.toString().isEmpty());
-            }
-
-            @Override public void afterTextChanged(final Editable query) {
-                creator.filterHistory(query.toString());
-            }
-        });
-
-        queryView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (!TextUtil.empty(textView)) {
-                    String query = TextUtil.getTrimmed(textView);
-                    Timber.i("Query searching %s", query);
-                    searchForPostsWithTag(query, false);
-                    return true;
-                }
-
-                return false;
-            }
-        });
-    }
-
-    private void switchToolbarMode(ToolbarMode mode) {
-        this.mode = mode;
-        
-        if (mode == ToolbarMode.Searchable) {
-            toolbarActionLayout.setVisibility(View.GONE);
-            toolbarSearchableLayout.setVisibility(View.VISIBLE);
-            queryView.getText().clear();
-            queryView.requestFocus();
-            KeyboardUtil.show(queryView);
-            toolbarView.getMenu().clear();
-            toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        } else if (mode == ToolbarMode.Action) {
-            toolbarView.setNavigationIcon(null);
-            toolbarView.getMenu().clear();
-            toolbarView.inflateMenu(R.menu.menu_search);
-            queryView.getText().clear();
-            toolbarActionLayout.setVisibility(View.VISIBLE);
-            toolbarSearchableLayout.setVisibility(View.GONE);
-            KeyboardUtil.hide(queryView);
+        if (toolbar.isSearchMode()) {
+            KeyboardUtil.show(this);
         }
     }
 
@@ -185,10 +102,9 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, tag, isHistorySearch));
     }
 
-    private void refreshHistoryList() {
-        List<TagHistory> tags = historyStore.getTagNames();
-        Timber.i("refreshing with: %s", tags.toString());
-        adapter.add(tags);
+    private void setEmptyStateIfNoHistory() {
+        emptyHistoryView.setVisibility(historyStore.hasEntries() ? View.GONE : View.VISIBLE);
+        historyRecycler.setVisibility(historyStore.hasEntries() ? View.VISIBLE : View.GONE);
     }
 
     @Subscribe public void onStoreChange(Change change) {
@@ -196,15 +112,21 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
             case HistoryStore.ID:
                 switch (change.getAction().getType()) {
                     case Actions.CLEAR_TAG_HISTORY:
-                        refreshHistoryList();
+                        updateList(new ArrayList<TagHistory>());
+//                        setEmptyStateIfNoHistory();
                         break;
                     case Actions.FILTER_HISTORY_TAG:
-                        adapter.replaceAll(historyStore.getFilteredEntries());
+                        updateList(historyStore.getFilteredEntries());
                         historyRecycler.scrollToPosition(0);
                         break;
                 }
                 break;
         }
+    }
+
+    private void updateList(List<TagHistory> items) {
+        adapter.replaceAll(items);
+        Timber.i("Updated with %s items: %s", items.size(), items);
     }
 
     @Subscribe public void onError(ActionError error) {
@@ -216,14 +138,10 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     }
 
     @Override public void onBackPressed() {
-        if (mode == ToolbarMode.Searchable) {
-            switchToolbarMode(ToolbarMode.Action);
+        if (toolbar.isSearchMode()) {
+            toolbar.setMode(Normal);
         } else {
             super.onBackPressed();
         }
-    }
-
-    public enum ToolbarMode {
-        Searchable, Action
     }
 }

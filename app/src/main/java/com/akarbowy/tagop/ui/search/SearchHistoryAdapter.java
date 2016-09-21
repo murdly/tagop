@@ -79,10 +79,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return items.size();
     }
 
-    public void add(List<TagHistory> models) {
-        items.addAll(models);
-    }
-
     public void replaceAll(List<TagHistory> models) {
         items.beginBatchedUpdates();
         for (int i = items.size() - 1; i >= 0; i--) {

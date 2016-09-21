@@ -6,8 +6,18 @@
               android:orientation="vertical"
               tools:context=".ui.search.MainSearchActivity">
 
-    <include
-        layout="@layout/toolbar_search"/>
+    <!--appbarlayout gives shadow-->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <com.akarbowy.tagop.ui.search.SearchableToolbarView
+            android:id="@+id/toolbar_action_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_history"
