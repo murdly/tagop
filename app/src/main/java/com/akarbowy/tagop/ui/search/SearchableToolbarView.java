@@ -56,14 +56,12 @@ public class SearchableToolbarView extends FrameLayout {
         normalLayout.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 setMode(Mode.Search);
-                callback.onModeChanged(Mode.Search);
             }
         });
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 setMode(Mode.Normal);
-                callback.onModeChanged(Mode.Normal);
             }
         });
 
@@ -119,12 +117,8 @@ public class SearchableToolbarView extends FrameLayout {
 
     }
 
-    public boolean isNormalMode() {
-        return mode == Mode.Normal;
-    }
-
-    public boolean isSearchMode() {
-        return mode == Mode.Search;
+    public Mode getMode() {
+        return mode;
     }
 
     public final void setMode(Mode mode) {
@@ -160,7 +154,5 @@ public class SearchableToolbarView extends FrameLayout {
         void onQueryTextChange(String queryText);
 
         void onMenuClearHistoryClick();
-
-        void onModeChanged(Mode newMode);
     }
 }

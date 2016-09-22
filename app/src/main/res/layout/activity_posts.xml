@@ -36,6 +36,6 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/empty_state_results"/>
+    <include layout="@layout/state_results_empty"/>
 
 </android.support.design.widget.CoordinatorLayout>

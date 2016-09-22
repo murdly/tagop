@@ -17,7 +17,7 @@
             android:drawablePadding="@dimen/padding_normal"
             android:drawableTop="@drawable/ic_search_palette_3_100dp"
             android:gravity="center"
-            android:text="@string/empty_state_results_title"
+            android:text="@string/state_results_empty_title"
             android:textColor="@color/palette_1"
             android:textSize="22sp">
         </TextView>
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="@dimen/padding_normal"
-            android:text="@string/empty_state_results_instruction"
+            android:text="@string/state_results_empty_instruction"
             android:textColor="@color/palette_4"/>
     </LinearLayout>
 </FrameLayout>

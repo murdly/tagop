@@ -19,12 +19,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/state_history_empty"/>
+
+    <include layout="@layout/state_history_empty_filter"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_history"/>
-
-    <include layout="@layout/empty_state_history"/>
 
 </LinearLayout>

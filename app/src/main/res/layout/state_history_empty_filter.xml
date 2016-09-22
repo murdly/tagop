@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/state_history_empty_filter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone">
+
+
+    <TextView
+        android:id="@+id/filter_query_param"
+        android:background="?attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_history_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/margin_vertical_medium"
+        android:text="@string/state_history_empty_filter_instruction"
+        android:textColor="@color/palette_3"/>
+</FrameLayout>

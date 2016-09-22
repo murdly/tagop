@@ -32,6 +32,7 @@ public class HistoryStore extends Store {
     private List<TagHistory> cached;
     private List<TagHistory> workingCopies;
     private Dao<TagHistory, Long> dao;
+    private String currentFilter;
 
     @Inject public HistoryStore(Dispatcher dispatcher, DatabaseHelper helper) {
         super(dispatcher);
@@ -72,6 +73,7 @@ public class HistoryStore extends Store {
                 break;
             case Actions.FILTER_HISTORY_TAG:
                 String q = action.get(Keys.QUERY);
+                currentFilter = q;
                 workingCopies = filter(q);
                 postStoreChange(new Change(ID, action));
                 break;
@@ -95,7 +97,16 @@ public class HistoryStore extends Store {
         return workingCopies;
     }
 
-    public boolean hasEntries() {
-        return !cached.isEmpty();
+    public int resolveState() {
+        if (!workingCopies.isEmpty()) {
+            return MainSearchActivity.State.CONTENT;
+        } else {
+            if (!currentFilter.isEmpty()) {
+                return MainSearchActivity.State.FILTER_NO_RESULTS;
+            } else {
+                return MainSearchActivity.State.HISTORY_EMPTY;
+            }
+        }
     }
+
 }
