@@ -32,7 +32,7 @@ public class HistoryStore extends Store {
     private List<TagHistory> cached;
     private List<TagHistory> workingCopies;
     private Dao<TagHistory, Long> dao;
-    private String currentFilter;
+    private String currentFilter = "";
 
     @Inject public HistoryStore(Dispatcher dispatcher, DatabaseHelper helper) {
         super(dispatcher);
@@ -45,7 +45,7 @@ public class HistoryStore extends Store {
         }
     }
 
-    @Subscribe @Override protected void onAction(Action action) {
+    @Subscribe @Override public void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 String query = action.get(Keys.QUERY);

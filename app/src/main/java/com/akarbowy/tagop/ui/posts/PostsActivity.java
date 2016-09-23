@@ -93,7 +93,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
 
     }
 
-    @Override protected void onResume() {
+    @Override public void onResume() {
         super.onResume();
         if (isCreatedUponHistorySearch || wasStopped) {
             Timber.i("should show cache and make call");
