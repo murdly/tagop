@@ -23,6 +23,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/state_results_empty"/>
+
+    <include layout="@layout/state_general_error"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
@@ -35,7 +39,5 @@
             android:layout_height="wrap_content"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/state_results_empty"/>
 
 </android.support.design.widget.CoordinatorLayout>

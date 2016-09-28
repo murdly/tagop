@@ -9,9 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by akarbowy on 07.08.16.
- */
 @Singleton
 @Module
 public class NetworkModule {

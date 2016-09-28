@@ -28,7 +28,7 @@ public class PostStore extends Store {
         pageResults = new ArrayList<>();
     }
 
-    @Subscribe @Override protected void onAction(Action action) {
+    @Subscribe @Override public void onAction(Action action) {
         switch (action.getType()) {
             case Actions.SEARCH_TAG:
                 QueryResult result = action.get(Keys.QUERY_RESULT);

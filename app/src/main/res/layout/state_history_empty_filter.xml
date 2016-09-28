@@ -4,7 +4,7 @@
     android:id="@+id/state_history_empty_filter"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone">
+    android:visibility="visible">
 
 
     <TextView
@@ -13,7 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_history_height"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/margin_vertical_medium"
+        android:paddingLeft="@dimen/margin_vertical_normal"
+        android:drawablePadding="@dimen/margin_vertical_normal"
+        android:drawableLeft="@drawable/ic_search_black_24dp"
         android:text="@string/state_history_empty_filter_instruction"
         android:textColor="@color/palette_3"/>
 </FrameLayout>

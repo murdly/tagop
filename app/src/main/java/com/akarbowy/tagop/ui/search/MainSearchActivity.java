@@ -78,10 +78,17 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         historyRecycler.setAdapter(adapter);
 
         stateSwitcher = new StateSwitcher();
-        stateSwitcher.setViews(stateViews, new int[]{State.HISTORY_EMPTY, State.FILTER_NO_RESULTS});
+        stateSwitcher.setViews(stateViews, new int[]{State.HISTORY_EMPTY, State.FILTER_NO_RESULTS}); //recycler always visible for smoother filters
 
         RecyclerSupport.addTo(historyRecycler)
                 .setOnItemClickListener(this);
+        historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState != RecyclerView.SCROLL_STATE_IDLE ){
+                    KeyboardUtil.hide(recyclerView);
+                }
+            }
+        });
     }
 
     // history store gets unregistered onPause.

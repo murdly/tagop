@@ -1,15 +1,13 @@
-package com.akarbowy.tagop;
+package com.akarbowy.tagop.ui.search;
 
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.akarbowy.tagop.ui.search.MainSearchActivity;
+import com.akarbowy.RecyclerItemsCount;
+import com.akarbowy.tagop.R;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
@@ -19,7 +17,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -30,7 +27,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -45,7 +41,7 @@ public class ToolbarModeNormalTest {
 
     @Test
     public void clearHistory_check_emptyList_stateEmptyHistory() {
-        onView(withId(R.id.toolbar_layout_action)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(ViewMatchers.withId(R.id.toolbar_layout_action)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         onView(allOf(OVERFLOW_BUTTON_MATCHER, isDescendantOfA(withId(R.id.toolbar)))).perform(click());
         onView(withText("Czyść historię")).perform(click());
         onView(withId(R.id.recycler_history)).check(new RecyclerItemsCount(0));
@@ -60,24 +56,4 @@ public class ToolbarModeNormalTest {
         onView(withId(R.id.toolbar_layout_action)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(withId(R.id.toolbar_layout_searchable)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
     }
-
-    private class RecyclerItemsCount implements ViewAssertion {
-        private final int expectedCount;
-
-        private RecyclerItemsCount(int expectedCount) {
-            this.expectedCount = expectedCount;
-        }
-
-
-        @Override public void check(View view, NoMatchingViewException noViewFoundException) {
-            if (noViewFoundException != null) {
-                throw noViewFoundException;
-            }
-
-            RecyclerView recyclerView = (RecyclerView) view;
-            RecyclerView.Adapter adapter = recyclerView.getAdapter();
-            assertThat(adapter.getItemCount(), is(expectedCount));
-        }
-    }
-
 }
