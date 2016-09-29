@@ -30,6 +30,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.akarbowy.tagop.ui.search.MainSearchActivity"/>
+
+            <intent-filter>
+                <data android:scheme="localUrlSpan"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
         </activity>
     </application>
 

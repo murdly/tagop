@@ -42,6 +42,7 @@
             android:layout_marginRight="@dimen/padding_normal"
             android:text="@string/lorem_2sentences"
             android:textColor="@color/item_comment_content"
+            android:textColorLink="@color/palette_2"
             android:textSize="@dimen/comment_content"/>
 
         <LinearLayout
@@ -74,10 +75,10 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_add_circle_accent_12dp"
                 android:drawablePadding="@dimen/padding_small"
+                android:gravity="center_vertical"
                 android:text="@string/lorem_digit"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/comment_info"
-                android:gravity="center_vertical"/>
+                android:textSize="@dimen/comment_info"/>
         </LinearLayout>
     </LinearLayout>
 

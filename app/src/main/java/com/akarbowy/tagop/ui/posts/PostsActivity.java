@@ -43,6 +43,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
 
     private static final String EXTRA_TAG = "extra_tag";
     private static final String EXTRA_HISTORY_SEARCH = "extra_history_search";
+    private static final String ACTION_SEARCH = "com.akarbowy.tagop.ui.posts.ACTION_SEARCH";
 
     @Inject PostStore postStore;
     @Inject HistoryStore historyStore;
@@ -66,6 +67,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         Intent intent = new Intent(context, PostsActivity.class);
         intent.putExtra(EXTRA_TAG, tag);
         intent.putExtra(EXTRA_HISTORY_SEARCH, isFromHistory);
+        intent.setAction(ACTION_SEARCH);
         return intent;
     }
 
@@ -75,8 +77,13 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         ButterKnife.bind(this);
         ((TagopApplication) getApplication()).component().inject(this);
 
-        tag = getIntent().getStringExtra(EXTRA_TAG);
-        isCreatedUponHistorySearch = getIntent().getBooleanExtra(EXTRA_HISTORY_SEARCH, true);
+        if (getIntent().getAction().equals(ACTION_SEARCH)) {
+            tag = getIntent().getStringExtra(EXTRA_TAG);
+            isCreatedUponHistorySearch = getIntent().getBooleanExtra(EXTRA_HISTORY_SEARCH, true);
+        } else {
+            tag = getIntent().getData().getFragment();
+            isCreatedUponHistorySearch = false;
+        }
 
         toolbarView.setTitle(tag);
         toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -118,17 +125,22 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
 
     private void loadInitialData() {
         getIdlingResource().increment();
+
         //load from cache
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }
 
     @Override public void onLoadNextPage() {
+        getIdlingResource().increment();
+
         adapter.insertPageLoader();
         creator.searchTag(tag, postStore.getNextPageIndex());
     }
 
     @Override public void onRefresh() {
+        getIdlingResource().increment();
+
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }

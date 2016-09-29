@@ -14,7 +14,7 @@
 
     <!--search results screen-->
     <!--list of posts-->
-    <dimen name="header_content_height">50dp</dimen>
+    <dimen name="header_content_height">40dp</dimen>
     <dimen name="separator_height">10dp</dimen>
     <dimen name="post_header_author">15sp</dimen>
     <dimen name="post_header_date">12sp</dimen>

@@ -5,7 +5,7 @@ import android.view.View;
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.network.model.TagEntry;
 import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.ui.posts.parts.counters.comments.CommentsViewer;
+import com.akarbowy.tagop.ui.posts.parts.comments.CommentsViewer;
 
 public class CountersBinder implements Binder<CountersView> {
 

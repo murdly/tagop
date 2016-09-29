@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.ui.posts.parts.counters.comments;
+package com.akarbowy.tagop.ui.posts.parts.comments;
 
 import android.content.Context;
 import android.content.DialogInterface;

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.ui.posts.parts.counters.comments;
+package com.akarbowy.tagop.ui.posts.parts.comments;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;

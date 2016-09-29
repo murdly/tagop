@@ -1,11 +1,13 @@
-package com.akarbowy.tagop.ui.posts.parts.counters.comments;
+package com.akarbowy.tagop.ui.posts.parts.comments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.Spannable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
+import com.akarbowy.tagop.utils.ViewPropertiesUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -22,6 +24,7 @@ public class CommentView extends LinearLayout {
     public CommentView(Context context) {
         super(context);
         ButterKnife.bind(this, inflate(context, R.layout.item_comment, this));
+        ViewPropertiesUtil.setLinkMovementMethod(contentView);
     }
 
     public void setAvatar(String url) {
@@ -32,7 +35,7 @@ public class CommentView extends LinearLayout {
         authorView.setText(author);
     }
 
-    public void setContent(String author) {
+    public void setContent(Spannable author) {
         contentView.setText(author);
     }
 

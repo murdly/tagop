@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.ui.posts.parts.counters.comments;
+package com.akarbowy.tagop.ui.posts.parts.comments;
 
 import com.akarbowy.tagop.network.model.Comment;
 import com.akarbowy.tagop.parto.Binder;
