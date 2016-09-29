@@ -9,12 +9,4 @@ public class Embed {
     @SerializedName("url") @Expose public String url;
     @SerializedName("plus18") @Expose public Boolean plus18;
     @SerializedName("source") @Expose public String source;
-
-    public String getPreviewUrl() {
-        return previewUrl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
 }

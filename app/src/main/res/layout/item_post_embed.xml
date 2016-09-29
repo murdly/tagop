@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/item_post_embed_bg">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="200dp"
+             android:background="@color/item_post_embed_bg">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/drawee_embed_image"
@@ -12,5 +12,17 @@
         fresco:actualImageScaleType="fitCenter"
         fresco:placeholderImage="@color/textColorPrimary"/>
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/video_play_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle_outline_white_48dp"/>
+    </FrameLayout>
+
+</FrameLayout>
 

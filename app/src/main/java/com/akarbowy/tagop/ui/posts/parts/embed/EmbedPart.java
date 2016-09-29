@@ -15,6 +15,6 @@ public class EmbedPart implements PartDefinition<TagEntry, EmbedView> {
     }
 
     @Override public boolean isNeeded(TagEntry viewObject) {
-        return viewObject.embed != null && viewObject.embed.type.equals("image");
+        return viewObject.embed != null;
     }
 }
