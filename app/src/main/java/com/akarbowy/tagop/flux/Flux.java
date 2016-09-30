@@ -13,7 +13,7 @@ public class Flux implements Application.ActivityLifecycleCallbacks {
     private static Flux instance;
     private final Dispatcher dispatcher;
 
-    public Flux(Application application) {
+    private Flux(Application application) {
         this.dispatcher = new Dispatcher(new Bus());
         application.registerActivityLifecycleCallbacks(this);
     }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +17,7 @@ import com.akarbowy.tagop.flux.ViewDispatch;
 import com.akarbowy.tagop.helpers.RecyclerSupport;
 import com.akarbowy.tagop.ui.posts.PostsActivity;
 import com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode;
+import com.akarbowy.tagop.utils.DeprecatedHelper;
 import com.akarbowy.tagop.utils.KeyboardUtil;
 import com.akarbowy.tagop.utils.StateSwitcher;
 import com.squareup.otto.Subscribe;
@@ -55,7 +55,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
         @Override public void onQueryTextChange(String queryText) {
             filterQueryParam.setTag(queryText);
-            filterQueryParam.setText(Html.fromHtml(getString(R.string.state_history_empty_filter_instruction, queryText)));
+            filterQueryParam.setText(DeprecatedHelper.fromHtml(getString(R.string.state_history_empty_filter_instruction, queryText)));
             creator.filterHistory(queryText);
         }
 

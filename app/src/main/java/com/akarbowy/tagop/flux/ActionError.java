@@ -1,7 +1,7 @@
 package com.akarbowy.tagop.flux;
 
 public class ActionError {
-    private String actionType;
+    private final String actionType;
     private Throwable throwable;
 
     public ActionError(String actionType, Throwable throwable) {

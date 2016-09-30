@@ -14,10 +14,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class ApplicationModule {
+class ApplicationModule {
 
-    Application application;
-    Flux flux;
+    private Application application;
+    private Flux flux;
 
     public ApplicationModule(Flux flux, Application application) {
         this.application = application;

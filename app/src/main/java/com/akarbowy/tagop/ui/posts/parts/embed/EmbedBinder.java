@@ -6,7 +6,7 @@ import com.akarbowy.tagop.parto.Binder;
 public class EmbedBinder implements Binder<EmbedView> {
     private static final String TYPE_IMAGE = "image";
     private static final String TYPE_VIDEO = "video";
-    TagEntry tagEntry;
+    private TagEntry tagEntry;
 
     public EmbedBinder(TagEntry viewObject) {
         tagEntry = viewObject;

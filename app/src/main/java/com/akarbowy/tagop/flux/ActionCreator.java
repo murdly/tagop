@@ -3,14 +3,14 @@ package com.akarbowy.tagop.flux;
 import android.support.annotation.NonNull;
 
 public abstract class ActionCreator {
-    final Dispatcher dispatcher;
+    private final Dispatcher dispatcher;
 
-    public ActionCreator(Dispatcher dispatcher) {
+    protected ActionCreator(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
 
-    public Action newAction(@NonNull String actionId, @NonNull Object... data) {
+    protected Action newAction(@NonNull String actionId, @NonNull Object... data) {
         if (actionId.isEmpty()) {
             throw new IllegalArgumentException("Type must not be empty");
         }
@@ -29,11 +29,11 @@ public abstract class ActionCreator {
         return actionBuilder.build();
     }
 
-    public void postAction(@NonNull Action action) {
+    protected void postAction(@NonNull Action action) {
         dispatcher.dispatch(action);
     }
 
-    public void postError(@NonNull ActionError e) {
+    protected void postError(@NonNull ActionError e) {
         dispatcher.error(e);
     }
 }

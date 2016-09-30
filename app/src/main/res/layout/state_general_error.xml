@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/state_general_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:visibility="gone">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/padding_normal"
+        android:drawableTop="@drawable/ic_error_outline_palette_3_100dp"
+        android:gravity="center"
+        android:text="@string/state_general_error_title"
+        android:textColor="@color/palette_1"
+        android:textSize="22sp">
+    </TextView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/padding_normal"
-            android:drawableTop="@drawable/ic_error_outline_palette_3_100dp"
-            android:gravity="center"
-            android:text="@string/state_general_error_title"
-            android:textColor="@color/palette_1"
-            android:textSize="22sp">
-        </TextView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="@dimen/padding_normal"
-            android:text="@string/state_general_error_instruction"
-            android:textColor="@color/palette_4"/>
-    </LinearLayout>
-</FrameLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/padding_normal"
+        android:text="@string/state_general_error_instruction"
+        android:textColor="@color/palette_4"/>
+</LinearLayout>

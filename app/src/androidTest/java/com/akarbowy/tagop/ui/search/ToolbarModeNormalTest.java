@@ -37,7 +37,7 @@ public class ToolbarModeNormalTest {
             allOf(isDisplayed(), withContentDescription("Więcej opcji")),
             allOf(isDisplayed(), withClassName(endsWith("OverflowMenuButton"))));
     @Rule
-    public ActivityTestRule<MainSearchActivity> mActivityRule = new ActivityTestRule(MainSearchActivity.class);
+    public ActivityTestRule<MainSearchActivity> mActivityRule = new ActivityTestRule<>(MainSearchActivity.class);
 
     @Test
     public void clearHistory_check_emptyList_stateEmptyHistory() {

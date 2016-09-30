@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.containsString;
 public class ToolbarModeSearchTest {
 
     @Rule
-    public ActivityTestRule<MainSearchActivity> mActivityRule = new ActivityTestRule(MainSearchActivity.class);
+    public ActivityTestRule<MainSearchActivity> mActivityRule = new ActivityTestRule<>(MainSearchActivity.class);
 
     @Before
     public void switchToSearchMode(){

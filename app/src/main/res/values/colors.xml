@@ -6,6 +6,7 @@
     <color name="textColorPrimary">#212121</color>
 
     <color name="gray">#ff888888</color>
+    <color name="launcher_bg">#045c83</color>
 
     <color name="palette_1">#0c0c0c</color>
     <color name="palette_2">#141414</color>

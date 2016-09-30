@@ -105,7 +105,7 @@ public class SearchableToolbarView extends FrameLayout {
 
         queryView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (!TextUtil.empty(textView)) {
+                if (!TextUtil.isEmpty(textView)) {
                     String query = TextUtil.getTrimmed(textView);
                     callback.onSearchPerform(query);
                     return true;

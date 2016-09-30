@@ -9,7 +9,7 @@ import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
 import java.util.ArrayList;
 
-public class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder> {
+class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder> {
 
     private PartManager<Comment> partManager;
 

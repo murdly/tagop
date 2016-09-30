@@ -14,15 +14,14 @@ import timber.log.Timber;
 public class CommentsViewer implements DialogInterface.OnKeyListener {
 
     private Builder builder;
-    private CommentViewerView viewer;
     private AlertDialog dialog;
 
-    protected CommentsViewer(Builder builder) {
+    private CommentsViewer(Builder builder) {
         this.builder = builder;
         createDialog();
     }
 
-    public void show() {
+    private void show() {
         if (!builder.comments.isEmpty()) {
             dialog.show();
         } else {
@@ -31,7 +30,7 @@ public class CommentsViewer implements DialogInterface.OnKeyListener {
     }
 
     private void createDialog() {
-        viewer = new CommentViewerView(builder.context);
+        CommentViewerView viewer = new CommentViewerView(builder.context);
         viewer.setComments(builder.comments);
 
         dialog = new AlertDialog.Builder(builder.context, android.R.style.Theme_Translucent_NoTitleBar)

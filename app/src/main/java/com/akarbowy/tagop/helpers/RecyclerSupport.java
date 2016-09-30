@@ -102,9 +102,9 @@ public class RecyclerSupport {
         return this;
     }
 
-    public RecyclerSupport setOnNextPageRequestListener(OnNextPageRequestListener listener, int oneItemViewsCount, boolean showesLoader) {
+    public RecyclerSupport setOnNextPageRequestListener(OnNextPageRequestListener listener, int oneItemViewsCount, boolean showsLoader) {
         onNextPageRequestListener = listener;
-        recyclerView.addOnScrollListener(new OnLoadMoreScrollListener(oneItemViewsCount, showesLoader));
+        recyclerView.addOnScrollListener(new OnLoadMoreScrollListener(oneItemViewsCount, showsLoader));
         return this;
     }
 

@@ -10,7 +10,6 @@ import timber.log.Timber;
 public class TagopApplication extends Application {
 
     private ApplicationComponent component;
-    private Flux flux;
 
     @Override
     public void onCreate() {
@@ -20,7 +19,7 @@ public class TagopApplication extends Application {
             Timber.plant(new TagopDebugTree());
         }
 
-        flux = Flux.init(this);
+        Flux flux = Flux.init(this);
         component = DaggerApplicationComponent.Initializer.init(flux, this);
         Fresco.initialize(this);
     }

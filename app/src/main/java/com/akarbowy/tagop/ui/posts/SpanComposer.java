@@ -6,6 +6,8 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 
+import com.akarbowy.tagop.utils.DeprecatedHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,7 +21,7 @@ class SpanComposer {
     }
 
     SpannableStringBuilder compose(String htmlText) {
-        SpannableStringBuilder workerSpannable = new SpannableStringBuilder(Html.fromHtml(htmlText));
+        SpannableStringBuilder workerSpannable = new SpannableStringBuilder(DeprecatedHelper.fromHtml(htmlText));
 
         removeUrlSpans(workerSpannable, Type.MENTION.pattern);
         replaceUrlSpans(workerSpannable, Type.TAG.pattern);

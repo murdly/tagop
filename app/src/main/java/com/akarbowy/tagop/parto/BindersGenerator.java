@@ -5,7 +5,7 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BindersGenerator<M> {
+class BindersGenerator<M> {
 
     public final ArrayList<Pair<PartDefinition, Binder>> generateBinders(List<PartDefinition> basicParts, ArrayList<M> items) {
         ArrayList<Pair<PartDefinition, Binder>> binders = new ArrayList<>();

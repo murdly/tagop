@@ -6,7 +6,7 @@ public class Action {
     private final String type;
     private final ArrayMap<String, Object> data;
 
-    Action(String type, ArrayMap<String, Object> data) {
+    private Action(String type, ArrayMap<String, Object> data) {
         this.type = type;
         this.data = data;
     }
