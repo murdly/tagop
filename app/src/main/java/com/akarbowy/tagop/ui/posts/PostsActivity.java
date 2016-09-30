@@ -126,7 +126,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
     private void loadInitialData() {
         getIdlingResource().increment();
 
-        //load from cache
+        //TODO load from cache
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }

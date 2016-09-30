@@ -9,8 +9,6 @@ import com.squareup.otto.Bus;
 
 import java.util.List;
 
-import timber.log.Timber;
-
 public class Flux implements Application.ActivityLifecycleCallbacks {
     private static Flux instance;
     private final Dispatcher dispatcher;
