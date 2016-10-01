@@ -24,12 +24,12 @@ import com.akarbowy.tagop.flux.Store;
 import com.akarbowy.tagop.flux.ViewDispatch;
 import com.akarbowy.tagop.helpers.RecyclerSupport;
 import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.ui.search.HistoryStore;
 import com.akarbowy.tagop.ui.search.TagopActionCreator;
 import com.akarbowy.tagop.utils.StateSwitcher;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,7 +46,6 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
     private static final String ACTION_SEARCH = "com.akarbowy.tagop.ui.posts.ACTION_SEARCH";
 
     @Inject PostStore postStore;
-    @Inject HistoryStore historyStore;
     @Inject TagopActionCreator creator;
 
     @BindView(R.id.toolbar) Toolbar toolbarView;
@@ -182,10 +181,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
     }
 
     @Override public List<? extends Store> getStoresToRegister() {
-        ArrayList<Store> stores = new ArrayList<>();
-        stores.add(postStore);
-        stores.add(historyStore);
-        return stores;
+        return Collections.singletonList(postStore);
     }
 
     @VisibleForTesting @NonNull public CountingIdlingResource getIdlingResource() {

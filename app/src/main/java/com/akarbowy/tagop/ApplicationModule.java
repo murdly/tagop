@@ -5,7 +5,6 @@ import android.app.Application;
 import com.akarbowy.tagop.database.DatabaseHelper;
 import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Flux;
-import com.akarbowy.tagop.ui.search.HistoryStore;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import javax.inject.Singleton;
@@ -13,7 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module @Singleton
 class ApplicationModule {
 
     private Application application;
@@ -32,11 +31,6 @@ class ApplicationModule {
     @Provides
     Dispatcher dispatcher(){
         return flux.getDispatcher();
-    }
-
-    @Provides @Singleton
-    HistoryStore historyStore(Dispatcher dispatcher, DatabaseHelper helper){
-        return new HistoryStore(dispatcher, helper);
     }
 
 }

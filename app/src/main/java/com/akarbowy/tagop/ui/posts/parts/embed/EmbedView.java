@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -16,9 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * extending the view with RelativeLayout is a fix to "auto" match parent width
- */
 public class EmbedView extends FrameLayout {
 
     @BindView(R.id.drawee_embed_image) SimpleDraweeView imageView;
@@ -28,6 +26,16 @@ public class EmbedView extends FrameLayout {
 
     public EmbedView(Context context) {
         super(context);
+        init(context);
+    }
+
+    //TODO remove when group parts implemented
+    public EmbedView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public void init(Context context) {
         ButterKnife.bind(this, inflate(context, R.layout.item_post_embed, this));
         setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
                 RecyclerView.LayoutParams.WRAP_CONTENT));

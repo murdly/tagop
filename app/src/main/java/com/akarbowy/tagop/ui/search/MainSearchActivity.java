@@ -66,6 +66,7 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(null);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         toolbar.setCallback(toolbarActionsCallback);
@@ -91,10 +92,9 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         });
     }
 
-    // history store gets unregistered onPause.
-    // onStoreChange wont be call when returning from PostActivity
     @Override protected void onResume() {
         super.onResume();
+
         updateItemsAndState();
 
         if (toolbar.getMode() == Mode.Search) {
@@ -106,13 +106,12 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         searchForPostsWithTag(adapter.getItem(position).getName(), true);
     }
 
-    @OnClick(R.id.filter_query_param)
-    public void onFilterNoResultsStateViewClick() {
+    @OnClick(R.id.filter_query_param) public void onFilterNoResultsStateViewClick() {
         searchForPostsWithTag((String) filterQueryParam.getTag(), false);
     }
 
     private void searchForPostsWithTag(String query, boolean isHistorySearch) {
-        Timber.i("Query searching %s", query);
+        creator.saveTag(query);
         startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, query, isHistorySearch));
     }
 
@@ -140,7 +139,6 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         stateSwitcher.setState(state);
 
         Timber.i("State: %s, updated with %s items: %s", state, items.size(), items);
-
     }
 
     @Override public void onBackPressed() {

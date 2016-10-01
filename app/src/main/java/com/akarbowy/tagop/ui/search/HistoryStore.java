@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class HistoryStore extends Store {
@@ -34,10 +35,10 @@ public class HistoryStore extends Store {
     private Dao<TagHistory, Long> dao;
     private String currentFilter = "";
 
-    @Inject public HistoryStore(Dispatcher dispatcher, DatabaseHelper helper) {
+    @Inject public HistoryStore(Dispatcher dispatcher, Lazy<DatabaseHelper> helper) {
         super(dispatcher);
         try {
-            dao = helper.getHistoryDao();
+            dao = helper.get().getHistoryDao();
             cached = dao.queryForAll();
             workingCopies = new ArrayList<>(cached);
         } catch (SQLException e) {
@@ -47,7 +48,7 @@ public class HistoryStore extends Store {
 
     @Subscribe @Override public void onAction(Action action) {
         switch (action.getType()) {
-            case Actions.SEARCH_TAG:
+            case Actions.SAVE_TAG:
                 String query = action.get(Keys.QUERY);
                 TagHistory entry = new TagHistory(query);
                 try {

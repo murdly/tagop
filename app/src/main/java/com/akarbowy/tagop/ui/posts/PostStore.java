@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class PostStore extends Store {
     public static final String ID = "PostStore";
     private final int firstPageIndex = 1;
@@ -48,7 +46,6 @@ public class PostStore extends Store {
     }
 
     public ArrayList<TagEntry> getResults() {
-        Timber.i("Page results size %s", pageResults.size());
         return pageResults;
     }
 

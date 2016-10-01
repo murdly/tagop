@@ -3,6 +3,7 @@ package com.akarbowy.tagop.ui.posts.parts.comments;
 import android.text.format.DateUtils;
 
 import com.akarbowy.tagop.network.model.Comment;
+import com.akarbowy.tagop.network.model.Embed;
 import com.akarbowy.tagop.parto.Binder;
 import com.akarbowy.tagop.ui.posts.SpannableBody;
 
@@ -10,7 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import timber.log.Timber;
-
+//TODO temporary solution. change when group parts implemented
 public class CommentBinder implements Binder<CommentView> {
 
     private final Comment comment;
@@ -44,5 +45,12 @@ public class CommentBinder implements Binder<CommentView> {
         view.setContent(body.getSpannable());
         view.setVotes(comment.voteCount.toString());
         view.setDate(relativeDate);
+
+        Embed embed = comment.getEmbed();
+        if(embed == null){
+            view.hideEmbedView();
+        }else{
+            view.setEmbedData(embed.previewUrl, embed.url, embed.type.equals("video"));
+        }
     }
 }

@@ -45,6 +45,13 @@
             android:textColorLink="@color/palette_2"
             android:textSize="@dimen/comment_content"/>
 
+        <com.akarbowy.tagop.ui.posts.parts.embed.EmbedView
+            android:id="@+id/comment_embed_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginRight="@dimen/padding_normal"/>
+
         <LinearLayout
             android:id="@+id/view_info"
             android:layout_width="wrap_content"

@@ -46,4 +46,8 @@ public class Comment {
     @SerializedName("type")
     @Expose
     public String type;
+
+    public Embed getEmbed() {
+        return embed;
+    }
 }

@@ -11,6 +11,7 @@ import com.akarbowy.tagop.network.model.QueryResult;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,9 +19,9 @@ import timber.log.Timber;
 
 public class TagopActionCreator extends ActionCreator implements Actions {
 
-    private WykopService service;
+    private Lazy<WykopService> service;
 
-    @Inject public TagopActionCreator(WykopService service, Dispatcher dispatcher) {
+    @Inject public TagopActionCreator(Lazy<WykopService> service, Dispatcher dispatcher) {
         super(dispatcher);
         this.service = service;
     }
@@ -46,7 +47,11 @@ public class TagopActionCreator extends ActionCreator implements Actions {
             }
         };
 
-        service.search(tag, page).enqueue(callback);
+        service.get().search(tag, page).enqueue(callback);
+    }
+
+    @Override public void saveTag(String query) {
+        postAction(newAction(SAVE_TAG, Keys.QUERY, query));
     }
 
     @Override public void filterHistory(String query) {

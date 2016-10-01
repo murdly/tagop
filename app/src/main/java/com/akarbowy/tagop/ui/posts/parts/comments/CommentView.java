@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
+import com.akarbowy.tagop.ui.posts.parts.embed.EmbedView;
 import com.akarbowy.tagop.utils.ViewPropertiesUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -15,11 +16,14 @@ import butterknife.ButterKnife;
 
 public class CommentView extends LinearLayout {
 
+    //TODO temporary solution. change when group parts implemented
+
     @BindView(R.id.drawee_avatar) SimpleDraweeView avatarView;
     @BindView(R.id.text_author) TextView authorView;
     @BindView(R.id.text_content) TextView contentView;
     @BindView(R.id.text_date) TextView dateView;
     @BindView(R.id.text_counter_votes) TextView votesView;
+    @BindView(R.id.comment_embed_view) EmbedView embedView;
 
     public CommentView(Context context) {
         super(context);
@@ -45,5 +49,15 @@ public class CommentView extends LinearLayout {
 
     public void setVotes(String votes) {
         votesView.setText(votes);
+    }
+
+    public void setEmbedData(String previewUrl, String viewerUrl, boolean isVido){
+        embedView.setVideoFrameVisibility(isVido);
+        embedView.setPreview(previewUrl);
+        embedView.setViewerUrl(viewerUrl);
+    }
+
+    public void hideEmbedView() {
+        embedView.setVisibility(GONE);
     }
 }

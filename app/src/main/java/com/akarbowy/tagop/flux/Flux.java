@@ -39,7 +39,6 @@ public class Flux implements Application.ActivityLifecycleCallbacks {
                 store.register();
             }
         }
-
     }
 
     @Override

@@ -43,10 +43,10 @@ public class ToolbarModeSearchTest {
     }
 
     @Test
-    public void typeQuery_check_stateEmptyFilter() {
-        onView(withId(R.id.field_query)).perform(typeText("android"));
+    public void typeRandomQuery_check_stateEmptyFilter() {
+        onView(withId(R.id.field_query)).perform(typeText("2348dsj23nkfsd02j"));
         onView(withId(R.id.state_history_empty)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(withId(R.id.state_history_empty_filter)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        onView(withId(R.id.filter_query_param)).check(matches(withText(containsString("android"))));
+        onView(withId(R.id.filter_query_param)).check(matches(withText(containsString("2348dsj23nkfsd02j"))));
     }
 }
