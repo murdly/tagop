@@ -38,6 +38,11 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="50c7eb89e5d8bb623d40657c9fd261743de37828"
+            />
     </application>
 
 </manifest>

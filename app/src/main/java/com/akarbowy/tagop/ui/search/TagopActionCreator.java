@@ -21,7 +21,7 @@ public class TagopActionCreator extends ActionCreator implements Actions {
 
     private Lazy<WykopService> service;
 
-    @Inject public TagopActionCreator(Lazy<WykopService> service, Dispatcher dispatcher) {
+    @Inject TagopActionCreator(Lazy<WykopService> service, Dispatcher dispatcher) {
         super(dispatcher);
         this.service = service;
     }
@@ -42,7 +42,7 @@ public class TagopActionCreator extends ActionCreator implements Actions {
 
             @Override
             public void onFailure(Call<QueryResult> call, Throwable t) {
-                Timber.e("fail", t);
+                Timber.e(t, "fail");
                 postError(new ActionError(action.getType(), t));
             }
         };

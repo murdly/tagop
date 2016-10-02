@@ -3,30 +3,30 @@
 
     <!--search history screen-->
     <string name="toolbar_search_title">Szukaj</string>
-    <string name="toolbar_search_for_tags">Szukaj znaczników #</string>
+    <string name="toolbar_search_for_tags">Szukaj pod tagiem #</string>
     <string name="toolbar_action_close">Anuluj</string>
     <string name="toolbar_action_clear_history">Czyść historię</string>
     <string name="symbol_hashtag">#</string>
     <string name="state_history_empty_title">Pusta historia</string>
-    <string name="state_history_empty_instruction">Naciśnij \'Szukaj\' by rozpocząć</string>
-    <string name="state_history_empty_filter_instruction">Kliknij by wyszukać &lt;b>#%1$s&lt;/b></string>
+    <string name="state_history_empty_instruction">Naciśnij \'Szukaj\' by znaleźć wpisy</string>
+    <string name="state_history_empty_filter_instruction">Kliknij aby wyszukać &lt;b>#%1$s&lt;/b></string>
     <!--end of search history screen-->
 
     <!--search results screen-->
-    <string name="title_activity_posts">Posty</string>
+    <string name="title_activity_posts">Tagop</string>
     <string name="post_counters_votes_param">&#160;%1$d</string>
     <string name="post_counters_comments_param">Komentarze: %1$d</string>
     <string name="post_comments_title">Komentarze</string>
     <string name="post_comments_info_separator">&#183;</string>
     <string name="post_more_open_in_browser">Otwórz w przeglądarce</string>
     <string name="post_more_copy_link">Kopiuj link</string>
-    <string name="toast_copy_link_success">Skopiowano url %1$s</string>
+    <string name="toast_copy_link_success">Skopiowano %1$s</string>
     <string name="state_results_empty_title">Nic nie znaleziono</string>
     <string name="state_results_empty_instruction">Spróbuj wyszukać inny tag</string>
     <!--end of search results screen-->
 
     <!--shared-->
-    <string name="state_general_error_title">Oops, błąd</string>
+    <string name="state_general_error_title">Coś się, coś się popsuło</string>
     <string name="state_general_error_instruction">Spróbuj jeszcze raz</string>
 
     //layout placeholders

@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 24
@@ -10,13 +15,20 @@ android {
         applicationId "com.akarbowy.tagop"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 1
+        versionCode 2
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-DEBUG"
+            ext.enableCrashlytics = false
+        }
+
         release {
+            debuggable false
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -46,6 +58,7 @@ ext {
     ormVersion = '5.0'
     frescoVersion = '0.13.0'
     frescoImageViewerVersion = '0.1.0'
+    crashlyticsVersion = '2.6.4@aar'
 }
 
 dependencies {
@@ -97,4 +110,7 @@ dependencies {
     //image
     compile "com.facebook.fresco:fresco:$frescoVersion"
     compile "com.github.stfalcon:frescoimageviewer:$frescoImageViewerVersion"
+
+    //crashlytics
+    compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion") { transitive = true; }
 }

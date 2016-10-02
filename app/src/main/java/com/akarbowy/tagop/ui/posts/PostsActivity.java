@@ -123,23 +123,20 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
     }
 
     private void loadInitialData() {
-        getIdlingResource().increment();
-
+            getIdlingResource().increment();
         //TODO load from cache
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }
 
     @Override public void onLoadNextPage() {
-        getIdlingResource().increment();
-
+            getIdlingResource().increment();
         adapter.insertPageLoader();
         creator.searchTag(tag, postStore.getNextPageIndex());
     }
 
     @Override public void onRefresh() {
-        getIdlingResource().increment();
-
+            getIdlingResource().increment();
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }
@@ -153,7 +150,9 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
                         boolean isFirstPage = action.get(Keys.FIRST_PAGE);
                         updateItemsAndState(isFirstPage);
 
-                        getIdlingResource().decrement();
+                        if (!getIdlingResource().isIdleNow()) {
+                            getIdlingResource().decrement();
+                        }
                         break;
                 }
                 break;
