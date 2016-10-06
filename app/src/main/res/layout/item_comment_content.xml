@@ -44,49 +44,5 @@
             android:textColor="@color/item_comment_content"
             android:textColorLink="@color/palette_2"
             android:textSize="@dimen/comment_content"/>
-
-        <com.akarbowy.tagop.ui.posts.parts.embed.EmbedView
-            android:id="@+id/comment_embed_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_normal"/>
-
-        <LinearLayout
-            android:id="@+id/view_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/padding_normal"
-            android:layout_marginTop="@dimen/padding_small"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lorem_2words"
-                android:textColor="@color/item_comment_date"
-                android:textSize="@dimen/comment_info"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_normal"
-                android:paddingRight="@dimen/padding_normal"
-                android:text="@string/post_comments_info_separator"
-                android:textSize="@dimen/comment_info"/>
-
-            <TextView
-                android:id="@+id/text_counter_votes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_add_circle_accent_12dp"
-                android:drawablePadding="@dimen/padding_small"
-                android:gravity="center_vertical"
-                android:text="@string/lorem_digit"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/comment_info"/>
-        </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

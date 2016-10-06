@@ -103,7 +103,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         stateSwitcher.setViews(stateViews, new int[]{State.CONTENT, State.CONTENT_EMPTY, State.ERROR});
 
         RecyclerSupport.addTo(postsRecycler)
-                .setOnNextPageRequestListener(this, adapter.getAbsolutePartsCount(), true);
+                .setOnNextPageRequestListener(this, adapter.getPostsBasicPartsCount(), true);
 
         loadInitialData();
     }
@@ -123,20 +123,20 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
     }
 
     private void loadInitialData() {
-            getIdlingResource().increment();
+        getIdlingResource().increment();
         //TODO load from cache
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }
 
     @Override public void onLoadNextPage() {
-            getIdlingResource().increment();
+        getIdlingResource().increment();
         adapter.insertPageLoader();
         creator.searchTag(tag, postStore.getNextPageIndex());
     }
 
     @Override public void onRefresh() {
-            getIdlingResource().increment();
+        getIdlingResource().increment();
         refreshWidget.setRefreshing(true);
         creator.searchTag(tag, postStore.getFirstPageIndex());
     }
@@ -150,7 +150,7 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
                         boolean isFirstPage = action.get(Keys.FIRST_PAGE);
                         updateItemsAndState(isFirstPage);
 
-                        if (!getIdlingResource().isIdleNow()) {
+                        if (getIdlingResource().isIdleNow()) {
                             getIdlingResource().decrement();
                         }
                         break;

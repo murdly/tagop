@@ -2,10 +2,10 @@ package com.akarbowy.tagop.ui.posts.parts.counters;
 
 import com.akarbowy.tagop.network.model.TagEntry;
 import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.parto.PartDefinition;
+import com.akarbowy.tagop.parto.SinglePartDefinition;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
-public class CountersPart implements PartDefinition<TagEntry, CountersView> {
+public class CountersPart implements SinglePartDefinition<TagEntry, CountersView> {
     @Override public int getViewType() {
         return ViewType.COUNTERS;
     }
@@ -14,7 +14,7 @@ public class CountersPart implements PartDefinition<TagEntry, CountersView> {
         return new CountersBinder(viewObject);
     }
 
-    @Override public boolean isNeeded(TagEntry viewObject) {
+    @Override public boolean isNeeded(TagEntry model) {
         return true;
     }
 }

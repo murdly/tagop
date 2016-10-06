@@ -2,10 +2,10 @@ package com.akarbowy.tagop.ui.posts.parts.text;
 
 import com.akarbowy.tagop.network.model.TagEntry;
 import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.parto.PartDefinition;
+import com.akarbowy.tagop.parto.SinglePartDefinition;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
-public class TextSectionPart implements PartDefinition<TagEntry, TextSectionView> {
+public class TextSectionPart implements SinglePartDefinition<TagEntry, TextSectionView> {
     @Override public int getViewType() {
         return ViewType.TEXT_SECTION;
     }
@@ -14,7 +14,7 @@ public class TextSectionPart implements PartDefinition<TagEntry, TextSectionView
         return new TextSectionBinder(viewObject);
     }
 
-    @Override public boolean isNeeded(TagEntry viewObject) {
+    @Override public boolean isNeeded(TagEntry model) {
         return true;
     }
 }

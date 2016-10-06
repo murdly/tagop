@@ -25,6 +25,7 @@
     <dimen name="comment_author">14sp</dimen>
     <dimen name="comment_content">13sp</dimen>
     <dimen name="comment_info">12sp</dimen>
+    <dimen name="comment_avatar_space">56dp</dimen>
     <!--more-->
     <dimen name="bottom_sheet_post_more">56dp</dimen>
     <dimen name="bottom_sheet_item_text_size">16sp</dimen>

@@ -1,9 +1,9 @@
 package com.akarbowy.tagop.parto;
 
-public interface PartDefinition<M, V> {
-    int getViewType();
 
-    Binder<V> createBinder(M viewObject);
+public interface PartDefinition<M> {
 
-    boolean isNeeded(M viewObject);
+    boolean isNeeded(M model);
+
+
 }

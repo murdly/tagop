@@ -2,10 +2,10 @@ package com.akarbowy.tagop.ui.posts.parts.other;
 
 import com.akarbowy.tagop.network.model.TagEntry;
 import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.parto.PartDefinition;
+import com.akarbowy.tagop.parto.SinglePartDefinition;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
-public class SeparatorPart implements PartDefinition<TagEntry, SeparatorView> {
+public class SeparatorPart implements SinglePartDefinition<TagEntry, SeparatorView> {
     @Override public int getViewType() {
         return ViewType.SEPARATOR;
     }
@@ -14,7 +14,7 @@ public class SeparatorPart implements PartDefinition<TagEntry, SeparatorView> {
         return new SeparatorBinder();
     }
 
-    @Override public boolean isNeeded(TagEntry viewObject) {
+    @Override public boolean isNeeded(TagEntry model) {
         return true;
     }
 }

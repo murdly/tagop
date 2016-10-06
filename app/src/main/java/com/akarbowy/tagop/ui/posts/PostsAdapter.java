@@ -12,8 +12,9 @@ import com.akarbowy.tagop.parto.PartManager;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersPart;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersView;
-import com.akarbowy.tagop.ui.posts.parts.embed.EmbedPart;
-import com.akarbowy.tagop.ui.posts.parts.embed.EmbedView;
+import com.akarbowy.tagop.ui.posts.parts.embed.EmbedsPart;
+import com.akarbowy.tagop.ui.posts.parts.embed.ImageEmbedView;
+import com.akarbowy.tagop.ui.posts.parts.embed.VideoEmbedView;
 import com.akarbowy.tagop.ui.posts.parts.header.HeaderPart;
 import com.akarbowy.tagop.ui.posts.parts.header.HeaderView;
 import com.akarbowy.tagop.ui.posts.parts.other.SeparatorPart;
@@ -35,13 +36,16 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         partManager.add(new SeparatorPart());
         partManager.add(new HeaderPart());
         partManager.add(new TextSectionPart());
-        partManager.add(new EmbedPart());
+        partManager.add(new EmbedsPart());
         partManager.add(new CountersPart());
         partManager.add(new SeparatorPart());
     }
 
-    public int getAbsolutePartsCount() {
-        return partManager.getPartsCount();
+    /**
+     * It can vary from post to post coz some parts might be expanded.
+     */
+    public int getPostsBasicPartsCount() {
+        return partManager.getBasicGroupPartsCount();
     }
 
     public void setItems(ArrayList<TagEntry> entries, boolean firstPage) {
@@ -93,8 +97,10 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return new PartManager.PartHolder(new HeaderView(parent.getContext()));
             case ViewType.TEXT_SECTION:
                 return new PartManager.PartHolder(new TextSectionView(parent.getContext()));
-            case ViewType.EMBED:
-                return new PartManager.PartHolder(new EmbedView(parent.getContext()));
+            case ViewType.EMBED_IMAGE:
+                return new PartManager.PartHolder(new ImageEmbedView(parent.getContext()));
+            case ViewType.EMBED_VIDEO:
+                return new PartManager.PartHolder(new VideoEmbedView(parent.getContext()));
             case ViewType.COUNTERS:
                 return new PartManager.PartHolder(new CountersView(parent.getContext()));
             case ITEM_LOADER_VIEW_TYPE:
@@ -116,8 +122,8 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return loaderInserted ? itemCount + 1 : itemCount;
     }
 
-    static class LoaderHolder extends RecyclerView.ViewHolder {
-        public LoaderHolder(View itemView) {
+    private static class LoaderHolder extends RecyclerView.ViewHolder {
+        LoaderHolder(View itemView) {
             super(itemView);
         }
     }
