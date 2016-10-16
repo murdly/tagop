@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -95,7 +93,7 @@ dependencies {
 
     //dagger
     compile "com.google.dagger:dagger:$daggerVersion"
-    apt "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     provided "org.glassfish:javax.annotation:10.0-b28"
 
     //database
@@ -110,7 +108,7 @@ dependencies {
 
     //binding
     compile "com.jakewharton:butterknife:$butterknfieVersion"
-    apt "com.jakewharton:butterknife-compiler:$butterknfieVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknfieVersion"
 
     //image
     compile "com.facebook.fresco:fresco:$frescoVersion"
