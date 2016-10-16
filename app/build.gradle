@@ -25,6 +25,8 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-DEBUG"
             ext.enableCrashlytics = false
+
+            manifestPlaceholders = [appName: "Tagop-debug"]
         }
 
         release {
@@ -32,6 +34,8 @@ android {
             shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            manifestPlaceholders = [appName: "Tagop"]
         }
 
         applicationVariants.all { variant ->
@@ -59,6 +63,7 @@ ext {
     frescoVersion = '0.13.0'
     frescoImageViewerVersion = '0.1.0'
     crashlyticsVersion = '2.6.4@aar'
+    partdefinerVersion = '1.0'
 }
 
 dependencies {
@@ -113,4 +118,6 @@ dependencies {
 
     //crashlytics
     compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion") { transitive = true; }
+
+    compile "com.akarbowy:partdefiner:$partdefinerVersion"
 }

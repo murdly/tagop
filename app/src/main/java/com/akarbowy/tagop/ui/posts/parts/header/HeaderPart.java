@@ -1,8 +1,8 @@
 package com.akarbowy.tagop.ui.posts.parts.header;
 
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.parto.SinglePartDefinition;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.partdefiner.SinglePartDefinition;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
 public class HeaderPart implements SinglePartDefinition<TagEntry, HeaderView> {

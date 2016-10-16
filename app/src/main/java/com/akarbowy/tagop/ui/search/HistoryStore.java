@@ -2,8 +2,8 @@ package com.akarbowy.tagop.ui.search;
 
 import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.Keys;
-import com.akarbowy.tagop.database.DatabaseHelper;
-import com.akarbowy.tagop.database.TagHistory;
+import com.akarbowy.tagop.data.database.DatabaseHelper;
+import com.akarbowy.tagop.data.database.TagHistory;
 import com.akarbowy.tagop.flux.Action;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Dispatcher;

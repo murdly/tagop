@@ -6,9 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.partdefiner.PartManager;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.PartManager;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersPart;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersView;
@@ -45,16 +46,15 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * It can vary from post to post coz some parts might be expanded.
      */
     public int getPostsBasicPartsCount() {
-        return partManager.getBasicGroupPartsCount();
+        return 6;
     }
 
     public void setItems(ArrayList<TagEntry> entries, boolean firstPage) {
         if (!entries.isEmpty()) {
             if (firstPage) {
-                partManager.setBinders(entries);
-            } else {
-                partManager.appendBinders(entries);
+                partManager.clearBinders();
             }
+            partManager.setItemsForBinding(entries);
         }
 
         notifyDataSetChanged();
@@ -92,17 +92,17 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ViewType.SEPARATOR:
-                return new PartManager.PartHolder(new SeparatorView(parent.getContext()));
+                return new PartHolder(new SeparatorView(parent.getContext()));
             case ViewType.HEADER:
-                return new PartManager.PartHolder(new HeaderView(parent.getContext()));
+                return new PartHolder(new HeaderView(parent.getContext()));
             case ViewType.TEXT_SECTION:
-                return new PartManager.PartHolder(new TextSectionView(parent.getContext()));
+                return new PartHolder(new TextSectionView(parent.getContext()));
             case ViewType.EMBED_IMAGE:
-                return new PartManager.PartHolder(new ImageEmbedView(parent.getContext()));
+                return new PartHolder(new ImageEmbedView(parent.getContext()));
             case ViewType.EMBED_VIDEO:
-                return new PartManager.PartHolder(new VideoEmbedView(parent.getContext()));
+                return new PartHolder(new VideoEmbedView(parent.getContext()));
             case ViewType.COUNTERS:
-                return new PartManager.PartHolder(new CountersView(parent.getContext()));
+                return new PartHolder(new CountersView(parent.getContext()));
             case ITEM_LOADER_VIEW_TYPE:
                 View bar = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_loader, parent, false);
                 return new LoaderHolder(bar);
@@ -112,14 +112,26 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof PartManager.PartHolder) {
-            partManager.onBindPartHolder((PartManager.PartHolder) holder, position);
+        if (holder instanceof PartHolder) {
+            Binder<View> binder = partManager.getBinder(position);
+            PartHolder partHolder = (PartHolder) holder;
+            binder.prepare(partHolder.partView);
+            binder.bind(partHolder.partView);
         }
     }
 
     @Override public int getItemCount() {
         int itemCount = partManager.getItemCount();
         return loaderInserted ? itemCount + 1 : itemCount;
+    }
+
+    private static class PartHolder extends RecyclerView.ViewHolder {
+        View partView;
+
+        PartHolder(View view) {
+            super(view);
+            this.partView = view;
+        }
     }
 
     private static class LoaderHolder extends RecyclerView.ViewHolder {

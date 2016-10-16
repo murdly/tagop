@@ -2,7 +2,7 @@ package com.akarbowy.tagop;
 
 import android.app.Application;
 
-import com.akarbowy.tagop.database.DatabaseHelper;
+import com.akarbowy.tagop.data.database.DatabaseHelper;
 import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Flux;
 import com.j256.ormlite.android.apptools.OpenHelperManager;

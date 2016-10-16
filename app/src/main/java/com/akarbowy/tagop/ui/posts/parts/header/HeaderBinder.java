@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.widget.Toast;
 
+import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,5 +60,9 @@ public class HeaderBinder implements Binder<HeaderView> {
         view.setTitle(tagEntry.author);
         view.setDate(relativeDate);
         view.setOnMoreActionsListener(moreActionsListener);
+    }
+
+    @Override public void unbind(HeaderView view) {
+
     }
 }

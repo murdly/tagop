@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.database;
+package com.akarbowy.tagop.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -3,6 +3,8 @@ package com.akarbowy.tagop.ui.posts;
 import android.text.Spannable;
 import android.text.style.URLSpan;
 
+import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

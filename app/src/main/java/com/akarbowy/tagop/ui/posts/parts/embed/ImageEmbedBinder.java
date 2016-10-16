@@ -2,8 +2,8 @@ package com.akarbowy.tagop.ui.posts.parts.embed;
 
 import android.view.View;
 
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 public class ImageEmbedBinder implements Binder<ImageEmbedView> {
@@ -24,5 +24,9 @@ public class ImageEmbedBinder implements Binder<ImageEmbedView> {
 
     @Override public void bind(ImageEmbedView view) {
         view.setPreview(tagEntry.getEmbed().previewUrl);
+    }
+
+    @Override public void unbind(ImageEmbedView view) {
+
     }
 }

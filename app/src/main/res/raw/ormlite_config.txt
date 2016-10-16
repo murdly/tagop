@@ -1,0 +1,17 @@
+#
+# generated on 2016/10/16 10:01:56
+#
+# --table-start--
+dataClass=com.akarbowy.tagop.data.database.TagHistory
+tableName=tagop
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=tagName
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

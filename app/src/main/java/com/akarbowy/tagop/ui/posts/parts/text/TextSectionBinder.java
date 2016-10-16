@@ -1,8 +1,8 @@
 package com.akarbowy.tagop.ui.posts.parts.text;
 
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.ui.posts.SpannableBody;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
 
 public class TextSectionBinder implements Binder<TextSectionView> {
     private TagEntry tagEntry;
@@ -23,5 +23,9 @@ public class TextSectionBinder implements Binder<TextSectionView> {
 
     @Override public void bind(TextSectionView view) {
         view.setContent(body.getSpannable());
+    }
+
+    @Override public void unbind(TextSectionView view) {
+
     }
 }

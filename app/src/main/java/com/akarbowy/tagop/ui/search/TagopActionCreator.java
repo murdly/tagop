@@ -6,8 +6,8 @@ import com.akarbowy.tagop.flux.Action;
 import com.akarbowy.tagop.flux.ActionCreator;
 import com.akarbowy.tagop.flux.ActionError;
 import com.akarbowy.tagop.flux.Dispatcher;
-import com.akarbowy.tagop.network.WykopService;
-import com.akarbowy.tagop.network.model.QueryResult;
+import com.akarbowy.tagop.data.network.WykopService;
+import com.akarbowy.tagop.data.network.model.QueryResult;
 
 import javax.inject.Inject;
 

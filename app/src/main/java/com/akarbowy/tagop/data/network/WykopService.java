@@ -1,6 +1,6 @@
-package com.akarbowy.tagop.network;
+package com.akarbowy.tagop.data.network;
 
-import com.akarbowy.tagop.network.model.QueryResult;
+import com.akarbowy.tagop.data.network.model.QueryResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

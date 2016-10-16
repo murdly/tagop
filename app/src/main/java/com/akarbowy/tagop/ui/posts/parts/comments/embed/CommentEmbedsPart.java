@@ -1,11 +1,8 @@
 package com.akarbowy.tagop.ui.posts.parts.comments.embed;
 
-import com.akarbowy.tagop.network.model.Comment;
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.GroupPartDefinition;
-import com.akarbowy.tagop.parto.PartDefinition;
-import com.akarbowy.tagop.ui.posts.parts.embed.ImageEmbedPart;
-import com.akarbowy.tagop.ui.posts.parts.embed.VideoEmbedPart;
+import com.akarbowy.partdefiner.GroupPartDefinition;
+import com.akarbowy.partdefiner.PartDefinition;
+import com.akarbowy.tagop.data.network.model.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

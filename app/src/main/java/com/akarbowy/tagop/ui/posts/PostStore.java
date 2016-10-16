@@ -6,8 +6,8 @@ import com.akarbowy.tagop.flux.Action;
 import com.akarbowy.tagop.flux.Change;
 import com.akarbowy.tagop.flux.Dispatcher;
 import com.akarbowy.tagop.flux.Store;
-import com.akarbowy.tagop.network.model.QueryResult;
-import com.akarbowy.tagop.network.model.TagEntry;
+import com.akarbowy.tagop.data.network.model.QueryResult;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;

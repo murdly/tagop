@@ -1,8 +1,8 @@
 package com.akarbowy.tagop.ui.posts.parts.comments.content;
 
-import com.akarbowy.tagop.network.model.Comment;
-import com.akarbowy.tagop.parto.Binder;
-import com.akarbowy.tagop.ui.posts.SpannableBody;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
 
 public class CommentContentBinder implements Binder<CommentContentView> {
 
@@ -26,5 +26,9 @@ public class CommentContentBinder implements Binder<CommentContentView> {
         view.setAvatar(comment.authorAvatar);
         view.setAuthor(comment.author);
         view.setContent(body.getSpannable());
+    }
+
+    @Override public void unbind(CommentContentView view) {
+
     }
 }

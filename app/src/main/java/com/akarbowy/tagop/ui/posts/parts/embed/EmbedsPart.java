@@ -1,8 +1,8 @@
 package com.akarbowy.tagop.ui.posts.parts.embed;
 
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.GroupPartDefinition;
-import com.akarbowy.tagop.parto.PartDefinition;
+import com.akarbowy.partdefiner.GroupPartDefinition;
+import com.akarbowy.partdefiner.PartDefinition;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 
 import java.util.ArrayList;
 import java.util.List;

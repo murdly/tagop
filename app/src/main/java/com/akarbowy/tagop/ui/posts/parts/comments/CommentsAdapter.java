@@ -1,10 +1,12 @@
 package com.akarbowy.tagop.ui.posts.parts.comments;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
-import com.akarbowy.tagop.network.model.Comment;
-import com.akarbowy.tagop.parto.PartManager;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.partdefiner.PartManager;
+import com.akarbowy.tagop.data.network.model.Comment;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.comments.content.CommentContentPart;
 import com.akarbowy.tagop.ui.posts.parts.comments.content.CommentContentView;
@@ -16,7 +18,7 @@ import com.akarbowy.tagop.ui.posts.parts.comments.footer.CommentFooterView;
 
 import java.util.ArrayList;
 
-class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder> {
+class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.PartHolder> {
 
     private PartManager<Comment> partManager;
 
@@ -32,23 +34,25 @@ class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder> {
     }
 
     @Override
-    public PartManager.PartHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommentsAdapter.PartHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ViewType.COMMENT_CONTENT:
-                return new PartManager.PartHolder(new CommentContentView(parent.getContext()));
+                return new CommentsAdapter.PartHolder(new CommentContentView(parent.getContext()));
             case ViewType.COMMENT_FOOTER:
-                return new PartManager.PartHolder(new CommentFooterView(parent.getContext()));
+                return new CommentsAdapter.PartHolder(new CommentFooterView(parent.getContext()));
             case ViewType.EMBED_IMAGE:
-                return new PartManager.PartHolder(new CommentImageEmbedView(parent.getContext()));
+                return new CommentsAdapter.PartHolder(new CommentImageEmbedView(parent.getContext()));
             case ViewType.EMBED_VIDEO:
-                return new PartManager.PartHolder(new CommentVideoEmbedView(parent.getContext()));
+                return new CommentsAdapter.PartHolder(new CommentVideoEmbedView(parent.getContext()));
             default:
                 throw new RuntimeException("Unsupported view type.");
         }
     }
 
-    @Override public void onBindViewHolder(PartManager.PartHolder holder, int position) {
-        partManager.onBindPartHolder(holder, position);
+    @Override public void onBindViewHolder(CommentsAdapter.PartHolder holder, int position) {
+        Binder<View> binder = partManager.getBinder(position);
+        binder.prepare(holder.partView);
+        binder.bind(holder.partView);
     }
 
     @Override
@@ -57,7 +61,16 @@ class CommentsAdapter extends RecyclerView.Adapter<PartManager.PartHolder> {
     }
 
     public void setItems(ArrayList<Comment> items) {
-        partManager.setBinders(items);
+        partManager.setItemsForBinding(items);
         notifyDataSetChanged();
+    }
+
+    static class PartHolder extends RecyclerView.ViewHolder {
+        View partView;
+
+        PartHolder(View view) {
+            super(view);
+            this.partView = view;
+        }
     }
 }

@@ -2,9 +2,9 @@ package com.akarbowy.tagop.ui.posts.parts.counters;
 
 import android.view.View;
 
+import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 import com.akarbowy.tagop.ui.posts.parts.comments.CommentsViewer;
 
 public class CountersBinder implements Binder<CountersView> {
@@ -30,5 +30,9 @@ public class CountersBinder implements Binder<CountersView> {
         view.setCommentsCount(view.getContext().getString(
                 R.string.post_counters_comments_param,
                 tagEntry.commentCount));
+    }
+
+    @Override public void unbind(CountersView view) {
+
     }
 }

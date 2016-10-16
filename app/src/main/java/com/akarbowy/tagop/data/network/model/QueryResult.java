@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.network.model;
+package com.akarbowy.tagop.data.network.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

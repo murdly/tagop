@@ -1,7 +1,7 @@
 package com.akarbowy.tagop;
 
 import com.akarbowy.tagop.flux.Flux;
-import com.akarbowy.tagop.network.NetworkModule;
+import com.akarbowy.tagop.data.network.NetworkModule;
 import com.akarbowy.tagop.ui.posts.PostsActivity;
 import com.akarbowy.tagop.ui.search.MainSearchActivity;
 

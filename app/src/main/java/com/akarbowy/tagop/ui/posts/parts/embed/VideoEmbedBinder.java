@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 
-import com.akarbowy.tagop.network.model.TagEntry;
-import com.akarbowy.tagop.parto.Binder;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.tagop.data.network.model.TagEntry;
 
 public class VideoEmbedBinder implements Binder<VideoEmbedView> {
     private TagEntry tagEntry;
@@ -25,5 +25,9 @@ public class VideoEmbedBinder implements Binder<VideoEmbedView> {
 
     @Override public void bind(VideoEmbedView view) {
         view.setPreview(tagEntry.getEmbed().previewUrl);
+    }
+
+    @Override public void unbind(VideoEmbedView view) {
+
     }
 }

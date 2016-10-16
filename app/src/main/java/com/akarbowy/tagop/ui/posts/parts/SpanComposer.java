@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.ui.posts;
+package com.akarbowy.tagop.ui.posts.parts;
 
 import android.text.Html;
 import android.text.Spannable;

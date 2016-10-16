@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Tagop</string>
-
     <!--search history screen-->
     <string name="toolbar_search_title">Szukaj</string>
     <string name="toolbar_search_for_tags">Szukaj pod tagiem #</string>
@@ -13,7 +11,6 @@
     <!--end of search history screen-->
 
     <!--search results screen-->
-    <string name="title_activity_posts">Tagop</string>
     <string name="post_counters_votes_param">&#160;%1$d</string>
     <string name="post_counters_comments_param">Komentarze: %1$d</string>
     <string name="post_comments_title">Komentarze</string>

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.network;
+package com.akarbowy.tagop.data.network;
 
 import javax.inject.Singleton;
 

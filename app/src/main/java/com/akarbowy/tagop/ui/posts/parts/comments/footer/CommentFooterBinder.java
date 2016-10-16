@@ -2,8 +2,8 @@ package com.akarbowy.tagop.ui.posts.parts.comments.footer;
 
 import android.text.format.DateUtils;
 
-import com.akarbowy.tagop.network.model.Comment;
-import com.akarbowy.tagop.parto.Binder;
+import com.akarbowy.partdefiner.Binder;
+import com.akarbowy.tagop.data.network.model.Comment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,5 +32,9 @@ public class CommentFooterBinder implements Binder<CommentFooterView> {
     @Override public void bind(CommentFooterView view) {
         view.setVotes(comment.voteCount.toString());
         view.setDate(relativeDate);
+    }
+
+    @Override public void unbind(CommentFooterView view) {
+
     }
 }
