@@ -33,7 +33,7 @@ public class PostsActivityTest {
     @Test
     public void givenTag_whenResults_thenStateContent() {
         mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "android", false));
-        idlingResource = mActivityRule.getActivity().getIdlingResource();
+//        idlingResource = mActivityRule.getActivity().getIdlingResource();
         Espresso.registerIdlingResources(idlingResource);
 
         onView(withId(R.id.recycler)).check(new RecyclerItemsCount(greaterThan(0)));
@@ -47,7 +47,7 @@ public class PostsActivityTest {
     @Test
     public void givenTag_whenNoResults_thenStateContentEmpty() {
         mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "s2f1nd23ascnj2", false));
-        idlingResource = mActivityRule.getActivity().getIdlingResource();
+//        idlingResource = mActivityRule.getActivity().getIdlingResource();
         Espresso.registerIdlingResources(idlingResource);
 
         onView(withId(R.id.recycler)).check(new RecyclerItemsCount(equalTo(0)));

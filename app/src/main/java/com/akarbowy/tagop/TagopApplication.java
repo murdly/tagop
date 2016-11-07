@@ -2,7 +2,6 @@ package com.akarbowy.tagop;
 
 import android.app.Application;
 
-import com.akarbowy.tagop.flux.Flux;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.stetho.Stetho;
@@ -28,8 +27,7 @@ public class TagopApplication extends Application {
             Stetho.initializeWithDefaults(this);
         }
 
-        Flux flux = Flux.init(this);
-        component = DaggerApplicationComponent.Initializer.init(flux, this);
+        component = DaggerApplicationComponent.Initializer.init(this);
         Fresco.initialize(this);
     }
 

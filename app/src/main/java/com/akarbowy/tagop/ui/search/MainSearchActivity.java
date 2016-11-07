@@ -7,25 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.TagopApplication;
 import com.akarbowy.tagop.data.database.TagHistory;
-import com.akarbowy.tagop.flux.Change;
-import com.akarbowy.tagop.flux.Store;
-import com.akarbowy.tagop.flux.ViewDispatch;
-import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.ui.posts.PostsActivity;
 import com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode;
 import com.akarbowy.tagop.utils.DeprecatedHelper;
 import com.akarbowy.tagop.utils.KeyboardUtil;
+import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.utils.StateSwitcher;
-import com.squareup.otto.Subscribe;
 
-import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -35,10 +26,9 @@ import timber.log.Timber;
 
 import static com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode.Normal;
 
-public class MainSearchActivity extends AppCompatActivity implements ViewDispatch, RecyclerSupport.OnItemClickListener {
+public class MainSearchActivity extends AppCompatActivity implements RecyclerSupport.OnItemClickListener {
 
-    @Inject HistoryStore historyStore;
-    @Inject TagopActionCreator creator;
+    HistoryStore historyStore;
 
     @BindView(R.id.toolbar_action_view) SearchableToolbarView toolbar;
     @BindView(R.id.recycler_history) RecyclerView historyRecycler;
@@ -56,11 +46,11 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         @Override public void onQueryTextChange(String queryText) {
             filterQueryParam.setTag(queryText);
             filterQueryParam.setText(DeprecatedHelper.fromHtml(getString(R.string.state_history_empty_filter_instruction, queryText)));
-            creator.filterHistory(queryText);
+//            creator.filterHistory(queryText);
         }
 
         @Override public void onMenuClearHistoryClick() {
-            creator.clearHistory();
+//            creator.clearHistory();
         }
     };
 
@@ -70,7 +60,6 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         toolbar.setCallback(toolbarActionsCallback);
-        ((TagopApplication) getApplication()).component().inject(this);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         historyRecycler.setLayoutManager(layoutManager);
@@ -111,25 +100,25 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
     }
 
     private void searchForPostsWithTag(String query, boolean isHistorySearch) {
-        creator.saveTag(query);
+//        creator.saveTag(query);
         startActivity(PostsActivity.getStartIntent(MainSearchActivity.this, query, isHistorySearch));
     }
 
-    @Subscribe public void onStoreChange(Change change) {
-        switch (change.getStoreId()) {
-            case HistoryStore.ID:
-                switch (change.getAction().getType()) {
-                    case Actions.CLEAR_TAG_HISTORY:
-                        updateItemsAndState();
-                        break;
-                    case Actions.FILTER_HISTORY_TAG:
-                        updateItemsAndState();
-                        historyRecycler.scrollToPosition(0);
-                        break;
-                }
-                break;
-        }
-    }
+//    @Subscribe public void onStoreChange(Change change) {
+//        switch (change.getStoreId()) {
+//            case HistoryStore.ID:
+//                switch (change.getAction().getType()) {
+//                    case Actions.CLEAR_TAG_HISTORY:
+//                        updateItemsAndState();
+//                        break;
+//                    case Actions.FILTER_HISTORY_TAG:
+//                        updateItemsAndState();
+//                        historyRecycler.scrollToPosition(0);
+//                        break;
+//                }
+//                break;
+//        }
+//    }
 
     private void updateItemsAndState() {
         List<TagHistory> items = historyStore.getFilteredEntries();
@@ -147,10 +136,6 @@ public class MainSearchActivity extends AppCompatActivity implements ViewDispatc
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override public List<? extends Store> getStoresToRegister() {
-        return Collections.singletonList(historyStore);
     }
 
     public interface State {

@@ -1,7 +1,5 @@
 package com.akarbowy.tagop.data.network;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -9,7 +7,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Singleton
 @Module
 public class NetworkModule {
 

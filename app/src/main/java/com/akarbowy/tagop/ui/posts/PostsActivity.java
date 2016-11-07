@@ -3,9 +3,6 @@ package com.akarbowy.tagop.ui.posts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,54 +10,38 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.akarbowy.tagop.Actions;
-import com.akarbowy.tagop.Keys;
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
-import com.akarbowy.tagop.flux.Action;
-import com.akarbowy.tagop.flux.ActionError;
-import com.akarbowy.tagop.flux.Change;
-import com.akarbowy.tagop.flux.Store;
-import com.akarbowy.tagop.flux.ViewDispatch;
-import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.data.network.model.TagEntry;
-import com.akarbowy.tagop.ui.search.TagopActionCreator;
+import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.utils.StateSwitcher;
-import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class PostsActivity extends AppCompatActivity implements ViewDispatch, RecyclerSupport.OnNextPageRequestListener, SwipeRefreshLayout.OnRefreshListener {
+public class PostsActivity extends AppCompatActivity implements PostsContract.View, RecyclerSupport.OnNextPageRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String EXTRA_TAG = "extra_tag";
     private static final String EXTRA_HISTORY_SEARCH = "extra_history_search";
     private static final String ACTION_SEARCH = "com.akarbowy.tagop.ui.posts.ACTION_SEARCH";
-
-    @Inject PostStore postStore;
-    @Inject TagopActionCreator creator;
 
     @BindView(R.id.toolbar) Toolbar toolbarView;
     @BindView(R.id.refresh_layout) SwipeRefreshLayout refreshWidget;
     @BindView(R.id.recycler) RecyclerView postsRecycler;
     @BindViews({R.id.recycler, R.id.state_empty_content, R.id.state_general_error}) List<View> stateViews;
 
-    private boolean isCreatedUponHistorySearch;
-    private boolean wasStopped = false;
+    boolean isActive;
+    private PostsContract.Presenter presenter;
 
     private PostsAdapter adapter;
     private StateSwitcher stateSwitcher;
 
-    private String tag;
-    private CountingIdlingResource idlingResource;
+    private boolean isCreatedUponHistorySearch;
+    private boolean wasStopped = false;
 
     public static Intent getStartIntent(Context context, String tag, boolean isFromHistory) {
         Intent intent = new Intent(context, PostsActivity.class);
@@ -74,8 +55,8 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
         ButterKnife.bind(this);
-        ((TagopApplication) getApplication()).component().inject(this);
 
+        String tag;
         if (getIntent().getAction().equals(ACTION_SEARCH)) {
             tag = getIntent().getStringExtra(EXTRA_TAG);
             isCreatedUponHistorySearch = getIntent().getBooleanExtra(EXTRA_HISTORY_SEARCH, true);
@@ -105,7 +86,11 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         RecyclerSupport.addTo(postsRecycler)
                 .setOnNextPageRequestListener(this, adapter.getPostsBasicPartsCount(), true);
 
-        loadInitialData();
+        DaggerPostsComponent.builder()
+                .postsModule(new PostsModule(this, tag))
+                .applicationComponent(((TagopApplication) getApplication()).component())
+                .build()
+                .inject(this);
     }
 
     @Override public void onResume() {
@@ -115,6 +100,14 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         } else {
             Timber.i("should only make call");
         }
+
+        isActive = true;
+        presenter.loadPosts(false);
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        isActive = false;
     }
 
     @Override protected void onStop() {
@@ -122,72 +115,40 @@ public class PostsActivity extends AppCompatActivity implements ViewDispatch, Re
         wasStopped = true;
     }
 
-    private void loadInitialData() {
-        getIdlingResource().increment();
-        //TODO load from cache
-        refreshWidget.setRefreshing(true);
-        creator.searchTag(tag, postStore.getFirstPageIndex());
+    @Override public void setPresenter(PostsContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override public void onLoadNextPage() {
-        getIdlingResource().increment();
-        adapter.insertPageLoader();
-        creator.searchTag(tag, postStore.getNextPageIndex());
+        presenter.loadNextPosts();
     }
 
     @Override public void onRefresh() {
-        getIdlingResource().increment();
-        refreshWidget.setRefreshing(true);
-        creator.searchTag(tag, postStore.getFirstPageIndex());
+        presenter.loadPosts(true);
     }
 
-    @VisibleForTesting @Subscribe public void onStoreChange(Change change) {
-        switch (change.getStoreId()) {
-            case PostStore.ID:
-                Action action = change.getAction();
-                switch (action.getType()) {
-                    case Actions.SEARCH_TAG:
-                        boolean isFirstPage = action.get(Keys.FIRST_PAGE);
-                        updateItemsAndState(isFirstPage);
-
-                        if (getIdlingResource().isIdleNow()) {
-                            getIdlingResource().decrement();
-                        }
-                        break;
-                }
-                break;
-        }
-    }
-
-    @VisibleForTesting @Subscribe public void onActionError(ActionError error) {
-        stateSwitcher.setState(State.ERROR);
-        refreshWidget.setRefreshing(false);
-        adapter.removePageLoader();
-
-        getIdlingResource().decrement();
-    }
-
-    private void updateItemsAndState(boolean isFirstPage) {
-        ArrayList<TagEntry> items = postStore.getResults();
-
-        if (isFirstPage) {
-            stateSwitcher.setState(!items.isEmpty() ? State.CONTENT : State.CONTENT_EMPTY);
-            refreshWidget.setRefreshing(false);
+    @Override public void setPageLoader(boolean insert) {
+        if (insert) {
+            adapter.insertPageLoader();
         } else {
             adapter.removePageLoader();
         }
-        adapter.setItems(items, isFirstPage);
     }
 
-    @Override public List<? extends Store> getStoresToRegister() {
-        return Collections.singletonList(postStore);
+    @Override public void setRefreshing(boolean refreshing) {
+        refreshWidget.setRefreshing(refreshing);
     }
 
-    @VisibleForTesting @NonNull public CountingIdlingResource getIdlingResource() {
-        if (idlingResource == null) {
-            idlingResource = new CountingIdlingResource("posts");
-        }
-        return idlingResource;
+    @Override public void setItems(List<TagEntry> data, boolean clear) {
+        adapter.setItems(data, clear);
+    }
+
+    @Override public void setState(int state) {
+        stateSwitcher.setState(state);
+    }
+
+    @Override public boolean isActive() {
+        return isActive;
     }
 
     public interface State {

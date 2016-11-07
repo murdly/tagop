@@ -23,7 +23,7 @@ import com.akarbowy.tagop.ui.posts.parts.other.SeparatorView;
 import com.akarbowy.tagop.ui.posts.parts.text.TextSectionPart;
 import com.akarbowy.tagop.ui.posts.parts.text.TextSectionView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -49,7 +49,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return 6;
     }
 
-    public void setItems(ArrayList<TagEntry> entries, boolean firstPage) {
+    public void setItems(List<TagEntry> entries, boolean firstPage) {
         if (!entries.isEmpty()) {
             if (firstPage) {
                 partManager.clearBinders();

@@ -4,10 +4,6 @@ import com.akarbowy.tagop.Actions;
 import com.akarbowy.tagop.Keys;
 import com.akarbowy.tagop.data.database.DatabaseHelper;
 import com.akarbowy.tagop.data.database.TagHistory;
-import com.akarbowy.tagop.flux.Action;
-import com.akarbowy.tagop.flux.Change;
-import com.akarbowy.tagop.flux.Dispatcher;
-import com.akarbowy.tagop.flux.Store;
 import com.j256.ormlite.dao.Dao;
 import com.squareup.otto.Subscribe;
 
@@ -19,9 +15,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import okhttp3.Dispatcher;
 import timber.log.Timber;
 
-public class HistoryStore extends Store {
+public class HistoryStore {
     public static final String ID = "HistoryStore";
     public static final Comparator<TagHistory> ALPHABETICAL_COMPARATOR = new Comparator<TagHistory>() {
         @Override
@@ -35,8 +32,7 @@ public class HistoryStore extends Store {
     private Dao<TagHistory, Long> dao;
     private String currentFilter = "";
 
-    @Inject public HistoryStore(Dispatcher dispatcher, Lazy<DatabaseHelper> helper) {
-        super(dispatcher);
+    public HistoryStore(Lazy<DatabaseHelper> helper) {
         try {
             dao = helper.get().getHistoryDao();
             cached = dao.queryForAll();
@@ -46,40 +42,40 @@ public class HistoryStore extends Store {
         }
     }
 
-    @Subscribe @Override public void onAction(Action action) {
-        switch (action.getType()) {
-            case Actions.SAVE_TAG:
-                String query = action.get(Keys.QUERY);
-                TagHistory entry = new TagHistory(query);
-                try {
-                    if (!cached.contains(entry)) {
-                        workingCopies.add(entry);
-                        cached.add(entry);
-                        dao.create(entry);
-                        postStoreChange(new Change(ID, action));
-                    }
-                } catch (SQLException e) {
-                    Timber.i(e.getMessage(), "Error when creating history tags.");
-                }
-                break;
-            case Actions.CLEAR_TAG_HISTORY:
-                cached.clear();
-                workingCopies.clear();
-                try {
-                    dao.deleteBuilder().delete();
-                    postStoreChange(new Change(ID, action));
-                } catch (SQLException e) {
-                    Timber.i(e.getMessage(), "Error when deleting history tags.");
-                }
-                break;
-            case Actions.FILTER_HISTORY_TAG:
-                String q = action.get(Keys.QUERY);
-                currentFilter = q;
-                workingCopies = filter(q);
-                postStoreChange(new Change(ID, action));
-                break;
-        }
-    }
+//    @Subscribe @Override public void onAction(Action action) {
+//        switch (action.getType()) {
+//            case Actions.SAVE_TAG:
+//                String query = action.get(Keys.QUERY);
+//                TagHistory entry = new TagHistory(query);
+//                try {
+//                    if (!cached.contains(entry)) {
+//                        workingCopies.add(entry);
+//                        cached.add(entry);
+//                        dao.create(entry);
+//                        postStoreChange(new Change(ID, action));
+//                    }
+//                } catch (SQLException e) {
+//                    Timber.i(e.getMessage(), "Error when creating history tags.");
+//                }
+//                break;
+//            case Actions.CLEAR_TAG_HISTORY:
+//                cached.clear();
+//                workingCopies.clear();
+//                try {
+//                    dao.deleteBuilder().delete();
+//                    postStoreChange(new Change(ID, action));
+//                } catch (SQLException e) {
+//                    Timber.i(e.getMessage(), "Error when deleting history tags.");
+//                }
+//                break;
+//            case Actions.FILTER_HISTORY_TAG:
+//                String q = action.get(Keys.QUERY);
+//                currentFilter = q;
+//                workingCopies = filter(q);
+//                postStoreChange(new Change(ID, action));
+//                break;
+//        }
+//    }
 
     private List<TagHistory> filter(String query) {
         final String lowerCaseQuery = query.toLowerCase();

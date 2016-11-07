@@ -54,7 +54,7 @@ public class SpannableBody {
     }
 
     @SuppressLint("ParcelCreator")
-    class LocalUrlSpan extends URLSpan {
+    public class LocalUrlSpan extends URLSpan {
         final int startCharOffset = 1;
         String text;
 

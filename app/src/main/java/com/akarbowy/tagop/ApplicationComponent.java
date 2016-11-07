@@ -1,25 +1,28 @@
 package com.akarbowy.tagop;
 
-import com.akarbowy.tagop.flux.Flux;
+import com.akarbowy.tagop.data.database.PostsRepository;
+import com.akarbowy.tagop.data.database.RepositoryModule;
 import com.akarbowy.tagop.data.network.NetworkModule;
-import com.akarbowy.tagop.ui.posts.PostsActivity;
-import com.akarbowy.tagop.ui.search.MainSearchActivity;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class})
+@Component(modules = {
+        ApplicationModule.class,
+        NetworkModule.class,
+        RepositoryModule.class})
 public interface ApplicationComponent {
-    void inject(MainSearchActivity mainSearchActivity);
-    void inject(PostsActivity postsActivityActivity);
+
+    PostsRepository getPostsRepository();
 
     final class Initializer {
-        public static ApplicationComponent init(Flux flux, TagopApplication application) {
+        public static ApplicationComponent init(TagopApplication application) {
             return DaggerApplicationComponent.builder()
-                    .applicationModule(new ApplicationModule(flux, application))
+                    .applicationModule(new ApplicationModule(application))
                     .networkModule(new NetworkModule())
+                    .repositoryModule(new RepositoryModule())
                     .build();
         }
     }

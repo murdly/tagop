@@ -1,36 +1,22 @@
 package com.akarbowy.tagop;
 
-import android.app.Application;
-
-import com.akarbowy.tagop.data.database.DatabaseHelper;
-import com.akarbowy.tagop.flux.Dispatcher;
-import com.akarbowy.tagop.flux.Flux;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-
-import javax.inject.Singleton;
+import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module @Singleton
-class ApplicationModule {
+@Module
+public final class ApplicationModule {
 
-    private Application application;
-    private Flux flux;
+    private Context context;
 
-    public ApplicationModule(Flux flux, Application application) {
-        this.application = application;
-        this.flux = flux;
+    public ApplicationModule(Context context) {
+        this.context = context;
     }
 
     @Provides
-    DatabaseHelper databaseHelper(){
-        return OpenHelperManager.getHelper(application, DatabaseHelper.class);
-    }
-
-    @Provides
-    Dispatcher dispatcher(){
-        return flux.getDispatcher();
+    Context provideContext(){
+        return context;
     }
 
 }
