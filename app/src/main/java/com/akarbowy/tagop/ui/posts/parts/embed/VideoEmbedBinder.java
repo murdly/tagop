@@ -5,26 +5,26 @@ import android.net.Uri;
 import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 
 public class VideoEmbedBinder implements Binder<VideoEmbedView> {
-    private TagEntry tagEntry;
+    private PostModel post;
 
-    public VideoEmbedBinder(TagEntry model) {
-        tagEntry = model;
+    public VideoEmbedBinder(PostModel model) {
+        post = model;
     }
 
     @Override public void prepare(VideoEmbedView view) {
         view.setOnPlayVideoClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                String videoUrl = tagEntry.getEmbed().url;
+                String videoUrl = post.embedModel.url;
                 view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl)));
             }
         });
     }
 
     @Override public void bind(VideoEmbedView view) {
-        view.setPreview(tagEntry.getEmbed().previewUrl);
+        view.setPreview(post.embedModel.previewUrl);
     }
 
     @Override public void unbind(VideoEmbedView view) {

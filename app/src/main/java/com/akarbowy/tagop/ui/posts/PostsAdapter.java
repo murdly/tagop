@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.PartManager;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersPart;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersView;
@@ -29,7 +29,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final int ITEM_LOADER_VIEW_TYPE = 1000;
 
-    private PartManager<TagEntry> partManager;
+    private PartManager<PostModel> partManager;
     private boolean loaderInserted;
 
     public PostsAdapter() {
@@ -49,7 +49,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return 6;
     }
 
-    public void setItems(List<TagEntry> entries, boolean firstPage) {
+    public void setItems(List<PostModel> entries, boolean firstPage) {
         if (!entries.isEmpty()) {
             if (firstPage) {
                 partManager.clearBinders();

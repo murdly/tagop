@@ -2,19 +2,19 @@ package com.akarbowy.tagop.ui.posts.parts.embed;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.SinglePartDefinition;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
-public class ImageEmbedPart implements SinglePartDefinition<TagEntry, ImageEmbedView> {
+public class ImageEmbedPart implements SinglePartDefinition<PostModel, ImageEmbedView> {
     @Override public int getViewType() {
         return ViewType.EMBED_IMAGE;
     }
 
-    @Override public Binder<ImageEmbedView> createBinder(TagEntry model) {
+    @Override public Binder<ImageEmbedView> createBinder(PostModel model) {
         return new ImageEmbedBinder(model);
     }
 
-    @Override public boolean isNeeded(TagEntry model) {
-        return model.getEmbed().type.equals(EmbedsPart.IMAGE);
+    @Override public boolean isNeeded(PostModel model) {
+        return model.embedModel.type.equals(EmbedsPart.IMAGE);
     }
 }

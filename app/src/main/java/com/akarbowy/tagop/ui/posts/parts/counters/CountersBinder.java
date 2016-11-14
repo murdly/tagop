@@ -4,21 +4,21 @@ import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.comments.CommentsViewer;
 
 public class CountersBinder implements Binder<CountersView> {
 
-    private TagEntry tagEntry;
+    private PostModel post;
 
-    public CountersBinder(TagEntry viewObject) {
-        this.tagEntry = viewObject;
+    public CountersBinder(PostModel viewObject) {
+        this.post = viewObject;
     }
 
     @Override public void prepare(CountersView view) {
         view.setOnCommentsClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                new CommentsViewer.Builder(view.getContext(), tagEntry.comments).show();
+                new CommentsViewer.Builder(view.getContext(), post.getComments()).show();
             }
         });
     }
@@ -26,10 +26,10 @@ public class CountersBinder implements Binder<CountersView> {
     @Override public void bind(CountersView view) {
         view.setVotesCount(view.getContext().getString(
                 R.string.post_counters_votes_param,
-                tagEntry.voteCount));
+                post.voteCount));
         view.setCommentsCount(view.getContext().getString(
                 R.string.post_counters_comments_param,
-                tagEntry.commentCount));
+                post.commentCount));
     }
 
     @Override public void unbind(CountersView view) {

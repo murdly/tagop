@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,31 +19,31 @@ import timber.log.Timber;
 
 public class HeaderBinder implements Binder<HeaderView> {
 
-    private TagEntry tagEntry;
+    private PostModel post;
     private MoreActionsBottomSheet.Callback moreActionsListener;
     private String relativeDate;
 
-    public HeaderBinder(TagEntry viewObject) {
-        tagEntry = viewObject;
+    public HeaderBinder(PostModel viewObject) {
+        post = viewObject;
     }
 
     @Override public void prepare(final HeaderView view) {
         try {
-            long dateInMillis = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tagEntry.date).getTime();
+            long dateInMillis = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.date).getTime();
             relativeDate = DateUtils.getRelativeTimeSpanString(dateInMillis).toString();
         } catch (ParseException e) {
-            relativeDate = tagEntry.date;
+            relativeDate = post.date;
             Timber.e(e, "Error when parsing date.");
         }
 
         final ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         moreActionsListener = new MoreActionsBottomSheet.Callback() {
             @Override public void openInBrowser() {
-                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(tagEntry.url)));
+                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(post.url)));
             }
 
             @Override public void copyLink() {
-                ClipData clip = ClipData.newPlainText(null, tagEntry.url);
+                ClipData clip = ClipData.newPlainText(null, post.url);
                 clipboard.setPrimaryClip(clip);
 
                 CharSequence clippedText = clip.getItemAt(0).getText();
@@ -56,8 +56,8 @@ public class HeaderBinder implements Binder<HeaderView> {
     }
 
     @Override public void bind(HeaderView view) {
-        view.setAvatar(tagEntry.authorAvatar);
-        view.setTitle(tagEntry.author);
+        view.setAvatar(post.authorAvatar);
+        view.setTitle(post.author);
         view.setDate(relativeDate);
         view.setOnMoreActionsListener(moreActionsListener);
     }

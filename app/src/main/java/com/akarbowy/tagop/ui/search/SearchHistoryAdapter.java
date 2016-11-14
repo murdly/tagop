@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.database.TagHistory;
+import com.akarbowy.tagop.data.database.model.TagModel;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,11 +18,11 @@ import butterknife.ButterKnife;
 
 public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.ItemViewHolder> {
 
-    private final Comparator<TagHistory> comparator;
+    private final Comparator<TagModel> comparator;
 
-    private final SortedList<TagHistory> items = new SortedList<>(TagHistory.class, new SortedList.Callback<TagHistory>() {
+    private final SortedList<TagModel> items = new SortedList<>(TagModel.class, new SortedList.Callback<TagModel>() {
         @Override
-        public int compare(TagHistory a, TagHistory b) {
+        public int compare(TagModel a, TagModel b) {
             return comparator.compare(a, b);
         }
 
@@ -47,17 +47,17 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         }
 
         @Override
-        public boolean areContentsTheSame(TagHistory oldItem, TagHistory newItem) {
+        public boolean areContentsTheSame(TagModel oldItem, TagModel newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        public boolean areItemsTheSame(TagHistory item1, TagHistory item2) {
-            return item1 == item2;
+        public boolean areItemsTheSame(TagModel item1, TagModel item2) {
+            return item1.getId() == item2.getId();
         }
     });
 
-    public SearchHistoryAdapter(Comparator<TagHistory> comparator) {
+    public SearchHistoryAdapter(Comparator<TagModel> comparator) {
         this.comparator = comparator;
     }
 
@@ -70,8 +70,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        TagHistory tagHistory = items.get(position);
-        holder.tagNameText.setText(tagHistory.getName());
+        TagModel tag = items.get(position);
+        holder.tagNameText.setText(tag.getName());
     }
 
     @Override
@@ -79,10 +79,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return items.size();
     }
 
-    public void replaceAll(List<TagHistory> models) {
+    public void replaceAll(List<TagModel> models) {
         items.beginBatchedUpdates();
         for (int i = items.size() - 1; i >= 0; i--) {
-            final TagHistory model = items.get(i);
+            final TagModel model = items.get(i);
             if (!models.contains(model)) {
                 items.remove(model);
             }
@@ -91,7 +91,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         items.endBatchedUpdates();
     }
 
-    public TagHistory getItem(int position) {
+    public TagModel getItem(int position) {
         return items.get(position);
     }
 

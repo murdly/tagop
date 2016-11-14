@@ -1,20 +1,29 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data.database.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "tagop")
-public class TagHistory {
+@DatabaseTable(tableName = "tags")
+public class TagModel {
+
+    public static final String TAG_FIELD_NAME = "name";
 
     @DatabaseField(generatedId = true) Long id;
 
-    @DatabaseField private String tagName;
+    @DatabaseField(columnName = TAG_FIELD_NAME) private String tagName;
 
-    public TagHistory() {
+    private boolean saveInHistory = false;
+
+    public TagModel() {
     }
 
-    public TagHistory(String tag) {
+    public TagModel(String tag) {
         this.tagName = tag;
+    }
+
+    public TagModel(String tagName, boolean saveInHistory) {
+        this.tagName = tagName;
+        this.saveInHistory = saveInHistory;
     }
 
     public Long getId() {
@@ -25,11 +34,15 @@ public class TagHistory {
         return tagName;
     }
 
+    public boolean isForSaving() {
+        return saveInHistory;
+    }
+
     @Override public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TagHistory that = (TagHistory) o;
+        TagModel that = (TagModel) o;
 
         return tagName.equals(that.tagName);
 

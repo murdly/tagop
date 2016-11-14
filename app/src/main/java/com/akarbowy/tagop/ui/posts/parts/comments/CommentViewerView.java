@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
 
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.data.database.model.CommentModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class CommentViewerView extends RelativeLayout {
         commentsRecycler.setAdapter(adapter);
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<CommentModel> comments) {
         adapter.setItems(new ArrayList<>(comments));
     }
 }

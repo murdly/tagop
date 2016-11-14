@@ -11,6 +11,6 @@ public class QueryResult {
     public Meta meta;
     @SerializedName("items")
     @Expose
-    public List<TagEntry> entries;
+    public List<Post> entries;
 
 }

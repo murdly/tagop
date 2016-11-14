@@ -27,12 +27,12 @@ import static org.hamcrest.Matchers.greaterThan;
 public class PostsActivityTest {
 
     @Rule
-    public ActivityTestRule<PostsActivity> mActivityRule = new ActivityTestRule<>(PostsActivity.class, true, false);
+    public ActivityTestRule<PostsActivity> mActivityRule = new ActivityTestRule<>(PostsActivity.class, true);
     private IdlingResource idlingResource;
 
     @Test
     public void givenTag_whenResults_thenStateContent() {
-        mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "android", false));
+        mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "android"));
 //        idlingResource = mActivityRule.getActivity().getIdlingResource();
         Espresso.registerIdlingResources(idlingResource);
 
@@ -46,7 +46,7 @@ public class PostsActivityTest {
 
     @Test
     public void givenTag_whenNoResults_thenStateContentEmpty() {
-        mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "s2f1nd23ascnj2", false));
+        mActivityRule.launchActivity(PostsActivity.getStartIntent(InstrumentationRegistry.getContext(), "s2f1nd23ascnj2"));
 //        idlingResource = mActivityRule.getActivity().getIdlingResource();
         Espresso.registerIdlingResources(idlingResource);
 

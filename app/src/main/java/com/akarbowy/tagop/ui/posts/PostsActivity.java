@@ -12,41 +12,38 @@ import android.view.View;
 
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.database.model.TagModel;
 import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.utils.StateSwitcher;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class PostsActivity extends AppCompatActivity implements PostsContract.View, RecyclerSupport.OnNextPageRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
+    private static final String ACTION_SEARCH = "com.akarbowy.tagop.ACTION_SEARCH";
     private static final String EXTRA_TAG = "extra_tag";
-    private static final String EXTRA_HISTORY_SEARCH = "extra_history_search";
-    private static final String ACTION_SEARCH = "com.akarbowy.tagop.ui.posts.ACTION_SEARCH";
 
     @BindView(R.id.toolbar) Toolbar toolbarView;
     @BindView(R.id.refresh_layout) SwipeRefreshLayout refreshWidget;
     @BindView(R.id.recycler) RecyclerView postsRecycler;
     @BindViews({R.id.recycler, R.id.state_empty_content, R.id.state_general_error}) List<View> stateViews;
 
-    boolean isActive;
-    private PostsContract.Presenter presenter;
+    @Inject PostsPresenter presenter;
+    private boolean isActive;
 
     private PostsAdapter adapter;
     private StateSwitcher stateSwitcher;
 
-    private boolean isCreatedUponHistorySearch;
-    private boolean wasStopped = false;
-
-    public static Intent getStartIntent(Context context, String tag, boolean isFromHistory) {
+    public static Intent getStartIntent(Context context, String tag) {
         Intent intent = new Intent(context, PostsActivity.class);
         intent.putExtra(EXTRA_TAG, tag);
-        intent.putExtra(EXTRA_HISTORY_SEARCH, isFromHistory);
         intent.setAction(ACTION_SEARCH);
         return intent;
     }
@@ -56,16 +53,14 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         setContentView(R.layout.activity_posts);
         ButterKnife.bind(this);
 
-        String tag;
+        TagModel tag;
         if (getIntent().getAction().equals(ACTION_SEARCH)) {
-            tag = getIntent().getStringExtra(EXTRA_TAG);
-            isCreatedUponHistorySearch = getIntent().getBooleanExtra(EXTRA_HISTORY_SEARCH, true);
+            tag = new TagModel(getIntent().getStringExtra(EXTRA_TAG), true);
         } else {
-            tag = getIntent().getData().getFragment();
-            isCreatedUponHistorySearch = false;
+            tag = new TagModel(getIntent().getData().getFragment(), false);
         }
 
-        toolbarView.setTitle(tag);
+        toolbarView.setTitle(tag.getName());
         toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbarView.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -95,28 +90,13 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
 
     @Override public void onResume() {
         super.onResume();
-        if (isCreatedUponHistorySearch || wasStopped) {
-            Timber.i("should show cache and make call");
-        } else {
-            Timber.i("should only make call");
-        }
-
         isActive = true;
-        presenter.loadPosts(false);
-    }
-
-    @Override protected void onPause() {
-        super.onPause();
-        isActive = false;
+        presenter.loadPosts();
     }
 
     @Override protected void onStop() {
         super.onStop();
-        wasStopped = true;
-    }
-
-    @Override public void setPresenter(PostsContract.Presenter presenter) {
-        this.presenter = presenter;
+        isActive = false;
     }
 
     @Override public void onLoadNextPage() {
@@ -124,7 +104,7 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
     }
 
     @Override public void onRefresh() {
-        presenter.loadPosts(true);
+        presenter.loadPosts();
     }
 
     @Override public void setPageLoader(boolean insert) {
@@ -139,7 +119,7 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         refreshWidget.setRefreshing(refreshing);
     }
 
-    @Override public void setItems(List<TagEntry> data, boolean clear) {
+    @Override public void setItems(List<PostModel> data, boolean clear) {
         adapter.setItems(data, clear);
     }
 

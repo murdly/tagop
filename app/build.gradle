@@ -37,7 +37,8 @@ android {
         }
 
         applicationVariants.all { variant ->
-            variant.buildConfigField("String", "API_KEY", getSecretValueOf("API_KEY"))
+            variant.buildConfigField("String", "API_KEY",  getSecretValueOf("API_KEY"))
+//            variant.buildConfigField("String", "API_KEY", "\"uncomment when running database config\"")
         }
     }
 }

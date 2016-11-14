@@ -6,7 +6,8 @@ import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
 import com.akarbowy.tagop.data.database.PostsRepository;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.database.model.TagModel;
 
 import java.util.List;
 
@@ -14,53 +15,65 @@ import javax.inject.Inject;
 
 public class PostsPresenter implements PostsContract.Presenter {
 
-    private String tag;
+    private TagModel tag;
     private PostsRepository repository;
     private PostsContract.View view;
 
-    private CountingIdlingResource idlingResource;
-    private int page = 0;
+    private int nextPage = 1;
+    private boolean entryLoad = false;
 
-    @Inject PostsPresenter(@NonNull String tag,
+    private CountingIdlingResource idlingResource;
+
+    @Inject PostsPresenter(@NonNull TagModel tag,
                            PostsRepository repository,
                            PostsContract.View view) {
         this.tag = tag;
         this.repository = repository;
         this.view = view;
-
-        view.setPresenter(this);
     }
 
-    @Inject void setupListeners() {
-        view.setPresenter(this);
+    public void loadPosts() {
+        nextPage = 1;
+        entryLoad = true;
+        load(nextPage);
     }
 
-    private void loadPosts(boolean forceUpdate, final boolean isNextPage) {
-        getIdlingResource().increment();
+    public void loadNextPosts() {
+        entryLoad = false;
+        load(nextPage);
+    }
 
-        if (isNextPage) {
+    private void load(int page) {
+
+        if (entryLoad) {
+            view.setRefreshing(true);
+        } else {
             view.setPageLoader(true);
         }
 
-        view.setRefreshing(true);
+        repository.allowCache(entryLoad);
 
-        repository.search(tag, page + 1, new PostsRepository.GetPostsCallback() {
-            @Override public void onDataLoaded(List<TagEntry> data) {
+        if (entryLoad && tag.isForSaving()) {
+            repository.saveTagInHistory(tag);
+        }
+
+        repository.loadPosts(tag, page, new PostsRepository.GetPostsCallback() {
+            @Override public void onDataLoaded(List<PostModel> data, boolean localSource) {
                 if (!view.isActive()) {
                     return;
                 }
 
-                if (!isNextPage) {
-                    view.setState(!data.isEmpty() ? PostsActivity.State.CONTENT
-                            : PostsActivity.State.CONTENT_EMPTY);
-                    view.setRefreshing(false);
-                }
-                view.setItems(data, !isNextPage);
+                view.setRefreshing(false); //do zrobienia popup
+                view.setItems(data, entryLoad);
 
-                page++;
+                if (!localSource) {
 
-                if (getIdlingResource().isIdleNow()) {
-                    getIdlingResource().decrement();
+                    /*
+                    kolejny error state gdy: juz mamy wyniki np toast
+                    inaczej zasloni caly ekran
+                     */
+                    view.setState(!data.isEmpty() ? PostsActivity.State.CONTENT : PostsActivity.State.CONTENT_EMPTY);
+                    nextPage++;
                 }
             }
 
@@ -70,27 +83,17 @@ public class PostsPresenter implements PostsContract.Presenter {
                 }
 
                 view.setState(PostsActivity.State.ERROR);
-                view.setRefreshing(false);
 
-                if (isNextPage) {
+                if (entryLoad) {
+                    view.setRefreshing(false);
+                } else {
                     view.setPageLoader(false);
                 }
 
-                if (getIdlingResource().isIdleNow()) {
-                    getIdlingResource().decrement();
-                }
             }
         });
     }
 
-    @Override public void loadPosts(boolean forceUpdate) {
-        page = 0;
-        loadPosts(true, false);
-    }
-
-    public void loadNextPosts() {
-        loadPosts(false, true);
-    }
 
     @VisibleForTesting @NonNull public CountingIdlingResource getIdlingResource() {
         if (idlingResource == null) {

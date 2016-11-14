@@ -1,19 +1,19 @@
 package com.akarbowy.tagop.ui.posts.parts.text;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
 
 public class TextSectionBinder implements Binder<TextSectionView> {
-    private TagEntry tagEntry;
+    private PostModel post;
     private SpannableBody body;
 
-    public TextSectionBinder(TagEntry viewObject) {
-        tagEntry = viewObject;
+    public TextSectionBinder(PostModel viewObject) {
+        post = viewObject;
     }
 
     @Override public void prepare(final TextSectionView view) {
-        body = new SpannableBody().setHtmlBodyText(tagEntry.body)
+        body = new SpannableBody().setHtmlBodyText(post.body)
                 .setOnLinkClickListener(new SpannableBody.ClickableListener() {
                     @Override public void onSpoilerClick(SpannableBody unspoiled) {
                         view.setContent(unspoiled.getSpannable());

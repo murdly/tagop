@@ -1,5 +1,7 @@
 package com.akarbowy.tagop.ui.posts;
 
+import com.akarbowy.tagop.data.database.model.TagModel;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -8,22 +10,19 @@ public class PostsModule {
 
     private PostsContract.View view;
 
-    private String postsTag;
+    private TagModel postsForTag;
 
-    public PostsModule(PostsContract.View view, String postsTag) {
+    public PostsModule(PostsContract.View view, TagModel postsForTag) {
         this.view = view;
-        this.postsTag = postsTag;
+        this.postsForTag = postsForTag;
     }
 
     @Provides PostsContract.View providePostsContractView(){
         return view;
     }
 
-    @Provides String providePostsTag(){
-        return postsTag;
+    @Provides TagModel providePostsTag(){
+        return postsForTag;
     }
 
-//    @Provides PostsContract.Presenter providePresenter(PostsRepository repository){
-//        return new PostsPresenter(postsTag, repository, view);
-//    }
 }

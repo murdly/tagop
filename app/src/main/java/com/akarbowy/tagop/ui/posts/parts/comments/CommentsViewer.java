@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
-import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.data.database.model.CommentModel;
 
 import java.util.List;
 
@@ -53,9 +53,9 @@ public class CommentsViewer implements DialogInterface.OnKeyListener {
     public static class Builder {
 
         private Context context;
-        private List<Comment> comments;
+        private List<CommentModel> comments;
 
-        public Builder(Context context, List<Comment> comments) {
+        public Builder(Context context, List<CommentModel> comments) {
             this.context = context;
             this.comments = comments;
         }

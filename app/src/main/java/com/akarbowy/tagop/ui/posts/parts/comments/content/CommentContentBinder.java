@@ -1,15 +1,15 @@
 package com.akarbowy.tagop.ui.posts.parts.comments.content;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.data.database.model.CommentModel;
 import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
 
 public class CommentContentBinder implements Binder<CommentContentView> {
 
-    private final Comment comment;
+    private final CommentModel comment;
     private SpannableBody body;
 
-    public CommentContentBinder(Comment model) {
+    public CommentContentBinder(CommentModel model) {
         this.comment = model;
     }
 

@@ -16,14 +16,14 @@ public class RepositoryModule {
     @Singleton
     @Provides
     @Remote
-    PostsDataSource providePostsRemoteRepository(Lazy<WykopService> wykopService){
-        return new PostsRemoteDataSource(wykopService);
+    RemoteDataSource providePostsRemoteRepository(Lazy<WykopService> wykopService){
+        return new RemoteDataSource(wykopService);
     }
 
     @Singleton
     @Provides
     @Local
-    PostsDataSource providePostsLocalRepository(Context context){
-        return new PostsLocalDataSource(context);
+    LocalDataSource providePostsLocalRepository(Context context){
+        return new LocalDataSource(context);
     }
 }

@@ -2,19 +2,19 @@ package com.akarbowy.tagop.ui.posts.parts.text;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.SinglePartDefinition;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
-public class TextSectionPart implements SinglePartDefinition<TagEntry, TextSectionView> {
+public class TextSectionPart implements SinglePartDefinition<PostModel, TextSectionView> {
     @Override public int getViewType() {
         return ViewType.TEXT_SECTION;
     }
 
-    @Override public Binder<TextSectionView> createBinder(TagEntry viewObject) {
+    @Override public Binder<TextSectionView> createBinder(PostModel viewObject) {
         return new TextSectionBinder(viewObject);
     }
 
-    @Override public boolean isNeeded(TagEntry model) {
+    @Override public boolean isNeeded(PostModel model) {
         return true;
     }
 }

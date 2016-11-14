@@ -3,7 +3,7 @@ package com.akarbowy.tagop.ui.posts.parts.comments.footer;
 import android.text.format.DateUtils;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.data.database.model.CommentModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,10 +12,10 @@ import timber.log.Timber;
 
 public class CommentFooterBinder implements Binder<CommentFooterView> {
 
-    private final Comment comment;
+    private final CommentModel comment;
     private String relativeDate;
 
-    public CommentFooterBinder(Comment model) {
+    public CommentFooterBinder(CommentModel model) {
         this.comment = model;
     }
 

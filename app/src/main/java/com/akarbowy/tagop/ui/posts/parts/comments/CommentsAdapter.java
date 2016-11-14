@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.PartManager;
-import com.akarbowy.tagop.data.network.model.Comment;
+import com.akarbowy.tagop.data.database.model.CommentModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.comments.content.CommentContentPart;
 import com.akarbowy.tagop.ui.posts.parts.comments.content.CommentContentView;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.PartHolder> {
 
-    private PartManager<Comment> partManager;
+    private PartManager<CommentModel> partManager;
 
     public CommentsAdapter() {
         partManager = new PartManager<>();
@@ -60,7 +60,7 @@ class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.PartHolder> {
         return partManager.getItemCount();
     }
 
-    public void setItems(ArrayList<Comment> items) {
+    public void setItems(ArrayList<CommentModel> items) {
         partManager.setItemsForBinding(items);
         notifyDataSetChanged();
     }

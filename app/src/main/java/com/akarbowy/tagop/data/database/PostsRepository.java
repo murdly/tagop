@@ -1,57 +1,103 @@
 package com.akarbowy.tagop.data.database;
 
 
-import com.akarbowy.tagop.data.network.WykopService;
-import com.akarbowy.tagop.data.network.model.QueryResult;
-import com.akarbowy.tagop.data.network.model.TagEntry;
+import android.support.annotation.NonNull;
+
+import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.database.model.TagModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import dagger.Lazy;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import timber.log.Timber;
 
+
 @Singleton
-public class PostsRepository implements PostsDataSource {
+public class PostsRepository {
 
-    private Lazy<WykopService> service;
-    private final PostsDataSource localDataSource;
-    private final PostsDataSource remoteDataSource;
+    private final LocalDataSource localDataSource;
+    private final RemoteDataSource remoteDataSource;
+    private boolean supportCache = false;
 
-    @Inject public PostsRepository(@Local PostsDataSource localDataSource,
-                                   @Remote PostsDataSource remoteDataSource) {
+    @Inject public PostsRepository(@Local LocalDataSource localDataSource,
+                                   @Remote RemoteDataSource remoteDataSource) {
         this.localDataSource = localDataSource;
         this.remoteDataSource = remoteDataSource;
     }
 
-    public void search(String tag, int page, final GetPostsCallback callback) {
-        final Callback<QueryResult> request = new Callback<QueryResult>() {
-            @Override
-            public void onResponse(Call<QueryResult> call, Response<QueryResult> response) {
-                if (response.isSuccessful()) {
-                    callback.onDataLoaded(response.body().entries);
-                } else {
-                    callback.onDataNotAvailable();
-                }
+    public void getHistory(final GetHistoryCallback callback) {
+        localDataSource.getHistory(new LocalDataSource.GetSearchHistoryCallback() {
+            @Override public void onDataLoaded(List<TagModel> data) {
+                callback.onDataLoaded(data);
             }
 
-            @Override
-            public void onFailure(Call<QueryResult> call, Throwable t) {
-                Timber.e(t, "fail");
+            @Override public void onDataNotAvailable() {
                 callback.onDataNotAvailable();
             }
-        };
+        });
+    }
 
-        service.get().search(tag, page).enqueue(request);
+    public void loadPosts(@NonNull final TagModel tag, @NonNull final int page, @NonNull final GetPostsCallback callback) {
+        if (supportCache) {
+            localDataSource.loadPosts(tag, page, new LocalDataSource.LoadPostsCallback() {
+                @Override public void onDataLoaded(List<PostModel> data) {
+                    Timber.i("local callback items: %s", data.size());
+                    callback.onDataLoaded(data, true);
+                }
+
+                @Override public void onDataNotAvailable() {
+                    Timber.i("local");
+                }
+            });
+        }
+
+        remoteDataSource.loadPosts(tag, page, new LocalDataSource.LoadPostsCallback() {
+            @Override public void onDataLoaded(List<PostModel> data) {
+                Timber.i("remote callback items: %s", data.size());
+                if (supportCache) {
+                    refreshCachedPosts(tag, data);
+                }
+                callback.onDataLoaded(data, false);
+            }
+
+            @Override public void onDataNotAvailable() {
+                Timber.i("remote");
+                callback.onDataNotAvailable();
+            }
+        });
+    }
+
+    public void saveTagInHistory(@NonNull TagModel tag) {
+        localDataSource.saveTag(tag);
+    }
+
+    public void allowCache(boolean allow) {
+        this.supportCache = allow;
+    }
+
+    private void refreshCachedPosts(TagModel tag, List<PostModel> posts) {
+        for (PostModel p : posts) {
+            p.setTag(tag.getName());
+        }
+
+        localDataSource.deletePostsWithTag(tag);
+        localDataSource.savePosts(posts);
+    }
+
+    public void deleteSearchHistory() {
+        localDataSource.deleteHistory();
     }
 
     public interface GetPostsCallback {
-        void onDataLoaded(List<TagEntry> data);
+        void onDataLoaded(List<PostModel> data, boolean localSource);
+
+        void onDataNotAvailable();
+    }
+
+    public interface GetHistoryCallback {
+        void onDataLoaded(List<TagModel> data);
 
         void onDataNotAvailable();
     }
