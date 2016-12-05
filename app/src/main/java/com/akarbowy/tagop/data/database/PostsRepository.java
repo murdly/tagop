@@ -1,6 +1,7 @@
 package com.akarbowy.tagop.data.database;
 
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.akarbowy.tagop.data.database.model.PostModel;
@@ -28,7 +29,7 @@ public class PostsRepository {
     }
 
     public void getHistory(final GetHistoryCallback callback) {
-        localDataSource.getHistory(new LocalDataSource.GetSearchHistoryCallback() {
+        localDataSource.getTags(new LocalDataSource.GetSearchHistoryCallback() {
             @Override public void onDataLoaded(List<TagModel> data) {
                 callback.onDataLoaded(data);
             }
@@ -44,7 +45,7 @@ public class PostsRepository {
             localDataSource.loadPosts(tag, page, new LocalDataSource.LoadPostsCallback() {
                 @Override public void onDataLoaded(List<PostModel> data) {
                     Timber.i("local callback items: %s", data.size());
-                    callback.onDataLoaded(data, true);
+                    callback.onDataLoaded(data, false);
                 }
 
                 @Override public void onDataNotAvailable() {
@@ -56,10 +57,10 @@ public class PostsRepository {
         remoteDataSource.loadPosts(tag, page, new LocalDataSource.LoadPostsCallback() {
             @Override public void onDataLoaded(List<PostModel> data) {
                 Timber.i("remote callback items: %s", data.size());
-                if (supportCache) {
+                if (page == 1) {
                     refreshCachedPosts(tag, data);
                 }
-                callback.onDataLoaded(data, false);
+                callback.onDataLoaded(data, true);
             }
 
             @Override public void onDataNotAvailable() {
@@ -77,17 +78,29 @@ public class PostsRepository {
         this.supportCache = allow;
     }
 
-    private void refreshCachedPosts(TagModel tag, List<PostModel> posts) {
-        for (PostModel p : posts) {
-            p.setTag(tag.getName());
-        }
+    private void refreshCachedPosts(final TagModel tag, final List<PostModel> posts) {
+        AsyncTask.execute(new Runnable() {
+            @Override public void run() {
+                for (PostModel p : posts) {
+                    p.setTag(tag);
+                }
 
-        localDataSource.deletePostsWithTag(tag);
-        localDataSource.savePosts(posts);
+                localDataSource.deleteTagPosts(tag);
+                localDataSource.savePosts(posts);
+            }
+        });
     }
 
     public void deleteSearchHistory() {
-        localDataSource.deleteHistory();
+        localDataSource.deleteAllTags();
+    }
+
+    public void deleteHistoryEntry(final TagModel entry){
+        AsyncTask.execute(new Runnable() {
+            @Override public void run() {
+                localDataSource.deleteTag(entry);
+            }
+        });
     }
 
     public interface GetPostsCallback {

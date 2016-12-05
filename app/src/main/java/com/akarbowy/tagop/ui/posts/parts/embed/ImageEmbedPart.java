@@ -15,6 +15,6 @@ public class ImageEmbedPart implements SinglePartDefinition<PostModel, ImageEmbe
     }
 
     @Override public boolean isNeeded(PostModel model) {
-        return model.embedModel.type.equals(EmbedsPart.IMAGE);
+        return model.getEmbed().getType().equals(EmbedsPart.IMAGE);
     }
 }

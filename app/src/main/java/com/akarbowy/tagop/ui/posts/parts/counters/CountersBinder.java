@@ -26,10 +26,10 @@ public class CountersBinder implements Binder<CountersView> {
     @Override public void bind(CountersView view) {
         view.setVotesCount(view.getContext().getString(
                 R.string.post_counters_votes_param,
-                post.voteCount));
+                post.getVoteCount()));
         view.setCommentsCount(view.getContext().getString(
                 R.string.post_counters_comments_param,
-                post.commentCount));
+                post.getCommentCount()));
     }
 
     @Override public void unbind(CountersView view) {

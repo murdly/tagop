@@ -15,6 +15,6 @@ public class CommentImageEmbedPart implements SinglePartDefinition<CommentModel,
     }
 
     @Override public boolean isNeeded(CommentModel model) {
-        return model.embedModel.type.equals(CommentEmbedsPart.IMAGE);
+        return model.getEmbed().getType().equals(CommentEmbedsPart.IMAGE);
     }
 }

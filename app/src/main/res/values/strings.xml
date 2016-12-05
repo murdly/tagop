@@ -8,6 +8,8 @@
     <string name="state_history_empty_title">Pusta historia</string>
     <string name="state_history_empty_instruction">Naciśnij \'Szukaj\' by znaleźć wpisy</string>
     <string name="state_history_empty_filter_instruction">Kliknij aby wyszukać &lt;b>#%1$s&lt;/b></string>
+    <string name="dialog_msg_delete">Usunąć?</string>
+    <string name="dialog_button_ok">Usuń</string>
     <!--end of search history screen-->
 
     <!--search results screen-->
@@ -18,8 +20,11 @@
     <string name="post_more_open_in_browser">Otwórz w przeglądarce</string>
     <string name="post_more_copy_link">Kopiuj link</string>
     <string name="toast_copy_link_success">Skopiowano %1$s</string>
+
     <string name="state_results_empty_title">Nic nie znaleziono</string>
     <string name="state_results_empty_instruction">Spróbuj wyszukać inny tag</string>
+    <string name="toast_loading_error">Błąd podczas ładowania</string>
+    <string name="text_show_new_posts">Pokaż nowe wpisy</string>
     <!--end of search results screen-->
 
     <!--shared-->

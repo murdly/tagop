@@ -29,21 +29,21 @@ public class HeaderBinder implements Binder<HeaderView> {
 
     @Override public void prepare(final HeaderView view) {
         try {
-            long dateInMillis = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.date).getTime();
+            long dateInMillis = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(post.getDate()).getTime();
             relativeDate = DateUtils.getRelativeTimeSpanString(dateInMillis).toString();
         } catch (ParseException e) {
-            relativeDate = post.date;
+            relativeDate = post.getDate();
             Timber.e(e, "Error when parsing date.");
         }
 
         final ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         moreActionsListener = new MoreActionsBottomSheet.Callback() {
             @Override public void openInBrowser() {
-                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(post.url)));
+                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(post.getUrl())));
             }
 
             @Override public void copyLink() {
-                ClipData clip = ClipData.newPlainText(null, post.url);
+                ClipData clip = ClipData.newPlainText(null, post.getUrl());
                 clipboard.setPrimaryClip(clip);
 
                 CharSequence clippedText = clip.getItemAt(0).getText();
@@ -56,8 +56,8 @@ public class HeaderBinder implements Binder<HeaderView> {
     }
 
     @Override public void bind(HeaderView view) {
-        view.setAvatar(post.authorAvatar);
-        view.setTitle(post.author);
+        view.setAvatar(post.getAuthorAvatar());
+        view.setTitle(post.getAuthor());
         view.setDate(relativeDate);
         view.setOnMoreActionsListener(moreActionsListener);
     }

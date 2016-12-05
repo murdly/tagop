@@ -15,6 +15,6 @@ public class VideoEmbedPart implements SinglePartDefinition<PostModel, VideoEmbe
     }
 
     @Override public boolean isNeeded(PostModel model) {
-        return model.embedModel.type.equals(EmbedsPart.VIDEO);
+        return model.getEmbed().getType().equals(EmbedsPart.VIDEO);
     }
 }

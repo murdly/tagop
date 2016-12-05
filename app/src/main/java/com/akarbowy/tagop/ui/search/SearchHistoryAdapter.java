@@ -53,7 +53,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
         @Override
         public boolean areItemsTheSame(TagModel item1, TagModel item2) {
-            return item1.getId() == item2.getId();
+            return item1.equals(item2);
         }
     });
 
@@ -71,7 +71,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         TagModel tag = items.get(position);
-        holder.tagNameText.setText(tag.getName());
+        holder.tagNameText.setText(tag.getTitle());
     }
 
     @Override

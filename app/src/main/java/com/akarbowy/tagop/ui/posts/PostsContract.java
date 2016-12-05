@@ -2,7 +2,6 @@ package com.akarbowy.tagop.ui.posts;
 
 
 import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.network.model.Post;
 
 import java.util.List;
 
@@ -14,9 +13,13 @@ public interface PostsContract {
 
         void setRefreshing(boolean refreshing);
 
-        void setState(int state);
+        void setActionIndicator(boolean visible);
 
-        void setItems(List<PostModel> data, boolean clear);
+        void showError(boolean firstPage);
+
+        void setItems(List<PostModel> data, boolean clearAndTop);
+
+        boolean isAtTop();
 
         boolean isActive();
 
@@ -24,9 +27,11 @@ public interface PostsContract {
 
     interface Presenter {
 
-        void loadPosts();
+        void loadPosts(boolean entry);
 
         void loadNextPosts();
+
+        void popFreshPosts();
 
     }
 }

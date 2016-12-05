@@ -1,19 +1,21 @@
 package com.akarbowy.tagop.data.database;
 
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.akarbowy.tagop.data.database.PostsPersistenceContract.CommentEntry;
+import com.akarbowy.tagop.data.database.PostsPersistenceContract.EmbedEntry;
+import com.akarbowy.tagop.data.database.PostsPersistenceContract.PostEntry;
+import com.akarbowy.tagop.data.database.TagsPersistenceContract.TagEntry;
 import com.akarbowy.tagop.data.database.model.CommentModel;
 import com.akarbowy.tagop.data.database.model.EmbedModel;
-import com.akarbowy.tagop.data.database.model.PostDataMapper;
 import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.data.database.model.TagModel;
-import com.akarbowy.tagop.data.network.model.Comment;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.DeleteBuilder;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,54 +24,242 @@ import javax.inject.Singleton;
 
 import timber.log.Timber;
 
+
 @Singleton
 public class LocalDataSource {
 
-    private final DatabaseHelper helper;
-    private Dao<TagModel, Integer> tagDao;
-    private Dao<PostModel, Integer> postDao;
-    private Dao<CommentModel, Integer> commentDao;
-    private Dao<EmbedModel, Integer> embedDao;
+    private final DatabaseHelper dbHelper;
 
     @Inject public LocalDataSource(Context context) {
-        helper = new DatabaseHelper(context);
-        try {
-            tagDao = helper.getTagDao();
-            postDao = helper.getPostDao();
-            commentDao = helper.getCommentDao();
-            embedDao = helper.getEmbedDao();
-        } catch (SQLException e) {
-            Timber.e(e.getMessage(), "Error when getting daos.");
-        }
+        dbHelper = new DatabaseHelper(context);
     }
 
-    public void getHistory(GetSearchHistoryCallback callback) {
+    public void getTags(GetSearchHistoryCallback callback) {
+        List<TagModel> tags = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                TagEntry.COLUMN_NAME_ENTRY_ID,
+                TagEntry.COLUMN_NAME_TITLE
+        };
+
         try {
-            callback.onDataLoaded(tagDao.queryForAll());
-        } catch (SQLException e) {
+            Cursor c = db.query(
+                    TagEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+            if (c != null && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String itemId = c.getString(c.getColumnIndexOrThrow(TagEntry.COLUMN_NAME_ENTRY_ID));
+                    String title = c.getString(c.getColumnIndexOrThrow(TagEntry.COLUMN_NAME_TITLE));
+                    TagModel task = new TagModel(itemId, title);
+                    tags.add(task);
+                }
+            }
+            if (c != null) {
+                c.close();
+            }
+        } finally {
+//            db.close();
+        }
+
+
+        if (tags.isEmpty()) {
             callback.onDataNotAvailable();
-            Timber.e(e.getMessage(), "Error when querying for history tags.");
+        } else {
+            callback.onDataLoaded(tags);
         }
+
     }
 
-    public void deleteHistory() {
-        try {
-            tagDao.deleteBuilder().delete();
-            // delete posts
-        } catch (SQLException e) {
-            Timber.i(e.getMessage(), "Error when deleting history tags.");
-        }
+    public void deleteAllTags() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        db.delete(EmbedEntry.TABLE_NAME, null, null);
+        db.delete(TagEntry.TABLE_NAME, null, null);
+        db.delete(PostEntry.TABLE_NAME, null, null);
+        db.delete(CommentEntry.TABLE_NAME, null, null);
+
+        db.close();
     }
 
     public void saveTag(TagModel tag) {
-        try {
-            boolean nameNotExists = tagDao.queryForEq(TagModel.TAG_FIELD_NAME, tag.getName()).isEmpty();
-            if (nameNotExists) {
-                tagDao.create(tag);
-            }
-        } catch (SQLException e) {
-            Timber.e(e.getMessage(), "Error when saving post.");
+        if (tag == null) {
+            Timber.i("Tag is null.");
+            return;
         }
+
+        if (isTagAlreadySaved(tag.getTitle())) {
+            return;
+        }
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TagEntry.COLUMN_NAME_ENTRY_ID, tag.getId());
+        values.put(TagEntry.COLUMN_NAME_TITLE, tag.getTitle());
+
+        db.insert(TagEntry.TABLE_NAME, null, values);
+
+        db.close();
+    }
+
+    private boolean isTagAlreadySaved(@NonNull String tagTitle) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {TagEntry.COLUMN_NAME_TITLE,};
+        String selection = TagEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        String[] selectionArgs = {tagTitle};
+
+        Cursor c = db.query(
+                TagEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        boolean tagExists = c != null && c.getCount() > 0;
+        if (c != null) {
+            c.close();
+        }
+
+        db.close();
+
+        return tagExists;
+    }
+
+    public void deleteTag(TagModel tag) {
+        deleteTag(tag.getTitle());
+        deleteTagPosts(tag);
+    }
+
+    private void deleteTag(@NonNull String tagTitle) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String selection = TagEntry.COLUMN_NAME_TITLE + " LIKE ?";
+        String[] selectionArgs = {tagTitle};
+
+        db.delete(TagEntry.TABLE_NAME, selection, selectionArgs);
+
+        db.close();
+    }
+
+    public void deleteTagPosts(TagModel tag) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        try {
+            List<String> linkedPostsIds = getPostIds(tag.getTitle(), db);
+
+            for (String postId : linkedPostsIds) {
+                String postEmbedId = getPostEmbedId(postId);
+                if (!postEmbedId.isEmpty()) {
+                    db.delete(EmbedEntry.TABLE_NAME,
+                            EmbedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?",
+                            new String[]{postEmbedId});
+                }
+
+                for (String commentEmbedId : getCommentEmbedIds(postId)) {
+                    db.delete(EmbedEntry.TABLE_NAME,
+                            EmbedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?",
+                            new String[]{commentEmbedId});
+
+                }
+
+                db.delete(CommentEntry.TABLE_NAME,
+                        CommentEntry.COLUMN_NAME_POST_ENTRY_ID + " LIKE ?",
+                        new String[]{postId});
+
+                db.delete(PostEntry.TABLE_NAME,
+                        PostEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?",
+                        new String[]{postId});
+            }
+        } finally {
+//            db.close();
+        }
+    }
+
+    private List<String> getPostIds(@NonNull String tagTitle, SQLiteDatabase db) {
+        List<String> postsIds = new ArrayList<>();
+
+        String[] projection = {
+                PostEntry.COLUMN_NAME_ENTRY_ID,
+        };
+
+        String selection = PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE + " LIKE ?";
+        String[] selectionArgs = {tagTitle};
+
+        Cursor c = db.query(
+                PostEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String postId = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_ENTRY_ID));
+                postsIds.add(postId);
+            }
+        }
+
+        if (c != null) {
+            c.close();
+        }
+
+        return postsIds;
+    }
+
+    private String getPostEmbedId(@NonNull String postId) {
+        String embedId = "";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                PostEntry.COLUMN_NAME_ENTRY_ID,
+        };
+
+        String selection = PostEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = {postId};
+
+        try {
+            Cursor c = db.query(
+                    PostEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+            if (c != null && c.getCount() > 0) {
+                c.moveToFirst();
+                embedId = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_ENTRY_ID));
+            }
+
+            if (c != null) {
+                c.close();
+            }
+
+        } finally {
+//            db.close();
+        }
+
+
+        return embedId;
+    }
+
+    private List<String> getCommentEmbedIds(@NonNull String postId) {
+        List<String> embedsIds = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                CommentEntry.COLUMN_NAME_ENTRY_ID,
+        };
+
+        String selection = CommentEntry.COLUMN_NAME_POST_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = {postId};
+
+        Cursor c = db.query(
+                CommentEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String embedId = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_ENTRY_ID));
+                embedsIds.add(embedId);
+            }
+        }
+
+        if (c != null) {
+            c.close();
+        }
+
+//        db.close();
+
+        return embedsIds;
     }
 
     public void loadPosts(@NonNull TagModel tag, int page, @NonNull LoadPostsCallback callback) {
@@ -77,53 +267,200 @@ public class LocalDataSource {
             callback.onDataNotAvailable();
             return;
         }
-        List<PostModel> postModels = new ArrayList<>();
-        try {
-            postModels = postDao.queryForEq(PostModel.POST_FIELD_TAG, tag.getName());
-        } catch (SQLException e) {
-            Timber.e(e.getMessage(), "Error when loading post from local source.");
-        } finally {
-            callback.onDataLoaded(postModels);
+
+        List<PostModel> posts = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                PostEntry.COLUMN_NAME_ENTRY_ID,
+                PostEntry.COLUMN_NAME_AUTHOR,
+                PostEntry.COLUMN_NAME_AUTHOR_AVATAR,
+                PostEntry.COLUMN_NAME_DATE,
+                PostEntry.COLUMN_NAME_BODY,
+                PostEntry.COLUMN_NAME_URL,
+                PostEntry.COLUMN_NAME_VOTE_COUNT,
+                PostEntry.COLUMN_NAME_COMMENT_COUNT
+        };
+        String selection = PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE + " LIKE ?";
+        String[] selectionArgs = {tag.getTitle()};
+
+        Cursor c = db.query(
+                PostEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String postId = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_ENTRY_ID));
+                String author = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_AUTHOR));
+                String authorAvatar = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_AUTHOR_AVATAR));
+                String date = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_DATE));
+                String body = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_BODY));
+                String url = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_URL));
+                String voteCount = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_VOTE_COUNT));
+                String commentCount = c.getString(c.getColumnIndexOrThrow(PostEntry.COLUMN_NAME_COMMENT_COUNT));
+
+                PostModel post = new PostModel(Integer.valueOf(postId));
+                post.setTag(tag);
+                post.setAuthor(author);
+                post.setAuthorAvatar(authorAvatar);
+                post.setDate(date);
+                post.setBody(body);
+                post.setUrl(url);
+                post.setVoteCount(Integer.valueOf(voteCount));
+                post.setCommentCount(Integer.valueOf(commentCount));
+
+                if (post.getCommentCount() > 0) {
+                    post.setComments(getComments(postId));
+                }
+
+                List<EmbedModel> embeds = getEmbeds(postId);
+                if (!embeds.isEmpty()) {
+                    post.setEmbed(embeds.get(0));
+                }
+                posts.add(post);
+            }
+        }
+        if (c != null) {
+            c.close();
         }
 
+//        db.close();
+
+        if (posts.isEmpty()) {
+            callback.onDataNotAvailable();
+        } else {
+            callback.onDataLoaded(posts);
+        }
+
+    }
+
+    private List<CommentModel> getComments(@NonNull String originId) {
+        List<CommentModel> comments = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                CommentEntry.COLUMN_NAME_ENTRY_ID,
+                CommentEntry.COLUMN_NAME_AUTHOR,
+                CommentEntry.COLUMN_NAME_AUTHOR_AVATAR,
+                CommentEntry.COLUMN_NAME_DATE,
+                CommentEntry.COLUMN_NAME_BODY,
+                CommentEntry.COLUMN_NAME_VOTE_COUNT,
+                CommentEntry.COLUMN_NAME_USER_VOTE,
+                CommentEntry.COLUMN_NAME_TYPE,
+                CommentEntry.COLUMN_NAME_POST_ENTRY_ID
+        };
+        String selection = CommentEntry.COLUMN_NAME_POST_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = {originId};
+
+        Cursor c = db.query(
+                CommentEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String commentId = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_ENTRY_ID));
+                String author = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_AUTHOR));
+                String authorAvatar = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_AUTHOR_AVATAR));
+                String date = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_DATE));
+                String body = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_BODY));
+                String voteCount = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_VOTE_COUNT));
+                String userVote = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_USER_VOTE));
+                String type = c.getString(c.getColumnIndexOrThrow(CommentEntry.COLUMN_NAME_TYPE));
+
+                CommentModel model = new CommentModel();
+                model.setCommentId(Integer.valueOf(commentId));
+                model.setAuthor(author);
+                model.setAuthorAvatar(authorAvatar);
+                model.setDate(date);
+                model.setBody(body);
+                model.setVoteCount(Integer.valueOf(voteCount));
+                model.setUserVote(Integer.valueOf(userVote));
+                model.setType(type);
+
+                List<EmbedModel> embeds = getEmbeds(commentId);
+                if (!embeds.isEmpty()) {
+                    model.setEmbed(embeds.get(0));
+                }
+                model.setPostEntryId(Integer.valueOf(originId));
+                comments.add(model);
+            }
+        }
+        if (c != null) {
+            c.close();
+        }
+
+//        db.close();
+
+        return comments;
+    }
+
+    private List<EmbedModel> getEmbeds(@NonNull String originId) {
+        List<EmbedModel> embeds = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                EmbedEntry.COLUMN_NAME_ENTRY_ID,
+                EmbedEntry.COLUMN_NAME_TYPE,
+                EmbedEntry.COLUMN_NAME_PREVIEW_URL,
+                EmbedEntry.COLUMN_NAME_URL
+        };
+        String selection = EmbedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = {originId};
+
+        Cursor c = db.query(
+                EmbedEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String id = c.getString(c.getColumnIndexOrThrow(EmbedEntry.COLUMN_NAME_ENTRY_ID));
+                String type = c.getString(c.getColumnIndexOrThrow(EmbedEntry.COLUMN_NAME_TYPE));
+                String previewUrl = c.getString(c.getColumnIndexOrThrow(EmbedEntry.COLUMN_NAME_PREVIEW_URL));
+                String url = c.getString(c.getColumnIndexOrThrow(EmbedEntry.COLUMN_NAME_URL));
+
+                EmbedModel embedModel = new EmbedModel(id);
+                embedModel.setType(type);
+                embedModel.setPreviewUrl(previewUrl);
+                embedModel.setUrl(url);
+                embeds.add(embedModel);
+            }
+        }
+        if (c != null) {
+            c.close();
+        }
+
+//        db.close();
+
+        return embeds;
     }
 
     public void savePosts(List<PostModel> posts) {
-        for (PostModel post : posts) {
-            try {
-                for (Comment comment : post.comments) {
-                    CommentModel commentModel = PostDataMapper.mapComment(post, comment);
-                    int cc = commentDao.create(commentModel);
-//                    Timber.i("Save status cc:%s", cc);
-                }
-                int ec = embedDao.create(post.embedModel);
-                int pc = postDao.create(post);
-//                Timber.i("Save status p:%s, e:%s", pc, ec);
-            } catch (SQLException e) {
-                Timber.e(e.getMessage(), "Error when saving post.");
-            }
-        }
-    }
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-//    public void deletePost(PostModel postModel) {
-//        postModel.commentsModel.clear();
-//        try {
-//            postDao.delete(postModel);
-//        } catch (SQLException e) {
-//            Timber.e(e.getMessage(), "Error when deleting post.");
-//        }
-//    }
-
-    public void deletePostsWithTag(TagModel tag) {
         try {
-            DeleteBuilder<PostModel, Integer> deleteBuilder = postDao.deleteBuilder();
-            deleteBuilder.where().eq(PostModel.POST_FIELD_TAG, tag.getName());
-            deleteBuilder.delete();
-        } catch (SQLException e) {
-            Timber.e(e.getMessage(), "Error when deleting post.");
+            for (PostModel post : posts) {
+                for (CommentModel c : post.getComments()) {
+                    if (c.getEmbed() != null) {
+                        db.insert(PostsPersistenceContract.EmbedEntry.TABLE_NAME, null,
+                                PostsPersistenceContract.EmbedEntry.put(c.getEmbed(), c.getCommentId()));
+                    }
+                    db.insert(PostsPersistenceContract.CommentEntry.TABLE_NAME, null,
+                            PostsPersistenceContract.CommentEntry.put(c));
+                }
+
+                if (post.getEmbed() != null) {
+                    db.insert(PostsPersistenceContract.EmbedEntry.TABLE_NAME, null,
+                            PostsPersistenceContract.EmbedEntry.put(post.getEmbed(), post.getPostId()));
+                }
+                db.insert(PostsPersistenceContract.PostEntry.TABLE_NAME, null,
+                        PostsPersistenceContract.PostEntry.put(post));
+
+            }
+        } finally {
+//            db.close();
+
         }
     }
-
 
     public interface LoadPostsCallback {
         void onDataLoaded(List<PostModel> data);

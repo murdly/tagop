@@ -13,7 +13,7 @@ public class EmbedsPart implements GroupPartDefinition<PostModel> {
     public static final String VIDEO = "video";
 
     @Override public boolean isNeeded(PostModel model) {
-        return model.embedModel != null;
+        return model.getEmbed() != null;
     }
 
     @Override public List<PartDefinition<PostModel>> getChildren(PostModel model) {

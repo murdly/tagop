@@ -13,7 +13,7 @@ public class TextSectionBinder implements Binder<TextSectionView> {
     }
 
     @Override public void prepare(final TextSectionView view) {
-        body = new SpannableBody().setHtmlBodyText(post.body)
+        body = new SpannableBody().setHtmlBodyText(post.getBody())
                 .setOnLinkClickListener(new SpannableBody.ClickableListener() {
                     @Override public void onSpoilerClick(SpannableBody unspoiled) {
                         view.setContent(unspoiled.getSpannable());

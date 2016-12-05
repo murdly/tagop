@@ -33,7 +33,7 @@
         android:drawablePadding="@dimen/padding_small"
         android:gravity="center_vertical"
         android:text="@string/lorem_digit"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/item_post_like"
         android:textSize="@dimen/comment_info"/>
 
 </LinearLayout>

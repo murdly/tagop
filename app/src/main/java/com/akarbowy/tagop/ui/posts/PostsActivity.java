@@ -3,12 +3,15 @@ package com.akarbowy.tagop.ui.posts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
@@ -24,15 +27,18 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PostsActivity extends AppCompatActivity implements PostsContract.View, RecyclerSupport.OnNextPageRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ACTION_SEARCH = "com.akarbowy.tagop.ACTION_SEARCH";
     private static final String EXTRA_TAG = "extra_tag";
 
+    @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbarView;
     @BindView(R.id.refresh_layout) SwipeRefreshLayout refreshWidget;
     @BindView(R.id.recycler) RecyclerView postsRecycler;
+    @BindView(R.id.action_view) TextView actionView;
     @BindViews({R.id.recycler, R.id.state_empty_content, R.id.state_general_error}) List<View> stateViews;
 
     @Inject PostsPresenter presenter;
@@ -40,6 +46,7 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
 
     private PostsAdapter adapter;
     private StateSwitcher stateSwitcher;
+    private LinearLayoutManager layoutManager;
 
     public static Intent getStartIntent(Context context, String tag) {
         Intent intent = new Intent(context, PostsActivity.class);
@@ -60,7 +67,7 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
             tag = new TagModel(getIntent().getData().getFragment(), false);
         }
 
-        toolbarView.setTitle(tag.getName());
+        toolbarView.setTitle(tag.getTitle());
         toolbarView.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbarView.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
@@ -71,7 +78,8 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         refreshWidget.setOnRefreshListener(this);
 
         adapter = new PostsAdapter();
-        postsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        postsRecycler.setLayoutManager(layoutManager);
         postsRecycler.setHasFixedSize(true);
         postsRecycler.setAdapter(adapter);
 
@@ -86,12 +94,17 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
                 .applicationComponent(((TagopApplication) getApplication()).component())
                 .build()
                 .inject(this);
+
+        isActive = true;
+        presenter.loadPosts(true);
     }
 
     @Override public void onResume() {
         super.onResume();
-        isActive = true;
-        presenter.loadPosts();
+        if (!isActive) {
+            isActive = true;
+            presenter.loadPosts(false);
+        }
     }
 
     @Override protected void onStop() {
@@ -99,12 +112,16 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         isActive = false;
     }
 
+    @OnClick(R.id.action_view) public void showFreshData() {
+        presenter.popFreshPosts();
+    }
+
     @Override public void onLoadNextPage() {
         presenter.loadNextPosts();
     }
 
     @Override public void onRefresh() {
-        presenter.loadPosts();
+        presenter.loadPosts(false);
     }
 
     @Override public void setPageLoader(boolean insert) {
@@ -119,12 +136,31 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         refreshWidget.setRefreshing(refreshing);
     }
 
-    @Override public void setItems(List<PostModel> data, boolean clear) {
-        adapter.setItems(data, clear);
+    @Override public void setActionIndicator(boolean visible) {
+        actionView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    @Override public void setState(int state) {
-        stateSwitcher.setState(state);
+    @Override public void showError(boolean firstPage) {
+        if (adapter.getItemCount() == 0) {
+            stateSwitcher.setState(State.ERROR);
+        } else {
+            Toast.makeText(this, R.string.toast_loading_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override public void setItems(List<PostModel> data, boolean replaceAtTop) {
+        adapter.setItems(data, replaceAtTop);
+
+        stateSwitcher.setState(!data.isEmpty() ? PostsActivity.State.CONTENT : PostsActivity.State.CONTENT_EMPTY);
+
+        if (replaceAtTop) {
+            layoutManager.scrollToPosition(0);
+            appBarLayout.setExpanded(true);
+        }
+    }
+
+    @Override public boolean isAtTop() {
+        return adapter.getItemCount() == 0 || layoutManager.findFirstVisibleItemPosition() == 0;
     }
 
     @Override public boolean isActive() {

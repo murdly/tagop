@@ -1,53 +1,110 @@
 package com.akarbowy.tagop.data.database.model;
 
 
-import com.akarbowy.tagop.data.network.model.Comment;
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@DatabaseTable(tableName = "posts")
 public class PostModel {
 
-    public static final String POST_FIELD_TAG = "for_tag";
+    private Integer postId;
+    private TagModel tag;
 
-    @DatabaseField(columnName = POST_FIELD_TAG) String tag;
-
-    @DatabaseField(id = true) Integer id;
-    @DatabaseField public String author;
-    @DatabaseField public String authorAvatar;
-    @DatabaseField public String date;
-    @DatabaseField public String body;
-    @DatabaseField String source;
-    @DatabaseField public String url;
-    @DatabaseField public Integer voteCount;
-    @DatabaseField public Integer commentCount;
-    // model.comments needs to be created via dao first (due to ForeignCollection)
-    @ForeignCollectionField public ForeignCollection<CommentModel> commentsModel;
-    @DatabaseField(foreign = true,
-            foreignAutoRefresh = true,
-            columnDefinition = "integer references embeds(id) on delete cascade") public EmbedModel embedModel;
-
-    public List<Comment> comments;
+    private String author;
+    private String authorAvatar;
+    private String date;
+    private String body;
+    private String url;
+    private Integer voteCount;
+    private Integer commentCount;
+    private List<CommentModel> comments = new ArrayList<>();
+    private EmbedModel embedModel;
 
 
-    public PostModel() {
+    public PostModel(Integer postId) {
+        this.postId = postId;
     }
 
-    public PostModel(Integer id) {
-        this.id = id;
+    public List<CommentModel> getComments() {
+        return comments;
     }
 
-    public void setTag(String tag) {
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAuthorAvatar() {
+        return authorAvatar;
+    }
+
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public EmbedModel getEmbed() {
+        return embedModel;
+    }
+
+    public TagModel getTag() {
+        return tag;
+    }
+
+    public void setTag(TagModel tag) {
         this.tag = tag;
     }
 
+    public Integer getPostId() {
+        return postId;
+    }
 
-    public List<CommentModel> getComments() {
-        return new ArrayList<>();
+    public void setEmbed(EmbedModel embedModel) {
+        this.embedModel = embedModel;
     }
 }

@@ -9,6 +9,7 @@ import com.akarbowy.tagop.data.database.PostsRepository;
 import com.akarbowy.tagop.data.database.model.PostModel;
 import com.akarbowy.tagop.data.database.model.TagModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,8 +20,8 @@ public class PostsPresenter implements PostsContract.Presenter {
     private PostsRepository repository;
     private PostsContract.View view;
 
+    private List<PostModel> freshDataToPickUp;
     private int nextPage = 1;
-    private boolean entryLoad = false;
 
     private CountingIdlingResource idlingResource;
 
@@ -32,24 +33,39 @@ public class PostsPresenter implements PostsContract.Presenter {
         this.view = view;
     }
 
-    public void loadPosts() {
+    public void loadPosts(boolean entry) {
         nextPage = 1;
-        entryLoad = true;
-        load(nextPage);
+        view.setActionIndicator(false); // case: refreshing when indicator visible
+        load(entry);
     }
 
     public void loadNextPosts() {
-        entryLoad = false;
-        load(nextPage);
+        view.setPageLoader(true);
+
+        repository.allowCache(false);
+        repository.loadPosts(tag, nextPage, new PostsRepository.GetPostsCallback() {
+            @Override public void onDataLoaded(List<PostModel> data, boolean localSource) {
+                if (!view.isActive()) {
+                    return;
+                }
+
+                view.setPageLoader(false);
+                view.setItems(data, false);
+                nextPage++;
+            }
+
+            @Override public void onDataNotAvailable() {
+                if (!view.isActive()) {
+                    return;
+                }
+
+                view.setPageLoader(false);
+            }
+        });
     }
 
-    private void load(int page) {
-
-        if (entryLoad) {
-            view.setRefreshing(true);
-        } else {
-            view.setPageLoader(true);
-        }
+    private void load(final boolean entryLoad) {
+        view.setRefreshing(true);
 
         repository.allowCache(entryLoad);
 
@@ -57,22 +73,22 @@ public class PostsPresenter implements PostsContract.Presenter {
             repository.saveTagInHistory(tag);
         }
 
-        repository.loadPosts(tag, page, new PostsRepository.GetPostsCallback() {
-            @Override public void onDataLoaded(List<PostModel> data, boolean localSource) {
+        repository.loadPosts(tag, nextPage, new PostsRepository.GetPostsCallback() {
+            @Override public void onDataLoaded(List<PostModel> data, boolean remoteSource) {
                 if (!view.isActive()) {
                     return;
                 }
 
-                view.setRefreshing(false); //do zrobienia popup
-                view.setItems(data, entryLoad);
+                view.setRefreshing(false);
 
-                if (!localSource) {
+                if (view.isAtTop() || entryLoad) {
+                    view.setItems(data, true);
+                } else {
+                    view.setActionIndicator(true);
+                    freshDataToPickUp = new ArrayList<>(data);
+                }
 
-                    /*
-                    kolejny error state gdy: juz mamy wyniki np toast
-                    inaczej zasloni caly ekran
-                     */
-                    view.setState(!data.isEmpty() ? PostsActivity.State.CONTENT : PostsActivity.State.CONTENT_EMPTY);
+                if (remoteSource) {
                     nextPage++;
                 }
             }
@@ -82,18 +98,18 @@ public class PostsPresenter implements PostsContract.Presenter {
                     return;
                 }
 
-                view.setState(PostsActivity.State.ERROR);
-
-                if (entryLoad) {
-                    view.setRefreshing(false);
-                } else {
-                    view.setPageLoader(false);
-                }
-
+                view.showError(nextPage == 1);
+                view.setRefreshing(false);
             }
         });
     }
 
+    @Override public void popFreshPosts() {
+        view.setItems(freshDataToPickUp, true);
+        view.setActionIndicator(false);
+
+        freshDataToPickUp = null;
+    }
 
     @VisibleForTesting @NonNull public CountingIdlingResource getIdlingResource() {
         if (idlingResource == null) {

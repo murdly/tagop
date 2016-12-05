@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PostDataMapper {
 
-    public static List<PostModel> map(@NonNull List<Post> posts, @NonNull String tag) {
+    public static List<PostModel> map(@NonNull List<Post> posts, @NonNull TagModel tag) {
         List<PostModel> modelsList;
 
         if (posts.isEmpty()) {
@@ -29,40 +29,41 @@ public class PostDataMapper {
         return modelsList;
     }
 
-    private static PostModel map(@NonNull Post post, @NonNull String tag) {
+    private static PostModel map(@NonNull Post post, @NonNull TagModel tag) {
         PostModel model = new PostModel(post.id);
-        model.tag = tag;
-        model.author = post.author;
-        model.authorAvatar = post.authorAvatar;
-        model.date = post.date;
-        model.body = post.body;
-        if (post.source != null) {
-            model.source = post.source;
+        model.setTag(tag);
+        model.setAuthor(post.author);
+        model.setAuthorAvatar(post.authorAvatar);
+        model.setDate(post.date);
+        model.setBody(post.body);
+        model.setUrl(post.url);
+        model.setVoteCount(post.voteCount);
+        model.setCommentCount(post.commentCount);
+
+        List<CommentModel> commentModelList = new ArrayList<>();
+        for (Comment comment : post.comments) {
+            commentModelList.add(mapComment(comment));
         }
-        model.url = post.url;
-        model.voteCount = post.voteCount;
-        model.commentCount = post.commentCount;
-        model.comments = post.comments;
+        model.setComments(commentModelList);
         if (post.embed != null) {
-            model.embedModel = mapEmbed(post.embed);
+            model.setEmbed(mapEmbed(post.embed));
         }
         return model;
     }
 
-    public static CommentModel mapComment(PostModel post, Comment comment) {
-        CommentModel model = new CommentModel(post);
+    public static CommentModel mapComment(Comment comment) {
+        CommentModel model = new CommentModel();
         model.commentId = comment.id;
         model.author = comment.author;
         model.authorAvatar = comment.authorAvatar;
         model.date = comment.date;
         model.body = comment.body;
-        model.source = comment.source;
-        model.entryId = comment.entryId;
+        model.postEntryId = comment.entryId;
         model.voteCount = comment.voteCount;
         model.userVote = comment.userVote;
         model.type = comment.type;
         if (comment.embed != null) {
-            model.embedModel = mapEmbed(comment.embed);
+            model.embed = mapEmbed(comment.embed);
         }
 
         return model;
@@ -70,10 +71,9 @@ public class PostDataMapper {
 
     private static EmbedModel mapEmbed(Embed embed) {
         EmbedModel model = new EmbedModel();
-        model.type = embed.type;
-        model.previewUrl = embed.previewUrl;
-        model.url = embed.url;
-        model.source = embed.source;
+        model.setType(embed.type);
+        model.setPreviewUrl(embed.previewUrl);
+        model.setUrl(embed.url);
         return model;
     }
 
@@ -94,7 +94,7 @@ public class PostDataMapper {
 
     /*private static Post mapPostModel(@NonNull PostModel model, @NonNull String tag) {
         Post p = new Post();
-        p.id = model.id;
+        p.postId = model.postId;
 //        p.tag = tag;
         p.author = model.author;
         p.authorAvatar = model.authorAvatar;
@@ -117,7 +117,7 @@ public class PostDataMapper {
         List<Comment> comments = new ArrayList<>();
         for (CommentModel m : models) {
             Comment c = new Comment();
-            c.id = m.id;
+            c.postId = m.postId;
             c.author = m.author;
             c.authorAvatar = m.authorAvatar;
             c.date = m.date;

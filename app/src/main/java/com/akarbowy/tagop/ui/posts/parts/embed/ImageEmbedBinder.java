@@ -16,14 +16,14 @@ public class ImageEmbedBinder implements Binder<ImageEmbedView> {
     @Override public void prepare(ImageEmbedView view) {
         view.setOnPreviewClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                String viewerUrl = post.embedModel.url;
+                String viewerUrl = post.getEmbed().getUrl();
                 new ImageViewer.Builder(view.getContext(), new String[]{viewerUrl}).show();
             }
         });
     }
 
     @Override public void bind(ImageEmbedView view) {
-        view.setPreview(post.embedModel.previewUrl);
+        view.setPreview(post.getEmbed().getPreviewUrl());
     }
 
     @Override public void unbind(ImageEmbedView view) {

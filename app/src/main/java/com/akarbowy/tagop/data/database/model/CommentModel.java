@@ -1,38 +1,110 @@
 package com.akarbowy.tagop.data.database.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
-
-@DatabaseTable(tableName = "comments")
 public class CommentModel {
 
-    public static final String POST_MODEL_ID_FIELD_NAME = "post_model_id";
 
-    @DatabaseField(generatedId = true) Integer id;
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = POST_MODEL_ID_FIELD_NAME)
-    private PostModel postModel;
+     Integer commentId;
+     public String author;
+     public String authorAvatar;
+     public String date;
+     public String body;
+     String source;
+     Integer postEntryId;
+     public Integer voteCount;
+     Integer userVote;
+     String type;
 
-    @DatabaseField Integer commentId;
-    @DatabaseField public String author;
-    @DatabaseField public String authorAvatar;
-    @DatabaseField public String date;
-    @DatabaseField public String body;
-    @DatabaseField String source;
-    @DatabaseField Integer entryId;
-    @DatabaseField public Integer voteCount;
-    @DatabaseField Integer userVote;
-    @DatabaseField String type;
-
-    @DatabaseField(foreign = true,
-            foreignAutoRefresh = true,
-            columnDefinition = "integer references embeds(id) on delete cascade")
-            public EmbedModel embedModel;
+     EmbedModel embed;
 
     public CommentModel() {
     }
 
-    public CommentModel(PostModel postModel) {
-        this.postModel = postModel;
+
+    public EmbedModel getEmbed() {
+        return embed;
+    }
+
+    public Integer getCommentId() {
+        return commentId;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getAuthorAvatar() {
+        return authorAvatar;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public Integer getPostEntryId() {
+        return postEntryId;
+    }
+
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public Integer getUserVote() {
+        return userVote;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public void setPostEntryId(Integer postEntryId) {
+        this.postEntryId = postEntryId;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public void setUserVote(Integer userVote) {
+        this.userVote = userVote;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setEmbed(EmbedModel embed) {
+        this.embed = embed;
     }
 }

@@ -17,14 +17,14 @@ public class CommentVideoEmbedBinder implements Binder<CommentVideoEmbedView> {
     @Override public void prepare(CommentVideoEmbedView view) {
         view.setOnPlayVideoClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                String videoUrl = comment.embedModel.url;
+                String videoUrl = comment.getEmbed().getUrl();
                 view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl)));
             }
         });
     }
 
     @Override public void bind(CommentVideoEmbedView view) {
-        view.setPreview(comment.embedModel.previewUrl);
+        view.setPreview(comment.getEmbed().getPreviewUrl());
     }
 
     @Override public void unbind(CommentVideoEmbedView view) {

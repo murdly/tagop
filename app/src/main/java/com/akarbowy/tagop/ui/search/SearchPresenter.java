@@ -15,7 +15,7 @@ public class SearchPresenter implements SearchContract.Presenter {
     public static final Comparator<TagModel> ALPHABETICAL_COMPARATOR = new Comparator<TagModel>() {
         @Override
         public int compare(TagModel a, TagModel b) {
-            return a.getName().compareTo(b.getName());
+            return a.getTitle().compareTo(b.getTitle());
         }
     };
 
@@ -48,7 +48,7 @@ public class SearchPresenter implements SearchContract.Presenter {
     @Override public void filterHistory(String value) {
         List<TagModel> filteredList = new ArrayList<>();
         for (TagModel t : entryCachedTags) {
-            final String text = t.getName().toLowerCase();
+            final String text = t.getTitle().toLowerCase();
             if (text.contains(value.toLowerCase())) {
                 filteredList.add(t);
             }
@@ -73,5 +73,12 @@ public class SearchPresenter implements SearchContract.Presenter {
         entryCachedTags.clear();
         repository.deleteSearchHistory();
         view.setState(MainSearchActivity.State.HISTORY_EMPTY);
+    }
+
+    @Override public void removeFromHistory(TagModel tag) {
+        repository.deleteHistoryEntry(tag);
+
+        entryCachedTags.remove(tag);
+        updateTags(entryCachedTags, false);
     }
 }

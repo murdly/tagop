@@ -19,5 +19,7 @@ public class SearchContract {
         void filterHistory(String value);
 
         void clearHistory();
+
+        void removeFromHistory(TagModel tag);
     }
 }

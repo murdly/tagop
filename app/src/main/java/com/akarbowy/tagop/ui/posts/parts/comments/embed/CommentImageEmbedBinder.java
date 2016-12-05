@@ -16,14 +16,14 @@ public class CommentImageEmbedBinder implements Binder<CommentImageEmbedView> {
     @Override public void prepare(CommentImageEmbedView view) {
         view.setOnPreviewClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                String viewerUrl = comment.embedModel.url;
+                String viewerUrl = comment.getEmbed().getUrl();
                 new ImageViewer.Builder(view.getContext(), new String[]{viewerUrl}).show();
             }
         });
     }
 
     @Override public void bind(CommentImageEmbedView view) {
-        view.setPreview(comment.embedModel.previewUrl);
+        view.setPreview(comment.getEmbed().getPreviewUrl());
     }
 
     @Override public void unbind(CommentImageEmbedView view) {

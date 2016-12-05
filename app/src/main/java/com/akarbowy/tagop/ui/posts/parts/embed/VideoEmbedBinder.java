@@ -17,14 +17,14 @@ public class VideoEmbedBinder implements Binder<VideoEmbedView> {
     @Override public void prepare(VideoEmbedView view) {
         view.setOnPlayVideoClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                String videoUrl = post.embedModel.url;
+                String videoUrl = post.getEmbed().getUrl();
                 view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl)));
             }
         });
     }
 
     @Override public void bind(VideoEmbedView view) {
-        view.setPreview(post.embedModel.previewUrl);
+        view.setPreview(post.getEmbed().getPreviewUrl());
     }
 
     @Override public void unbind(VideoEmbedView view) {

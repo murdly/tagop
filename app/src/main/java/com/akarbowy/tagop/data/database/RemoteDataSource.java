@@ -35,7 +35,7 @@ public class RemoteDataSource {
             public void onResponse(Call<QueryResult> call, Response<QueryResult> response) {
                 if (response.isSuccessful()) {
                     List<Post> entries = response.body().entries;
-                    List<PostModel> postModels = PostDataMapper.map(entries, tag.getName());
+                    List<PostModel> postModels = PostDataMapper.map(entries, tag);
                     callback.onDataLoaded(postModels);
                 } else {
                     callback.onDataNotAvailable();
@@ -49,7 +49,7 @@ public class RemoteDataSource {
             }
         };
 
-        service.get().search(tag.getName(), page).enqueue(request);
+        service.get().search(tag.getTitle(), page).enqueue(request);
     }
 
 }

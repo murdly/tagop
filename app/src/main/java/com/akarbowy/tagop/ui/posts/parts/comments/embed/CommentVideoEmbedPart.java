@@ -15,6 +15,6 @@ public class CommentVideoEmbedPart implements SinglePartDefinition<CommentModel,
     }
 
     @Override public boolean isNeeded(CommentModel model) {
-        return model.embedModel.type.equals(CommentEmbedsPart.VIDEO);
+        return model.getEmbed().getType().equals(CommentEmbedsPart.VIDEO);
     }
 }

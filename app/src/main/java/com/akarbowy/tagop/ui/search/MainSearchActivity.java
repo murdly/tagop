@@ -1,6 +1,8 @@
 package com.akarbowy.tagop.ui.search;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
@@ -29,12 +32,14 @@ import timber.log.Timber;
 
 import static com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode.Normal;
 
-public class MainSearchActivity extends AppCompatActivity implements SearchContract.View, RecyclerSupport.OnItemClickListener {
+public class MainSearchActivity extends AppCompatActivity implements SearchContract.View, RecyclerSupport.OnItemClickListener, RecyclerSupport.OnItemLongClickListener {
 
     @BindView(R.id.toolbar_action_view) SearchableToolbarView toolbar;
     @BindView(R.id.recycler_history) RecyclerView historyRecycler;
     @BindView(R.id.filter_query_param) TextView filterQueryParam;
     @BindViews({R.id.state_history_empty, R.id.state_history_empty_filter}) List<View> stateViews;
+    @BindString(R.string.dialog_msg_delete) String deleteMsgString;
+    @BindString(R.string.dialog_button_ok) String okButtonString;
 
     @Inject SearchPresenter presenter;
 
@@ -74,7 +79,9 @@ public class MainSearchActivity extends AppCompatActivity implements SearchContr
         stateSwitcher.setViews(stateViews, new int[]{State.HISTORY_EMPTY, State.FILTER_NO_RESULTS}); //recycler always visible for smoother filters
 
         RecyclerSupport.addTo(historyRecycler)
-                .setOnItemClickListener(this);
+                .setOnItemClickListener(this)
+                .setOnItemLongClickListener(this);
+
         historyRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) {
@@ -98,12 +105,26 @@ public class MainSearchActivity extends AppCompatActivity implements SearchContr
         presenter.start();
 
         if (toolbar.getMode() == Mode.Search) {
+            presenter.filterHistory((String) filterQueryParam.getTag());
             KeyboardUtil.show(this);
         }
     }
 
     @Override public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-        searchForPostsWithTag(adapter.getItem(position).getName());
+        searchForPostsWithTag(adapter.getItem(position).getTitle());
+    }
+
+    @Override public boolean onItemLongClicked(RecyclerView recyclerView, final int position, View v) {
+        new AlertDialog.Builder(this)
+                .setMessage(deleteMsgString)
+                .setPositiveButton(okButtonString, new DialogInterface.OnClickListener() {
+            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.removeFromHistory(adapter.getItem(position));
+            }
+        }).show();
+
+        return true;
+
     }
 
     @OnClick(R.id.filter_query_param) public void onFilterNoResultsStateViewClick() {

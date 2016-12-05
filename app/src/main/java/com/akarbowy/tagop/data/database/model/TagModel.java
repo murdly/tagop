@@ -1,37 +1,33 @@
 package com.akarbowy.tagop.data.database.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.UUID;
 
-@DatabaseTable(tableName = "tags")
 public class TagModel {
 
-    public static final String TAG_FIELD_NAME = "name";
+    private String id;
 
-    @DatabaseField(generatedId = true) Long id;
-
-    @DatabaseField(columnName = TAG_FIELD_NAME) private String tagName;
+    private String title;
 
     private boolean saveInHistory = false;
 
-    public TagModel() {
-    }
-
-    public TagModel(String tag) {
-        this.tagName = tag;
-    }
-
-    public TagModel(String tagName, boolean saveInHistory) {
-        this.tagName = tagName;
+    public TagModel(String title, boolean saveInHistory) {
+        this.id = UUID.randomUUID().toString();
+        this.title = title;
         this.saveInHistory = saveInHistory;
     }
 
-    public Long getId() {
+    public TagModel(String id, String title) {
+        this.id = id;
+        this.title = title;
+        this.saveInHistory = false;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public String getName() {
-        return tagName;
+    public String getTitle() {
+        return title;
     }
 
     public boolean isForSaving() {
@@ -44,17 +40,18 @@ public class TagModel {
 
         TagModel that = (TagModel) o;
 
-        return tagName.equals(that.tagName);
+        return title.equals(that.title);
 
     }
 
     @Override public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + tagName.hashCode();
+        result = 31 * result + title.hashCode();
         return result;
     }
 
     @Override public String toString() {
-        return String.format("%s-%s", id, tagName);
+        return String.format("%s", title);
     }
+
 }

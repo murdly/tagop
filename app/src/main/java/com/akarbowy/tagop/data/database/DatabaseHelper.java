@@ -2,68 +2,100 @@ package com.akarbowy.tagop.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.database.model.CommentModel;
-import com.akarbowy.tagop.data.database.model.EmbedModel;
-import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.database.model.TagModel;
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
+public class DatabaseHelper extends SQLiteOpenHelper {
 
-import java.sql.SQLException;
+    public static final int DATABASE_VERSION = 1;
 
-public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
+    public static final String DATABASE_NAME = "Tagop.db";
 
-    private static final String DATABASE_NAME = "tagop";
-    private static final int DATABASE_VERSION = 1;
+    private static final String TEXT_TYPE = " TEXT";
+
+    private static final String BOOLEAN_TYPE = " INTEGER";
+
+    private static final String COMMA_SEP = ",";
+
+    private static final String SQL_CREATE_TAGS =
+            "CREATE TABLE " + TagsPersistenceContract.TagEntry.TABLE_NAME + " (" +
+                    TagsPersistenceContract.TagEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
+                    TagsPersistenceContract.TagEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                    TagsPersistenceContract.TagEntry.COLUMN_NAME_TITLE + TEXT_TYPE +
+                    " )";
+
+    private static final String SQL_CREATE_POSTS =
+            "CREATE TABLE " + PostsPersistenceContract.PostEntry.TABLE_NAME + " (" +
+                    PostsPersistenceContract.PostEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_AUTHOR + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_AUTHOR_AVATAR + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_BODY + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_URL + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_VOTE_COUNT + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_COMMENT_COUNT + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE + TEXT_TYPE  +
+//                    FOREIGN(PostsPersistenceContract.PostEntry.COLUMN_NAME_EMBED_ENTRY_ID,
+//                            PostsPersistenceContract.EmbedEntry.TABLE_NAME,
+//                            PostsPersistenceContract.EmbedEntry.COLUMN_NAME_ENTRY_ID) + COMMA_SEP +
+//                    FOREIGN(PostsPersistenceContract.PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE,
+//                            TagsPersistenceContract.TagEntry.TABLE_NAME,
+//                            TagsPersistenceContract.TagEntry.COLUMN_NAME_ENTRY_ID) +
+                    " )";
+
+    private static final String SQL_CREATE_EMBEDS =
+            "CREATE TABLE " + PostsPersistenceContract.EmbedEntry.TABLE_NAME + " (" +
+                    PostsPersistenceContract.EmbedEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
+                    PostsPersistenceContract.EmbedEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.EmbedEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.EmbedEntry.COLUMN_NAME_PREVIEW_URL + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.EmbedEntry.COLUMN_NAME_URL + TEXT_TYPE  +
+                    " )";
+
+    private static final String SQL_CREATE_COMMENTS =
+            "CREATE TABLE " + PostsPersistenceContract.CommentEntry.TABLE_NAME + " (" +
+                    PostsPersistenceContract.CommentEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_AUTHOR + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_AUTHOR_AVATAR + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_BODY + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_VOTE_COUNT + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_USER_VOTE + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+                    PostsPersistenceContract.CommentEntry.COLUMN_NAME_POST_ENTRY_ID + TEXT_TYPE  +
+//                    FOREIGN(PostsPersistenceContract.CommentEntry.COLUMN_NAME_EMBED_ENTRY_ID,
+//                            PostsPersistenceContract.EmbedEntry.TABLE_NAME,
+//                            PostsPersistenceContract.EmbedEntry.COLUMN_NAME_ENTRY_ID) + COMMA_SEP +
+//                    FOREIGN(PostsPersistenceContract.CommentEntry.COLUMN_NAME_POST_ENTRY_ID,
+//                            PostsPersistenceContract.PostEntry.TABLE_NAME,
+//                            PostsPersistenceContract.PostEntry.COLUMN_NAME_ENTRY_ID) +
+                    " )";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-        try {
-            TableUtils.createTableIfNotExists(connectionSource, TagModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, EmbedModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, CommentModel.class);
-            TableUtils.createTableIfNotExists(connectionSource, PostModel.class);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private static final String FOREIGN(String column, String table, String foreignId) {
+        return " FOREIGN KEY (" + column + ") REFERENCES " + table + "(" + foreignId + "));";
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource,
-                          int oldVersion, int newVersion) {
-        try {
-            TableUtils.dropTable(connectionSource, PostModel.class, false);
-            TableUtils.dropTable(connectionSource, CommentModel.class, false);
-            TableUtils.dropTable(connectionSource, EmbedModel.class, false);
-            TableUtils.dropTable(connectionSource, TagModel.class, false);
-            onCreate(database, connectionSource);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SQL_CREATE_TAGS);
+        db.execSQL(SQL_CREATE_EMBEDS);
+        db.execSQL(SQL_CREATE_POSTS);
+        db.execSQL(SQL_CREATE_COMMENTS);
     }
 
-    public Dao<TagModel, Integer> getTagDao() throws SQLException {
-        return getDao(TagModel.class);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onCreate(db);
     }
 
-    public Dao<PostModel, Integer> getPostDao() throws SQLException {
-        return getDao(PostModel.class);
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE " + PostsPersistenceContract.CommentEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE " + PostsPersistenceContract.PostEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE " + PostsPersistenceContract.EmbedEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TagsPersistenceContract.TagEntry.TABLE_NAME);
     }
 
-    public Dao<CommentModel, Integer> getCommentDao() throws SQLException {
-        return getDao(CommentModel.class);
-    }
-
-    public Dao<EmbedModel, Integer> getEmbedDao() throws SQLException {
-        return getDao(EmbedModel.class);
-    }
 }

@@ -2,11 +2,12 @@
 <resources>
     <color name="colorPrimary">#F5F5F5</color>
     <color name="colorPrimaryDark">#9E9E9E</color>
-    <color name="colorAccent">#81C784</color>
+    <color name="colorAccent">#045c83</color>
     <color name="textColorPrimary">#212121</color>
 
     <color name="gray">#ff888888</color>
-    <color name="launcher_bg">#045c83</color>
+    <color name="shadow">#757575</color>
+    <color name="white">#ffffff</color>
 
     <color name="palette_1">#0c0c0c</color>
     <color name="palette_2">#141414</color>
@@ -20,7 +21,7 @@
     <color name="item_history_tag">#000000</color>
 
     <color name="post_bg">#EEEEEE</color>
-    <color name="item_post_bg">#F5F5F5</color>
+    <color name="item_post_bg">#FAFAFA</color>
     <color name="item_post_separator">#EEEEEE</color>
     <color name="item_post_header_avatar_placeholder">#F5F5F5</color>
     <color name="item_post_header_author">#212121</color>
@@ -28,6 +29,7 @@
     <color name="item_post_header_more">#BDBDBE</color>
     <color name="item_post_text_section">#0F0F0F</color>
     <color name="item_post_counters">#9E9E9E</color>
+    <color name="item_post_like">#81C784</color>
     <color name="item_post_embed_bg">#212121</color>
     <color name="item_post_bottom_sheet_more">#0F0F0F</color>
 

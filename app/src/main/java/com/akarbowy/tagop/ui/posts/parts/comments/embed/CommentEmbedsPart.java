@@ -13,7 +13,7 @@ public class CommentEmbedsPart implements GroupPartDefinition<CommentModel> {
     public static final String VIDEO = "video";
 
     @Override public boolean isNeeded(CommentModel model) {
-        return model.embedModel != null;
+        return model.getEmbed() != null;
     }
 
     @Override public List<PartDefinition<CommentModel>> getChildren(CommentModel model) {
