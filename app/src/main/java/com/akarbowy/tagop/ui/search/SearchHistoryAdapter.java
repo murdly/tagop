@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import java.util.Comparator;
 import java.util.List;

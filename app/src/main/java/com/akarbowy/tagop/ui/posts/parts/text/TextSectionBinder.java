@@ -1,7 +1,7 @@
 package com.akarbowy.tagop.ui.posts.parts.text;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.SpannableBody;
 
 public class TextSectionBinder implements Binder<TextSectionView> {

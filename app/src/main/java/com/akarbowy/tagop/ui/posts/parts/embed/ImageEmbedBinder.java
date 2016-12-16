@@ -3,7 +3,7 @@ package com.akarbowy.tagop.ui.posts.parts.embed;
 import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 public class ImageEmbedBinder implements Binder<ImageEmbedView> {

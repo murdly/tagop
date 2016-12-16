@@ -2,7 +2,7 @@ package com.akarbowy.tagop.ui.posts.parts.embed;
 
 import com.akarbowy.partdefiner.GroupPartDefinition;
 import com.akarbowy.partdefiner.PartDefinition;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,9 @@
 package com.akarbowy.tagop.ui.search;
 
 
-import com.akarbowy.tagop.data.database.PostsRepository;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.DataManager;
+import com.akarbowy.tagop.data.DataSource;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,11 +21,11 @@ public class SearchPresenter implements SearchContract.Presenter {
     };
 
     private SearchContract.View view;
-    private PostsRepository repository;
+    private DataManager repository;
 
     private List<TagModel> entryCachedTags;
 
-    @Inject public SearchPresenter(SearchContract.View view, PostsRepository repository) {
+    @Inject public SearchPresenter(SearchContract.View view, DataManager repository) {
         this.view = view;
         this.repository = repository;
         entryCachedTags = new ArrayList<>();
@@ -33,14 +34,14 @@ public class SearchPresenter implements SearchContract.Presenter {
     @Override public void start() {
         entryCachedTags.clear();
 
-        repository.getHistory(new PostsRepository.GetHistoryCallback() {
+        repository.getTags(new DataSource.GetHistoryCallback() {
             @Override public void onDataLoaded(List<TagModel> data) {
                 entryCachedTags.addAll(new ArrayList<>(data));
-                updateTags(data, false);
+                view.setItems(data, false);
             }
 
             @Override public void onDataNotAvailable() {
-                view.setState(MainSearchActivity.State.HISTORY_EMPTY);
+                view.showEmptyState();
             }
         });
     }
@@ -54,31 +55,21 @@ public class SearchPresenter implements SearchContract.Presenter {
             }
         }
 
-        updateTags(filteredList, true);
-    }
-
-    private void updateTags(List<TagModel> tags, boolean filtered) {
-        view.setItems(tags);
-
-        if (!tags.isEmpty()) {
-            view.setState(MainSearchActivity.State.CONTENT);
-        } else if (filtered) {
-            view.setState(MainSearchActivity.State.FILTER_NO_RESULTS);
-        } else {
-            view.setState(MainSearchActivity.State.HISTORY_EMPTY);
-        }
+        view.setItems(filteredList, true);
     }
 
     @Override public void clearHistory() {
         entryCachedTags.clear();
-        repository.deleteSearchHistory();
-        view.setState(MainSearchActivity.State.HISTORY_EMPTY);
+        repository.deleteAllTags();
+
+        view.setItems(entryCachedTags, false);
+        view.showEmptyState();
     }
 
     @Override public void removeFromHistory(TagModel tag) {
-        repository.deleteHistoryEntry(tag);
-
+        repository.deleteTag(tag);
         entryCachedTags.remove(tag);
-        updateTags(entryCachedTags, false);
+
+        view.setItems(entryCachedTags, false);
     }
 }

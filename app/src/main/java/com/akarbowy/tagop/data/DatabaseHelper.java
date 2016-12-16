@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
-    public static final String DATABASE_NAME = "Tagop.db";
+    private static final String DATABASE_NAME = "Tagop.db";
 
     private static final String TEXT_TYPE = " TEXT";
 
@@ -35,12 +35,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     PostsPersistenceContract.PostEntry.COLUMN_NAME_VOTE_COUNT + TEXT_TYPE + COMMA_SEP +
                     PostsPersistenceContract.PostEntry.COLUMN_NAME_COMMENT_COUNT + TEXT_TYPE + COMMA_SEP +
                     PostsPersistenceContract.PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE + TEXT_TYPE  +
-//                    FOREIGN(PostsPersistenceContract.PostEntry.COLUMN_NAME_EMBED_ENTRY_ID,
-//                            PostsPersistenceContract.EmbedEntry.TABLE_NAME,
-//                            PostsPersistenceContract.EmbedEntry.COLUMN_NAME_ENTRY_ID) + COMMA_SEP +
-//                    FOREIGN(PostsPersistenceContract.PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE,
-//                            TagsPersistenceContract.TagEntry.TABLE_NAME,
-//                            TagsPersistenceContract.TagEntry.COLUMN_NAME_ENTRY_ID) +
                     " )";
 
     private static final String SQL_CREATE_EMBEDS =
@@ -64,20 +58,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     PostsPersistenceContract.CommentEntry.COLUMN_NAME_USER_VOTE + TEXT_TYPE + COMMA_SEP +
                     PostsPersistenceContract.CommentEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
                     PostsPersistenceContract.CommentEntry.COLUMN_NAME_POST_ENTRY_ID + TEXT_TYPE  +
-//                    FOREIGN(PostsPersistenceContract.CommentEntry.COLUMN_NAME_EMBED_ENTRY_ID,
-//                            PostsPersistenceContract.EmbedEntry.TABLE_NAME,
-//                            PostsPersistenceContract.EmbedEntry.COLUMN_NAME_ENTRY_ID) + COMMA_SEP +
-//                    FOREIGN(PostsPersistenceContract.CommentEntry.COLUMN_NAME_POST_ENTRY_ID,
-//                            PostsPersistenceContract.PostEntry.TABLE_NAME,
-//                            PostsPersistenceContract.PostEntry.COLUMN_NAME_ENTRY_ID) +
                     " )";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    private static final String FOREIGN(String column, String table, String foreignId) {
-        return " FOREIGN KEY (" + column + ") REFERENCES " + table + "(" + foreignId + "));";
     }
 
     public void onCreate(SQLiteDatabase db) {

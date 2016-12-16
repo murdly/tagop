@@ -3,7 +3,7 @@ package com.akarbowy.tagop.ui.posts.parts.comments.footer;
 import android.text.format.DateUtils;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.CommentModel;
+import com.akarbowy.tagop.data.model.CommentModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

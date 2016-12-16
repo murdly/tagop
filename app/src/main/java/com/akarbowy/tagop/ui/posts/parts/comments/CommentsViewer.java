@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
-import com.akarbowy.tagop.data.database.model.CommentModel;
+import com.akarbowy.tagop.data.model.CommentModel;
 
 import java.util.List;
 

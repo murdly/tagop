@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 
 public class VideoEmbedBinder implements Binder<VideoEmbedView> {
     private PostModel post;

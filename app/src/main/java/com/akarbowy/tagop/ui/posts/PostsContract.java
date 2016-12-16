@@ -1,7 +1,7 @@
 package com.akarbowy.tagop.ui.posts;
 
 
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 
 import java.util.List;
 

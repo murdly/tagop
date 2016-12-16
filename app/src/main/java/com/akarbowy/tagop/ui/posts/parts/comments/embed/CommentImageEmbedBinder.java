@@ -3,7 +3,7 @@ package com.akarbowy.tagop.ui.posts.parts.comments.embed;
 import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.CommentModel;
+import com.akarbowy.tagop.data.model.CommentModel;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 public class CommentImageEmbedBinder implements Binder<CommentImageEmbedView> {

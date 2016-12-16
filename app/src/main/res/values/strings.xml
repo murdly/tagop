@@ -7,7 +7,7 @@
     <string name="symbol_hashtag">#</string>
     <string name="state_history_empty_title">Pusta historia</string>
     <string name="state_history_empty_instruction">Naciśnij \'Szukaj\' by znaleźć wpisy</string>
-    <string name="state_history_empty_filter_instruction">Kliknij aby wyszukać &lt;b>#%1$s&lt;/b></string>
+    <string name="state_history_empty_filter_instruction">Kliknij, aby wyszukać &lt;b>#%1$s&lt;/b></string>
     <string name="dialog_msg_delete">Usunąć?</string>
     <string name="dialog_button_ok">Usuń</string>
     <!--end of search history screen-->

@@ -1,6 +1,6 @@
 package com.akarbowy.tagop.ui.posts;
 
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import dagger.Module;
 import dagger.Provides;

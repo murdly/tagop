@@ -1,11 +1,11 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 
 import android.support.annotation.NonNull;
 
-import com.akarbowy.tagop.data.database.model.PostDataMapper;
-import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.PostDataMapper;
+import com.akarbowy.tagop.data.model.PostModel;
+import com.akarbowy.tagop.data.model.TagModel;
 import com.akarbowy.tagop.data.network.WykopService;
 import com.akarbowy.tagop.data.network.model.Post;
 import com.akarbowy.tagop.data.network.model.QueryResult;
@@ -22,21 +22,21 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 @Singleton
-public class RemoteDataSource {
+public class RemoteDataSource implements DataSource {
     private final Lazy<WykopService> service;
 
     @Inject RemoteDataSource(Lazy<WykopService> serviceLazy) {
         this.service = serviceLazy;
     }
 
-    public void loadPosts(@NonNull final TagModel tag, @NonNull int page, @NonNull final LocalDataSource.LoadPostsCallback callback) {
+    public void loadPosts(@NonNull final TagModel tag, @NonNull int page, @NonNull final DataSource.GetPostsCallback callback) {
         final Callback<QueryResult> request = new Callback<QueryResult>() {
             @Override
             public void onResponse(Call<QueryResult> call, Response<QueryResult> response) {
                 if (response.isSuccessful()) {
                     List<Post> entries = response.body().entries;
                     List<PostModel> postModels = PostDataMapper.map(entries, tag);
-                    callback.onDataLoaded(postModels);
+                    callback.onDataLoaded(postModels, true);
                 } else {
                     callback.onDataNotAvailable();
                 }
@@ -50,6 +50,34 @@ public class RemoteDataSource {
         };
 
         service.get().search(tag.getTitle(), page).enqueue(request);
+    }
+
+    @Override public void savePosts(List<PostModel> posts) {
+
+    }
+
+    @Override public void allowCache(boolean allow) {
+
+    }
+
+    @Override public void getTags(GetHistoryCallback callback) {
+
+    }
+
+    @Override public void saveTag(TagModel tag) {
+
+    }
+
+    @Override public void deleteTag(TagModel tag) {
+
+    }
+
+    @Override public void deleteTagPosts(TagModel tag) {
+
+    }
+
+    @Override public void deleteAllTags() {
+
     }
 
 }

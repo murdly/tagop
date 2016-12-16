@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 import android.content.Context;
 
@@ -16,14 +16,14 @@ public class RepositoryModule {
     @Singleton
     @Provides
     @Remote
-    RemoteDataSource providePostsRemoteRepository(Lazy<WykopService> wykopService){
+    DataSource providePostsRemoteRepository(Lazy<WykopService> wykopService){
         return new RemoteDataSource(wykopService);
     }
 
     @Singleton
     @Provides
     @Local
-    LocalDataSource providePostsLocalRepository(Context context){
+    DataSource providePostsLocalRepository(Context context){
         return new LocalDataSource(context);
     }
 }

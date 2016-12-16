@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database.model;
+package com.akarbowy.tagop.data.model;
 
 public class CommentModel {
 

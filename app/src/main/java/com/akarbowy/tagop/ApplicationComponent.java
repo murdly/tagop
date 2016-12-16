@@ -1,7 +1,7 @@
 package com.akarbowy.tagop;
 
-import com.akarbowy.tagop.data.database.PostsRepository;
-import com.akarbowy.tagop.data.database.RepositoryModule;
+import com.akarbowy.tagop.data.DataManager;
+import com.akarbowy.tagop.data.RepositoryModule;
 import com.akarbowy.tagop.data.network.NetworkModule;
 
 import javax.inject.Singleton;
@@ -15,7 +15,7 @@ import dagger.Component;
         RepositoryModule.class})
 public interface ApplicationComponent {
 
-    PostsRepository getPostsRepository();
+    DataManager getPostsRepository();
 
     final class Initializer {
         public static ApplicationComponent init(TagopApplication application) {

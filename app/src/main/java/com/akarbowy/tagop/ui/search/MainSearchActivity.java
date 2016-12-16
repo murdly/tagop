@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.TagModel;
 import com.akarbowy.tagop.ui.posts.PostsActivity;
 import com.akarbowy.tagop.ui.search.SearchableToolbarView.Mode;
 import com.akarbowy.tagop.utils.DeprecatedHelper;
@@ -115,16 +115,19 @@ public class MainSearchActivity extends AppCompatActivity implements SearchContr
     }
 
     @Override public boolean onItemLongClicked(RecyclerView recyclerView, final int position, View v) {
-        new AlertDialog.Builder(this)
-                .setMessage(deleteMsgString)
-                .setPositiveButton(okButtonString, new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.removeFromHistory(adapter.getItem(position));
-            }
-        }).show();
+        if (toolbar.getMode() == Mode.Normal) {
+            new AlertDialog.Builder(this)
+                    .setMessage(deleteMsgString)
+                    .setPositiveButton(okButtonString, new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialogInterface, int i) {
+                            presenter.removeFromHistory(adapter.getItem(position));
+                        }
+                    }).show();
 
-        return true;
+            return true;
+        }
 
+        return false;
     }
 
     @OnClick(R.id.filter_query_param) public void onFilterNoResultsStateViewClick() {
@@ -135,16 +138,21 @@ public class MainSearchActivity extends AppCompatActivity implements SearchContr
         startActivity(PostsActivity.getStartIntent(this, query));
     }
 
-    @Override public void setItems(List<TagModel> items) {
+    @Override public void setItems(List<TagModel> items, boolean filtered) {
         adapter.replaceAll(items);
         historyRecycler.scrollToPosition(0);
+
+        if (!items.isEmpty()) {
+            stateSwitcher.setState(State.CONTENT);
+        } else if (filtered) {
+            stateSwitcher.setState(State.FILTER_NO_RESULTS);
+        }
 
         Timber.i("Updated with %s items: %s", items.size(), items);
     }
 
-    @Override public void setState(int state) {
-        stateSwitcher.setState(state);
-
+    @Override public void showEmptyState() {
+        stateSwitcher.setState(State.HISTORY_EMPTY);
     }
 
     @Override public void onBackPressed() {

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 
 import java.lang.annotation.Documented;
@@ -10,7 +10,6 @@ import javax.inject.Qualifier;
 @Qualifier
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Remote {
+public @interface Local {
 
 }
-

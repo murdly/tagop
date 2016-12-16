@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.akarbowy.tagop.R;
 import com.akarbowy.tagop.TagopApplication;
-import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.PostModel;
+import com.akarbowy.tagop.data.model.TagModel;
 import com.akarbowy.tagop.utils.RecyclerSupport;
 import com.akarbowy.tagop.utils.StateSwitcher;
 
@@ -31,8 +31,8 @@ import butterknife.OnClick;
 
 public class PostsActivity extends AppCompatActivity implements PostsContract.View, RecyclerSupport.OnNextPageRequestListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String ACTION_SEARCH = "com.akarbowy.tagop.ACTION_SEARCH";
-    private static final String EXTRA_TAG = "extra_tag";
+    public static final String ACTION_SEARCH = "com.akarbowy.tagop.ACTION_SEARCH";
+    public static final String EXTRA_TAG = "extra_tag";
 
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.toolbar) Toolbar toolbarView;

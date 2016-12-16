@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 
 import android.content.ContentValues;
@@ -7,14 +7,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.akarbowy.tagop.data.database.PostsPersistenceContract.CommentEntry;
-import com.akarbowy.tagop.data.database.PostsPersistenceContract.EmbedEntry;
-import com.akarbowy.tagop.data.database.PostsPersistenceContract.PostEntry;
-import com.akarbowy.tagop.data.database.TagsPersistenceContract.TagEntry;
-import com.akarbowy.tagop.data.database.model.CommentModel;
-import com.akarbowy.tagop.data.database.model.EmbedModel;
-import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.PostsPersistenceContract.CommentEntry;
+import com.akarbowy.tagop.data.PostsPersistenceContract.PostEntry;
+import com.akarbowy.tagop.data.PostsPersistenceContract.EmbedEntry;
+import com.akarbowy.tagop.data.TagsPersistenceContract.TagEntry;
+import com.akarbowy.tagop.data.model.CommentModel;
+import com.akarbowy.tagop.data.model.EmbedModel;
+import com.akarbowy.tagop.data.model.PostModel;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import timber.log.Timber;
 
 
 @Singleton
-public class LocalDataSource {
+public class LocalDataSource implements DataSource {
 
     private final DatabaseHelper dbHelper;
 
@@ -34,7 +34,8 @@ public class LocalDataSource {
         dbHelper = new DatabaseHelper(context);
     }
 
-    public void getTags(GetSearchHistoryCallback callback) {
+    @Override
+    public void getTags(GetHistoryCallback callback) {
         List<TagModel> tags = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -71,17 +72,7 @@ public class LocalDataSource {
 
     }
 
-    public void deleteAllTags() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        db.delete(EmbedEntry.TABLE_NAME, null, null);
-        db.delete(TagEntry.TABLE_NAME, null, null);
-        db.delete(PostEntry.TABLE_NAME, null, null);
-        db.delete(CommentEntry.TABLE_NAME, null, null);
-
-        db.close();
-    }
-
+    @Override
     public void saveTag(TagModel tag) {
         if (tag == null) {
             Timber.i("Tag is null.");
@@ -100,7 +91,7 @@ public class LocalDataSource {
 
         db.insert(TagEntry.TABLE_NAME, null, values);
 
-        db.close();
+//        db.close();
     }
 
     private boolean isTagAlreadySaved(@NonNull String tagTitle) {
@@ -118,27 +109,26 @@ public class LocalDataSource {
             c.close();
         }
 
-        db.close();
+//        db.close();
 
         return tagExists;
     }
 
+    @Override
     public void deleteTag(TagModel tag) {
-        deleteTag(tag.getTitle());
-        deleteTagPosts(tag);
-    }
-
-    private void deleteTag(@NonNull String tagTitle) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String selection = TagEntry.COLUMN_NAME_TITLE + " LIKE ?";
-        String[] selectionArgs = {tagTitle};
+        String[] selectionArgs = {tag.getTitle()};
 
         db.delete(TagEntry.TABLE_NAME, selection, selectionArgs);
 
-        db.close();
+//        db.close();
+
+        deleteTagPosts(tag);
     }
 
+    @Override
     public void deleteTagPosts(TagModel tag) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -164,8 +154,8 @@ public class LocalDataSource {
                         CommentEntry.COLUMN_NAME_POST_ENTRY_ID + " LIKE ?",
                         new String[]{postId});
 
-                db.delete(PostEntry.TABLE_NAME,
-                        PostEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?",
+                db.delete(PostsPersistenceContract.PostEntry.TABLE_NAME,
+                        PostsPersistenceContract.PostEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?",
                         new String[]{postId});
             }
         } finally {
@@ -177,7 +167,7 @@ public class LocalDataSource {
         List<String> postsIds = new ArrayList<>();
 
         String[] projection = {
-                PostEntry.COLUMN_NAME_ENTRY_ID,
+                PostsPersistenceContract.PostEntry.COLUMN_NAME_ENTRY_ID,
         };
 
         String selection = PostEntry.COLUMN_NAME_TAG_ENTRY_TITLE + " LIKE ?";
@@ -262,7 +252,20 @@ public class LocalDataSource {
         return embedsIds;
     }
 
-    public void loadPosts(@NonNull TagModel tag, int page, @NonNull LoadPostsCallback callback) {
+    @Override
+    public void deleteAllTags() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        db.delete(EmbedEntry.TABLE_NAME, null, null);
+        db.delete(TagEntry.TABLE_NAME, null, null);
+        db.delete(PostEntry.TABLE_NAME, null, null);
+        db.delete(CommentEntry.TABLE_NAME, null, null);
+
+//        db.close();
+    }
+
+    @Override
+    public void loadPosts(@NonNull TagModel tag, int page, @NonNull GetPostsCallback callback) {
         if (page > 1) {
             callback.onDataNotAvailable();
             return;
@@ -329,7 +332,7 @@ public class LocalDataSource {
         if (posts.isEmpty()) {
             callback.onDataNotAvailable();
         } else {
-            callback.onDataLoaded(posts);
+            callback.onDataLoaded(posts, false);
         }
 
     }
@@ -434,6 +437,7 @@ public class LocalDataSource {
         return embeds;
     }
 
+    @Override
     public void savePosts(List<PostModel> posts) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -444,8 +448,8 @@ public class LocalDataSource {
                         db.insert(PostsPersistenceContract.EmbedEntry.TABLE_NAME, null,
                                 PostsPersistenceContract.EmbedEntry.put(c.getEmbed(), c.getCommentId()));
                     }
-                    db.insert(PostsPersistenceContract.CommentEntry.TABLE_NAME, null,
-                            PostsPersistenceContract.CommentEntry.put(c));
+                    db.insert(CommentEntry.TABLE_NAME, null,
+                            CommentEntry.put(c));
                 }
 
                 if (post.getEmbed() != null) {
@@ -462,15 +466,8 @@ public class LocalDataSource {
         }
     }
 
-    public interface LoadPostsCallback {
-        void onDataLoaded(List<PostModel> data);
+    @Override public void allowCache(boolean allow) {
 
-        void onDataNotAvailable();
     }
 
-    public interface GetSearchHistoryCallback {
-        void onDataLoaded(List<TagModel> data);
-
-        void onDataNotAvailable();
-    }
 }

@@ -1,12 +1,12 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 
 import android.content.ContentValues;
 import android.provider.BaseColumns;
 
-import com.akarbowy.tagop.data.database.model.CommentModel;
-import com.akarbowy.tagop.data.database.model.EmbedModel;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.CommentModel;
+import com.akarbowy.tagop.data.model.EmbedModel;
+import com.akarbowy.tagop.data.model.PostModel;
 
 public class PostsPersistenceContract {
 

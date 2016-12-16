@@ -2,7 +2,7 @@ package com.akarbowy.tagop.ui.posts.parts.comments.footer;
 
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.SinglePartDefinition;
-import com.akarbowy.tagop.data.database.model.CommentModel;
+import com.akarbowy.tagop.data.model.CommentModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 
 public class CommentFooterPart implements SinglePartDefinition<CommentModel, CommentFooterView> {

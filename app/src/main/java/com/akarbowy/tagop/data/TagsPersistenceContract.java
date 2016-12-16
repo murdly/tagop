@@ -1,4 +1,4 @@
-package com.akarbowy.tagop.data.database;
+package com.akarbowy.tagop.data;
 
 
 import android.provider.BaseColumns;

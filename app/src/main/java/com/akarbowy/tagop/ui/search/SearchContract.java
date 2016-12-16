@@ -1,16 +1,16 @@
 package com.akarbowy.tagop.ui.search;
 
 
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import java.util.List;
 
 public class SearchContract {
 
     interface View {
-        void setItems(List<TagModel> items);
+        void setItems(List<TagModel> items, boolean filtered);
 
-        void setState(int state);
+        void showEmptyState();
     }
 
     interface Presenter {

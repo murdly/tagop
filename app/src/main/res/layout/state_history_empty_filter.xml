@@ -14,6 +14,7 @@
         android:layout_height="@dimen/item_history_height"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/margin_vertical_normal"
+        android:paddingRight="@dimen/margin_vertical_normal"
         android:drawablePadding="@dimen/margin_vertical_normal"
         android:drawableLeft="@drawable/ic_search_black_24dp"
         android:text="@string/state_history_empty_filter_instruction"

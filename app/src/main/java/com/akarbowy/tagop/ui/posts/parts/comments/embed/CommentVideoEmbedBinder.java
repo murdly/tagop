@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.view.View;
 
 import com.akarbowy.partdefiner.Binder;
-import com.akarbowy.tagop.data.database.model.CommentModel;
+import com.akarbowy.tagop.data.model.CommentModel;
 
 public class CommentVideoEmbedBinder implements Binder<CommentVideoEmbedView> {
     private CommentModel comment;

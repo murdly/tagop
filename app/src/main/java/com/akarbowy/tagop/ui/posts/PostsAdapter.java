@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.akarbowy.partdefiner.Binder;
 import com.akarbowy.partdefiner.PartManager;
 import com.akarbowy.tagop.R;
-import com.akarbowy.tagop.data.database.model.PostModel;
+import com.akarbowy.tagop.data.model.PostModel;
 import com.akarbowy.tagop.ui.posts.parts.ViewType;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersPart;
 import com.akarbowy.tagop.ui.posts.parts.counters.CountersView;

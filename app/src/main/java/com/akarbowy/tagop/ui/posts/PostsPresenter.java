@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
-import com.akarbowy.tagop.data.database.PostsRepository;
-import com.akarbowy.tagop.data.database.model.PostModel;
-import com.akarbowy.tagop.data.database.model.TagModel;
+import com.akarbowy.tagop.data.DataManager;
+import com.akarbowy.tagop.data.DataSource;
+import com.akarbowy.tagop.data.model.PostModel;
+import com.akarbowy.tagop.data.model.TagModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +18,16 @@ import javax.inject.Inject;
 public class PostsPresenter implements PostsContract.Presenter {
 
     private TagModel tag;
-    private PostsRepository repository;
+    private DataManager repository;
     private PostsContract.View view;
 
-    private List<PostModel> freshDataToPickUp;
+    private List<PostModel> freshDataToPickUp = new ArrayList<>();
     private int nextPage = 1;
 
     private CountingIdlingResource idlingResource;
 
     @Inject PostsPresenter(@NonNull TagModel tag,
-                           PostsRepository repository,
+                           DataManager repository,
                            PostsContract.View view) {
         this.tag = tag;
         this.repository = repository;
@@ -43,8 +44,8 @@ public class PostsPresenter implements PostsContract.Presenter {
         view.setPageLoader(true);
 
         repository.allowCache(false);
-        repository.loadPosts(tag, nextPage, new PostsRepository.GetPostsCallback() {
-            @Override public void onDataLoaded(List<PostModel> data, boolean localSource) {
+        repository.loadPosts(tag, nextPage, new DataSource.GetPostsCallback() {
+            @Override public void onDataLoaded(List<PostModel> data, boolean remoteSource) {
                 if (!view.isActive()) {
                     return;
                 }
@@ -70,10 +71,10 @@ public class PostsPresenter implements PostsContract.Presenter {
         repository.allowCache(entryLoad);
 
         if (entryLoad && tag.isForSaving()) {
-            repository.saveTagInHistory(tag);
+            repository.saveTag(tag);
         }
 
-        repository.loadPosts(tag, nextPage, new PostsRepository.GetPostsCallback() {
+        repository.loadPosts(tag, nextPage, new DataSource.GetPostsCallback() {
             @Override public void onDataLoaded(List<PostModel> data, boolean remoteSource) {
                 if (!view.isActive()) {
                     return;
@@ -81,7 +82,7 @@ public class PostsPresenter implements PostsContract.Presenter {
 
                 view.setRefreshing(false);
 
-                if (view.isAtTop() || entryLoad) {
+                if (view.isAtTop()) {
                     view.setItems(data, true);
                 } else {
                     view.setActionIndicator(true);
