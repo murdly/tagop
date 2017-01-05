@@ -146,6 +146,8 @@ public class MainSearchActivity extends AppCompatActivity implements SearchContr
             stateSwitcher.setState(State.CONTENT);
         } else if (filtered) {
             stateSwitcher.setState(State.FILTER_NO_RESULTS);
+        } else {
+            stateSwitcher.setState(State.HISTORY_EMPTY);
         }
 
         Timber.i("Updated with %s items: %s", items.size(), items);

@@ -55,14 +55,14 @@ public class SearchPresenter implements SearchContract.Presenter {
             }
         }
 
-        view.setItems(filteredList, true);
+        view.setItems(filteredList, !value.isEmpty());
     }
 
     @Override public void clearHistory() {
         entryCachedTags.clear();
         repository.deleteAllTags();
 
-        view.setItems(entryCachedTags, false);
+        view.setItems(new ArrayList<TagModel>(), false);
         view.showEmptyState();
     }
 
