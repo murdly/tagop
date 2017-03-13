@@ -5,7 +5,7 @@ This project was brought to life to:
  - follow [Android Architecture Blueprints (mvp-dagger)](https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger/) with emphasis on testing and implementing cache
 
 ##Google Play
-<a href='https://play.google.com/store/apps/details?postId=com.akarbowy.tagop'>
+<a href='https://play.google.com/store/apps/details?id=com.akarbowy.tagop'>
 <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="280"/></a>
 
 ##Screenshots
