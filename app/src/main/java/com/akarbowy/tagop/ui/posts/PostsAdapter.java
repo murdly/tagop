@@ -49,9 +49,9 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return 6;
     }
 
-    public void setItems(List<PostModel> entries, boolean firstPage) {
+    public void setItems(List<PostModel> entries, boolean replceAtTop) {
         if (!entries.isEmpty()) {
-            if (firstPage) {
+            if (replceAtTop) {
                 partManager.clearBinders();
             }
             partManager.setItemsForBinding(entries);

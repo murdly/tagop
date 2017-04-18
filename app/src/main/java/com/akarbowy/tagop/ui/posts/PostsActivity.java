@@ -148,12 +148,12 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         }
     }
 
-    @Override public void setItems(List<PostModel> data, boolean replaceAtTop) {
-        adapter.setItems(data, replaceAtTop);
+    @Override public void setItems(List<PostModel> data, boolean firstPage) {
+        adapter.setItems(data, firstPage);
 
-        stateSwitcher.setState(!data.isEmpty() ? PostsActivity.State.CONTENT : PostsActivity.State.CONTENT_EMPTY);
+        stateSwitcher.setState(firstPage && data.isEmpty() ? State.CONTENT_EMPTY : PostsActivity.State.CONTENT);
 
-        if (replaceAtTop) {
+        if (firstPage) {
             layoutManager.scrollToPosition(0);
             appBarLayout.setExpanded(true);
         }
