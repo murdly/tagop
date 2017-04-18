@@ -17,6 +17,8 @@ public interface PostsContract {
 
         void showError(boolean firstPage);
 
+        void showContentEmpty();
+
         void setItems(List<PostModel> data, boolean clearAndTop);
 
         boolean isAtTop();

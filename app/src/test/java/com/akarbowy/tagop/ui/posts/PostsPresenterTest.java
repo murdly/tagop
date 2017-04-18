@@ -75,6 +75,27 @@ public class PostsPresenterTest {
     }
 
     @Test
+    public void entryLoadNoData_showsContentEmpty() {
+        presenter.loadPosts(true);
+
+        when(view.isAtTop()).thenReturn(true);
+
+        InOrder inOrder = inOrder(view);
+        inOrder.verify(view).setRefreshing(true);
+
+        verify(repository).loadPosts(any(TagModel.class), eq(1), getPostsCallbackCaptor.capture());
+        getPostsCallbackCaptor.getValue().onDataLoaded(new ArrayList<PostModel>(), true);
+
+        inOrder.verify(view).setRefreshing(false);
+
+        ArgumentCaptor<List> setItemsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setItems(setItemsCaptor.capture(), eq(true));
+        assertTrue(setItemsCaptor.getValue().size() == 0);
+
+        verify(view).showContentEmpty();
+    }
+
+    @Test
     public void notAtTopWhenReady_showsActionIndicator() {
         presenter.loadPosts(true);
 

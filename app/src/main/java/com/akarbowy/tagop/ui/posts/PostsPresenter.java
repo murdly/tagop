@@ -90,7 +90,11 @@ public class PostsPresenter implements PostsContract.Presenter {
                 }
 
                 if (remoteSource) {
-                    nextPage++;
+                    if(data.isEmpty()){
+                        view.showContentEmpty();
+                    } else {
+                        nextPage++;
+                    }
                 }
             }
 

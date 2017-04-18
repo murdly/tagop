@@ -148,10 +148,14 @@ public class PostsActivity extends AppCompatActivity implements PostsContract.Vi
         }
     }
 
+    @Override public void showContentEmpty() {
+        stateSwitcher.setState(State.CONTENT_EMPTY);
+    }
+
     @Override public void setItems(List<PostModel> data, boolean firstPage) {
         adapter.setItems(data, firstPage);
 
-        stateSwitcher.setState(firstPage && data.isEmpty() ? State.CONTENT_EMPTY : PostsActivity.State.CONTENT);
+        stateSwitcher.setState(State.CONTENT);
 
         if (firstPage) {
             layoutManager.scrollToPosition(0);
