@@ -44,4 +44,8 @@ public class EmbedModel {
     public String getId() {
         return id;
     }
+
+    public boolean isGif() {
+        return url.endsWith(".gif");
+    }
 }

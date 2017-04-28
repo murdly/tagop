@@ -13,17 +13,23 @@ public class ImageEmbedBinder implements Binder<ImageEmbedView> {
         post = viewObject;
     }
 
-    @Override public void prepare(ImageEmbedView view) {
+    @Override public void prepare(final ImageEmbedView view) {
         view.setOnPreviewClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                String viewerUrl = post.getEmbed().getUrl();
-                new ImageViewer.Builder(view.getContext(), new String[]{viewerUrl}).show();
+            @Override public void onClick(View v) {
+                String url = post.getEmbed().getUrl();
+
+                if (post.getEmbed().isGif()) {
+                    view.startGif(url);
+                } else {
+                    new ImageViewer.Builder<>(view.getContext(), new String[]{url})
+                            .show();
+                }
             }
         });
     }
 
     @Override public void bind(ImageEmbedView view) {
-        view.setPreview(post.getEmbed().getPreviewUrl());
+        view.setPreviewUrl(post.getEmbed().getPreviewUrl());
     }
 
     @Override public void unbind(ImageEmbedView view) {
