@@ -2,8 +2,6 @@ package com.akarbowy.tagop.ui.posts;
 
 
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.idling.CountingIdlingResource;
 
 import com.akarbowy.tagop.data.DataManager;
 import com.akarbowy.tagop.data.DataSource;
@@ -23,8 +21,6 @@ public class PostsPresenter implements PostsContract.Presenter {
 
     private List<PostModel> freshDataToPickUp = new ArrayList<>();
     private int nextPage = 1;
-
-    private CountingIdlingResource idlingResource;
 
     @Inject PostsPresenter(@NonNull TagModel tag,
                            DataManager repository,
@@ -114,13 +110,6 @@ public class PostsPresenter implements PostsContract.Presenter {
         view.setActionIndicator(false);
 
         freshDataToPickUp = null;
-    }
-
-    @VisibleForTesting @NonNull public CountingIdlingResource getIdlingResource() {
-        if (idlingResource == null) {
-            idlingResource = new CountingIdlingResource("posts");
-        }
-        return idlingResource;
     }
 
 }

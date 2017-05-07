@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class DataManagerTest {
@@ -56,19 +57,19 @@ public class DataManagerTest {
     public void loadPosts_cachesAfterFirstApiCall() throws Exception {
         repository.allowCache(true);
 
+        TagModel tag = new TagModel("0", "TAG");
+
         //first call
-        repository.loadPosts(any(TagModel.class), eq(1), getPostsCallback);
+        repository.loadPosts(tag, 1, getPostsCallback);
 
         verify(localDataSource).loadPosts(any(TagModel.class), eq(1), postsCallbackArgumentCaptor.capture());
         postsCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
-        verify(remoteDataSource).loadPosts(any(TagModel.class), eq(1),postsCallbackArgumentCaptor.capture());
-        postsCallbackArgumentCaptor.getValue().onDataLoaded(POSTS, true);
-
         //second call
-        repository.loadPosts(any(TagModel.class), eq(1), getPostsCallback);
+        repository.loadPosts(tag, 1, getPostsCallback);
 
-        verify(remoteDataSource).loadPosts(any(TagModel.class), eq(1), any(DataSource.GetPostsCallback.class));
+        verify(localDataSource, times(2)).loadPosts(any(TagModel.class), eq(1), postsCallbackArgumentCaptor.capture());
+        postsCallbackArgumentCaptor.getValue().onDataLoaded(POSTS, true);
 
     }
 
